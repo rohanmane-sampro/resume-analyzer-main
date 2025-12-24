@@ -12,7 +12,7 @@ const parseMarkdown = (text) => {
     .replace(/\n/g, ' '); // Convert line breaks to spaces for continuous text
 };
 
-const StyledWrapper=styled.div`body {
+const StyledWrapper = styled.div`body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
@@ -230,7 +230,7 @@ export const T4 = ({ jsonData, desc }) => {
   let column2 = eachColumn;
   let column3 = eachColumn;
   let column4 = eachColumn;
-  
+
   if (skills.length % 4 === 1) {
     column1 += 1;
   } else if (skills.length % 4 === 2) {
@@ -249,178 +249,178 @@ export const T4 = ({ jsonData, desc }) => {
 
   return (
     <StyledWrapper>
-    <div className="resume" id="capture-content">
-      <div className="header">
-        <div className="left">
-          <img src={jsonData?.contactInfo?.profileImage || "https://www.skibalawchicago.com/wp-content/uploads/2024/06/profile-placeholder.jpg"} alt="Profile" />
-        </div>
-
-        <div className="right">
-          <div className="head">
-            <h1>{jsonData?.contactInfo?.fullName || 'Your Name'}</h1>
-            <h2>{jsonData?.contactInfo?.jobTitle || 'Job Title'}</h2>
-            <div className="Underline"></div>
-          </div>
-        </div>
-      </div>
-
-      <div className="content">
-        <div className="left">
-          <div className="Contact">
-            <div className="Lsection-title"><b>Contact</b> <i className="fas fa-address-card"></i></div> <br />
-            <div className="Litem"><i className="fa fa-phone"></i> {jsonData?.contactInfo?.phoneNumber || 'Phone'} </div>
-            <div className="Litem"><i className="fas fa-envelope"></i>
-              <a href={`mailto:${jsonData?.contactInfo?.emailAddress || ''}`}> {(jsonData?.contactInfo?.emailAddress || 'email@domain.com').split('@')[0]} </a>
-            </div>
-            <div className="Litem"><i className="fab fa-linkedin"></i>
-              <a href={`https://www.linkedin.com/in/${jsonData?.contactInfo?.linkedin || ''}`} target="_blank" rel="noreferrer"> {jsonData?.contactInfo?.linkedin || 'LinkedIn'}</a>
-            </div>
-            <div className="Litem"><i className="fas fa-globe"></i>
-              <a href={isValidUrl(jsonData.contactInfo.portfolio) ? jsonData.contactInfo.portfolio : `https://github.com/${jsonData.contactInfo.portfolio}`} target="_blank" rel="noreferrer"> {jsonData.contactInfo.portfolio.replace(/^https?:\/\//, '')} </a>
-            </div>
-            <div className="Litem"><i className="fa fa-map-marker"></i> {jsonData.contactInfo.Location}</div>
+      <div className="resume" id="capture-content">
+        <div className="header">
+          <div className="left">
+            <img src={jsonData?.contactInfo?.profileImage || "https://www.skibalawchicago.com/wp-content/uploads/2024/06/profile-placeholder.jpg"} alt="Profile" />
           </div>
 
-          <div className="Lsection">
-            <div className="Lsection-title"><b>Education </b><i className="fas fa-graduation-cap"></i></div><br />
-            <div className="Litem">
-              {jsonData.education.map((edu, index) => (
-                <React.Fragment key={index}>
-                  {index > 0 && <React.Fragment><br /><br /></React.Fragment>}
-                  <div className="SubSec-title"><b>{edu.graduationYear}<br />{edu.institutionName}</b></div>
-                  {edu.degreeName} <br />
-                  CGPA: {edu.currentCGPA}
-                </React.Fragment>
-              ))}
-              <br />
+          <div className="right">
+            <div className="head">
+              <h1>{jsonData?.contactInfo?.fullName || 'Your Name'}</h1>
+              <h2>{jsonData?.contactInfo?.jobTitle || 'Job Title'}</h2>
+              <div className="Underline"></div>
             </div>
-          </div>
-
-          <div className="Lsection">
-            <div className="Lsection-title"><b>Soft Skills </b><i className="fa fa-book"></i></div><br />
-            <ul>
-              {jsonData.skills.softSkills.split(',').map(skill => skill.trim()).filter(skill => skill !== '').map((skill, index) => (
-                <li key={index}>{removeSpace(skill)}</li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="Lsection">
-            <div className="Lsection-title"><b>Languages </b><i className="fa fa-language"></i></div><br />
-            <ul>
-              {(jsonData?.contactInfo?.Languages || '').split(',').map(lang => lang.trim()).filter(lang => lang !== '').map((lang, index) => (
-                <li key={index}>{removeSpace(lang)}: Fluent</li>
-              ))}
-            </ul>
           </div>
         </div>
 
-        <div className="right">
-          <div className="section">
-            <div className="section-title"><b>Profile Summary</b></div>
-            <p>{jsonData.Description.UserDescription}</p>
-          </div>
-          
-          <div className="SUsection">
-            <div className="section-title"><b>Projects</b></div>
-            <ul>
-              {jsonData.projects.map((proj, index) => (
-                <div key={index} className="Ritem" style={{ marginBottom: index < jsonData.projects.length - 1 ? "15px" : "0px" }}>
-                  <li>
-                    <div className="item-title textGray">{proj.projectTitle} </div>
-                    <div dangerouslySetInnerHTML={{ __html: parseMarkdown(proj.toolsTechUsed) }} />
-                  </li>
-                </div>
-              ))}
-            </ul>
-          </div>
-          <br />
-          
-          {jsonData.workExperience && jsonData.workExperience.length > 0 && jsonData.workExperience[0].companyName && (
-          <div className="section">
-            <div className="section-title"><b>Work Experience</b></div>
-            <div className="Ritem">
-              <ul>
-                {jsonData.workExperience.map((we, index) => (
+        <div className="content">
+          <div className="left">
+            <div className="Contact">
+              <div className="Lsection-title"><b>Contact</b> <i className="fas fa-address-card"></i></div> <br />
+              <div className="Litem"><i className="fa fa-phone"></i> {jsonData?.contactInfo?.phoneNumber || 'Phone'} </div>
+              <div className="Litem"><i className="fas fa-envelope"></i>
+                <a href={`mailto:${jsonData?.contactInfo?.emailAddress || ''}`}> {(jsonData?.contactInfo?.emailAddress || 'email@domain.com').split('@')[0]} </a>
+              </div>
+              <div className="Litem"><i className="fab fa-linkedin"></i>
+                <a href={`https://www.linkedin.com/in/${jsonData?.contactInfo?.linkedin || ''}`} target="_blank" rel="noreferrer"> {jsonData?.contactInfo?.linkedin || 'LinkedIn'}</a>
+              </div>
+              <div className="Litem"><i className="fas fa-globe"></i>
+                <a href={isValidUrl(jsonData.contactInfo.portfolio) ? jsonData.contactInfo.portfolio : `https://github.com/${jsonData.contactInfo.portfolio}`} target="_blank" rel="noreferrer"> {jsonData.contactInfo.portfolio.replace(/^https?:\/\//, '')} </a>
+              </div>
+              <div className="Litem"><i className="fa fa-map-marker"></i> {jsonData.contactInfo.Location}</div>
+            </div>
+
+            <div className="Lsection">
+              <div className="Lsection-title"><b>Education </b><i className="fas fa-graduation-cap"></i></div><br />
+              <div className="Litem">
+                {jsonData.education.map((edu, index) => (
                   <React.Fragment key={index}>
+                    {index > 0 && <React.Fragment><br /><br /></React.Fragment>}
+                    <div className="SubSec-title"><b>{edu.graduationYear}<br />{edu.institutionName}</b></div>
+                    {edu.degreeName} <br />
+                    CGPA: {edu.currentCGPA}
+                  </React.Fragment>
+                ))}
+                <br />
+              </div>
+            </div>
+
+            <div className="Lsection">
+              <div className="Lsection-title"><b>Soft Skills </b><i className="fa fa-book"></i></div><br />
+              <ul>
+                {jsonData.skills.softSkills.split(',').map(skill => skill.trim()).filter(skill => skill !== '').map((skill, index) => (
+                  <li key={index}>{removeSpace(skill)}</li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="Lsection">
+              <div className="Lsection-title"><b>Languages </b><i className="fa fa-language"></i></div><br />
+              <ul>
+                {(jsonData?.contactInfo?.Languages || '').split(',').map(lang => lang.trim()).filter(lang => lang !== '').map((lang, index) => (
+                  <li key={index}>{removeSpace(lang)}: Fluent</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="right">
+            <div className="section">
+              <div className="section-title"><b>Profile Summary</b></div>
+              <p>{jsonData.Description.UserDescription}</p>
+            </div>
+
+            <div className="SUsection">
+              <div className="section-title"><b>Projects</b></div>
+              <ul>
+                {jsonData.projects.map((proj, index) => (
+                  <div key={index} className="Ritem" style={{ marginBottom: index < jsonData.projects.length - 1 ? "15px" : "0px" }}>
                     <li>
-                      <div className="item-title textGray mtt-3">
-                        {we.companyName}
-                        <div>{we.WorkDuration}</div>
-                      </div>
-                      {we.jobTitle}<br />
-                      <div dangerouslySetInnerHTML={{ __html: parseMarkdown(we.keyAchievements) }} />
+                      <div className="item-title textGray">{proj.projectTitle} </div>
+                      <div dangerouslySetInnerHTML={{ __html: parseMarkdown(proj.toolsTechUsed) }} />
                     </li>
-                  </React.Fragment>
+                  </div>
                 ))}
               </ul>
             </div>
-          </div>
-          )}
+            <br />
 
-          {jsonData.certificates && jsonData.certificates.length > 0 && jsonData.certificates[0].certificateName && (
-          <div className="section">
-            <div className="section-title"><b>Certificates</b></div>
-            <div className="Ritem">
-              {jsonData.certificates.map((cert, index) => (
-                <div key={index} style={{ marginBottom: '12px' }}>
-                  <div style={{ fontWeight: 'bold', color: '#1a1a1a' }}>
-                    {cert.certificateName}
-                  </div>
-                  <div style={{ color: '#4a4a4a', fontSize: '0.9em' }}>
-                    {cert.providerName} - ({cert.courseDuration})
-                  </div>
+            {jsonData.workExperience && jsonData.workExperience.length > 0 && jsonData.workExperience[0].companyName && (
+              <div className="section">
+                <div className="section-title"><b>Work Experience</b></div>
+                <div className="Ritem">
+                  <ul>
+                    {jsonData.workExperience.map((we, index) => (
+                      <React.Fragment key={index}>
+                        <li>
+                          <div className="item-title textGray mtt-3">
+                            {we.companyName}
+                            <div>{we.WorkDuration}</div>
+                          </div>
+                          {we.jobTitle}<br />
+                          <div dangerouslySetInnerHTML={{ __html: parseMarkdown(we.keyAchievements) }} />
+                        </li>
+                      </React.Fragment>
+                    ))}
+                  </ul>
                 </div>
-              ))}
-            </div>
-          </div>
-          )}
+              </div>
+            )}
 
-          <div className="skills">
-            <div className="SkillsSection-title"><b>Technical Skills</b></div><br />
-            <div className="Ritem subcont">
-              <ul>
-                {skillColumn1.map((skill, index) => (
-                  <React.Fragment key={index}>
-                    <li>{skill}</li>
-                    {/* {index < skillColumn1.length - 1 && <br />} */}
-                  </React.Fragment>
-                ))}
-              </ul>
-              <ul>
-                {skillColumn2.map((skill, index) => (
-                  <React.Fragment key={index}>
-                    <li>{skill}</li>
-                    {/* {index < skillColumn2.length - 1 && <br />} */}
-                  </React.Fragment>
-                ))}
-              </ul>
-              <ul>
-                {skillColumn3.map((skill, index) => (
-                  <React.Fragment key={index}>
-                    <li>{skill}</li>
-                    {/* {index < skillColumn3.length - 1 && <br />} */}
-                  </React.Fragment>
-                ))}
-              </ul>
-              <ul>
-                {skillColumn4.map((skill, index) => (
-                  <React.Fragment key={index}>
-                    <li>{skill}</li>
-                    {/* {index < skillColumn4.length - 1 && <br />} */}
-                  </React.Fragment>
-                ))}
-              </ul>
+            {jsonData.certificates && jsonData.certificates.length > 0 && jsonData.certificates[0].certificateName && (
+              <div className="section">
+                <div className="section-title"><b>Certificates</b></div>
+                <div className="Ritem">
+                  {jsonData.certificates.map((cert, index) => (
+                    <div key={index} style={{ marginBottom: '12px' }}>
+                      <div style={{ fontWeight: 'bold', color: '#1a1a1a' }}>
+                        {cert.certificateName}
+                      </div>
+                      <div style={{ color: '#4a4a4a', fontSize: '0.9em' }}>
+                        {cert.providerName} - ({cert.courseDuration})
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="skills">
+              <div className="SkillsSection-title"><b>Technical Skills</b></div><br />
+              <div className="Ritem subcont">
+                <ul>
+                  {skillColumn1.map((skill, index) => (
+                    <React.Fragment key={index}>
+                      <li>{skill}</li>
+                      {/* {index < skillColumn1.length - 1 && <br />} */}
+                    </React.Fragment>
+                  ))}
+                </ul>
+                <ul>
+                  {skillColumn2.map((skill, index) => (
+                    <React.Fragment key={index}>
+                      <li>{skill}</li>
+                      {/* {index < skillColumn2.length - 1 && <br />} */}
+                    </React.Fragment>
+                  ))}
+                </ul>
+                <ul>
+                  {skillColumn3.map((skill, index) => (
+                    <React.Fragment key={index}>
+                      <li>{skill}</li>
+                      {/* {index < skillColumn3.length - 1 && <br />} */}
+                    </React.Fragment>
+                  ))}
+                </ul>
+                <ul>
+                  {skillColumn4.map((skill, index) => (
+                    <React.Fragment key={index}>
+                      <li>{skill}</li>
+                      {/* {index < skillColumn4.length - 1 && <br />} */}
+                    </React.Fragment>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
     </StyledWrapper>
   );
 };
 
-export const T4Css=`
+export const T4Css = `
 @media print {
   * {
     -webkit-print-color-adjust: exact !important;
@@ -446,29 +446,28 @@ export const T4Css=`
   .resume {
      width: 210mm !important;
      max-width: 210mm !important;
-     height: 297mm !important;
-     max-height: 297mm !important;
+     height: auto !important;
+     min-height: 297mm !important;
      background: #ffffff !important;
      border: none !important;
      border-radius: 0 !important;
      margin: 0 auto !important;
      padding: 0 !important;
      box-shadow: none !important;
-     page-break-after: avoid !important;
-     page-break-inside: avoid !important;
-     overflow: hidden !important;
+     page-break-inside: auto !important;
+     overflow: visible !important;
   }
   
   .header {
-     page-break-inside: avoid !important;
+     page-break-inside: auto !important;
   }
   
   .content {
-     page-break-inside: avoid !important;
+     page-break-inside: auto !important;
   }
   
   .section, .item {
-     page-break-inside: avoid !important;
+     page-break-inside: auto !important;
   }
 }
 

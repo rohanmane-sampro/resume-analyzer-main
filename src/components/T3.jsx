@@ -153,18 +153,18 @@ ul li {
 }`;
 
 
-export const T3 = ({jsonData}) => {
+export const T3 = ({ jsonData }) => {
   const removespace = (text) => text.trim();
 
   const skills = jsonData.skills.hardSkills.split(',').map(skill => skill.trim()).filter(skill => skill !== '');
   console.log(skills, 'from T3.jsx')
   const eachColumn = Math.floor(skills.length / 4);
-  
+
   let column1 = eachColumn;
   let column2 = eachColumn;
   let column3 = eachColumn;
   let column4 = eachColumn;
-  
+
   if (skills.length % 4 === 1) {
     column1 += 1;
   } else if (skills.length % 4 === 2) {
@@ -178,148 +178,148 @@ export const T3 = ({jsonData}) => {
 
   return (
     <StyledWrapper>
-    <div id="capture-content">
-      <div className="header">
-        <h1>{jsonData.contactInfo.fullName}</h1>
-        <h2>{jsonData.contactInfo.jobTitle}</h2>
-      </div>
-      <div className="resume">
-        <div className="content">
-          <div className="left">
-            <div className="Contact">
-              <div className="section-title"><b>Contact</b> <i className="fas fa-address-card"></i></div><br />
-              <div className="Litem"><i className="fa fa-phone IconLight"></i> {jsonData.contactInfo.phoneNumber} </div>
-              <div className="Litem"><i className="fas fa-envelope IconLight"></i><a href={`mailto:${jsonData.contactInfo.emailAddress}`}> {jsonData.contactInfo.emailAddress.split('@')[0]} </a></div>
-              <div className="Litem"><i className="fab fa-linkedin IconLight"></i><a href={`https://www.linkedin.com/in/${jsonData.contactInfo.linkedin}`} target="_blank" rel="noreferrer"> {jsonData.contactInfo.linkedin}</a></div>
-              <div className="Litem">
-                <i className="fas fa-globe IconLight"></i>
-                <a 
-                  href={isValidUrl(jsonData.contactInfo.portfolio) ? jsonData.contactInfo.portfolio : `https://github.com/${jsonData.contactInfo.portfolio}`} target="_blank" rel="noreferrer"> {jsonData.contactInfo.portfolio.replace(/^https?:\/\//, '')} </a>
+      <div id="capture-content">
+        <div className="header">
+          <h1>{jsonData.contactInfo.fullName}</h1>
+          <h2>{jsonData.contactInfo.jobTitle}</h2>
+        </div>
+        <div className="resume">
+          <div className="content">
+            <div className="left">
+              <div className="Contact">
+                <div className="section-title"><b>Contact</b> <i className="fas fa-address-card"></i></div><br />
+                <div className="Litem"><i className="fa fa-phone IconLight"></i> {jsonData.contactInfo.phoneNumber} </div>
+                <div className="Litem"><i className="fas fa-envelope IconLight"></i><a href={`mailto:${jsonData.contactInfo.emailAddress}`}> {jsonData.contactInfo.emailAddress.split('@')[0]} </a></div>
+                <div className="Litem"><i className="fab fa-linkedin IconLight"></i><a href={`https://www.linkedin.com/in/${jsonData.contactInfo.linkedin}`} target="_blank" rel="noreferrer"> {jsonData.contactInfo.linkedin}</a></div>
+                <div className="Litem">
+                  <i className="fas fa-globe IconLight"></i>
+                  <a
+                    href={isValidUrl(jsonData.contactInfo.portfolio) ? jsonData.contactInfo.portfolio : `https://github.com/${jsonData.contactInfo.portfolio}`} target="_blank" rel="noreferrer"> {jsonData.contactInfo.portfolio.replace(/^https?:\/\//, '')} </a>
+                </div>
+                <div className="Litem"><i className="fa fa-map-marker IconLight"></i> {jsonData.contactInfo.Location}</div> <br />
               </div>
-              <div className="Litem"><i className="fa fa-map-marker IconLight"></i> {jsonData.contactInfo.Location}</div> <br />
-            </div>
 
-            <div className="section">
-              <div className="section-title"><b>Education </b><i className="fas fa-graduation-cap"></i></div><br />
-              <div className="Litem">
-                {jsonData.education.map((edu, index) => (
-                  <React.Fragment key={index}>
-                    <div className="mbb-3">
+              <div className="section">
+                <div className="section-title"><b>Education </b><i className="fas fa-graduation-cap"></i></div><br />
+                <div className="Litem">
+                  {jsonData.education.map((edu, index) => (
+                    <React.Fragment key={index}>
+                      <div className="mbb-3">
                         <div className="SubSec-title TextLight"><b>{edu.graduationYear}<br />{edu.institutionName}</b></div>
                         {edu.degreeName} <br />
                         CGPA: {edu.currentCGPA}
                         {index < jsonData.education.length - 1 && <br />}
-                     </div>
-                  </React.Fragment>
-                ))}
-                
+                      </div>
+                    </React.Fragment>
+                  ))}
+
+                </div>
               </div>
-            </div>
 
-            <div className="section">
-              <div className="section-title"><b>Soft Skills </b><i className="fa fa-book"></i></div><br />
-              <ul>
-                {jsonData.skills.softSkills.split(',').map(skill => skill.trim()).filter(skill => skill !== '').map((skill, index) => (
-                  <li key={index}>{removespace(skill)}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="section">
-              <div className="section-title"><b>Languages </b><i className="fa fa-language"></i></div><br />
-              <ul>
-                {jsonData.contactInfo.Languages.split(',').map(lang => lang.trim()).filter(lang => lang !== '').map((lang, index) => (
-                  <li key={index}>{removespace(lang)}: Fluent</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          <div className="right">
-            <div className="section">
-              <div className="section-title"><b>Profile Summary</b></div>
-              <p>{jsonData.Description.UserDescription}</p>
-            </div>
-
-            <div className="SUsection">
-              <div className="section-title"><b>Projects</b></div>
-              <ul>
-                {jsonData.projects.map((proj, index) => (
-                  <div className="Ritem" key={index}>
-                    <li>
-                      <div className="item-title TextLight">{proj.projectTitle} </div>
-                      <div dangerouslySetInnerHTML={{ __html: parseMarkdown(proj.toolsTechUsed) }} />
-                    </li>
-                  </div>
-                ))}
-              </ul>
-            </div>
-
-            {jsonData.workExperience && jsonData.workExperience.length > 0 && jsonData.workExperience[0].companyName && (
-            <div className="section">
-              <div className="section-title"><b>Work Experience</b></div>
-              <div className="Ritem">
+              <div className="section">
+                <div className="section-title"><b>Soft Skills </b><i className="fa fa-book"></i></div><br />
                 <ul>
-                  {jsonData.workExperience.map((we, index) => (
-                    <li key={index} className='mbb-2'>
-                      <div className="item-title TextLight">{we.companyName}<div>{we.WorkDuration}</div> </div>
-                      {we.jobTitle}<br />
-                      <span dangerouslySetInnerHTML={{ __html: parseMarkdown(we.keyAchievements) }} />
-                      {index < jsonData.workExperience.length - 1 && <br />}
-                    </li>
+                  {jsonData.skills.softSkills.split(',').map(skill => skill.trim()).filter(skill => skill !== '').map((skill, index) => (
+                    <li key={index}>{removespace(skill)}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="section">
+                <div className="section-title"><b>Languages </b><i className="fa fa-language"></i></div><br />
+                <ul>
+                  {jsonData.contactInfo.Languages.split(',').map(lang => lang.trim()).filter(lang => lang !== '').map((lang, index) => (
+                    <li key={index}>{removespace(lang)}: Fluent</li>
                   ))}
                 </ul>
               </div>
             </div>
-            )}
 
-            {jsonData.certificates && jsonData.certificates.length > 0 && jsonData.certificates[0].certificateName && (
-            <div className="section">
-              <div className="section-title"><b>Certificates</b></div>
-              <div className="Ritem">
-                {jsonData.certificates.map((cert, index) => (
-                  <div key={index} style={{ marginBottom: '12px' }}>
-                    <div style={{ fontWeight: 'bold', color: '#1a1a1a' }}>
-                      {cert.certificateName}
+            <div className="right">
+              <div className="section">
+                <div className="section-title"><b>Profile Summary</b></div>
+                <p>{jsonData.Description.UserDescription}</p>
+              </div>
+
+              <div className="SUsection">
+                <div className="section-title"><b>Projects</b></div>
+                <ul>
+                  {jsonData.projects.map((proj, index) => (
+                    <div className="Ritem" key={index}>
+                      <li>
+                        <div className="item-title TextLight">{proj.projectTitle} </div>
+                        <div dangerouslySetInnerHTML={{ __html: parseMarkdown(proj.toolsTechUsed) }} />
+                      </li>
                     </div>
-                    <div style={{ color: '#4a4a4a', fontSize: '0.9em' }}>
-                      {cert.providerName} - ({cert.courseDuration})
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </ul>
               </div>
-            </div>
-            )}
 
-            <div className="skills">
-              <div className="section-title"><b>Technical Skills</b></div>
-              <div className="Ritem subcont">
-                <ul>
-                  {skills.slice(0, column1).map((skill, index) => (
-                    <li key={index}>{skill}</li>
-                  ))}
-                </ul>
-                <ul>
-                  {skills.slice(column1, column1 + column2).map((skill, index) => (
-                    <li key={index + column1}>{skill}</li>
-                  ))}
-                </ul>
-                <ul>
-                  {skills.slice(column1 + column2, column1 + column2 + column3).map((skill, index) => (
-                    <li key={index + column1 + column2}>{skill}</li>
-                  ))}
-                </ul>
-                <ul>
-                  {skills.slice(column1 + column2 + column3, column1 + column2 + column3 + column4).map((skill, index) => (
-                    <li key={index + column1 + column2 + column4}>{skill}</li>
-                  ))}
-                </ul>
+              {jsonData.workExperience && jsonData.workExperience.length > 0 && jsonData.workExperience[0].companyName && (
+                <div className="section">
+                  <div className="section-title"><b>Work Experience</b></div>
+                  <div className="Ritem">
+                    <ul>
+                      {jsonData.workExperience.map((we, index) => (
+                        <li key={index} className='mbb-2'>
+                          <div className="item-title TextLight">{we.companyName}<div>{we.WorkDuration}</div> </div>
+                          {we.jobTitle}<br />
+                          <span dangerouslySetInnerHTML={{ __html: parseMarkdown(we.keyAchievements) }} />
+                          {index < jsonData.workExperience.length - 1 && <br />}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
+
+              {jsonData.certificates && jsonData.certificates.length > 0 && jsonData.certificates[0].certificateName && (
+                <div className="section">
+                  <div className="section-title"><b>Certificates</b></div>
+                  <div className="Ritem">
+                    {jsonData.certificates.map((cert, index) => (
+                      <div key={index} style={{ marginBottom: '12px' }}>
+                        <div style={{ fontWeight: 'bold', color: '#1a1a1a' }}>
+                          {cert.certificateName}
+                        </div>
+                        <div style={{ color: '#4a4a4a', fontSize: '0.9em' }}>
+                          {cert.providerName} - ({cert.courseDuration})
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="skills">
+                <div className="section-title"><b>Technical Skills</b></div>
+                <div className="Ritem subcont">
+                  <ul>
+                    {skills.slice(0, column1).map((skill, index) => (
+                      <li key={index}>{skill}</li>
+                    ))}
+                  </ul>
+                  <ul>
+                    {skills.slice(column1, column1 + column2).map((skill, index) => (
+                      <li key={index + column1}>{skill}</li>
+                    ))}
+                  </ul>
+                  <ul>
+                    {skills.slice(column1 + column2, column1 + column2 + column3).map((skill, index) => (
+                      <li key={index + column1 + column2}>{skill}</li>
+                    ))}
+                  </ul>
+                  <ul>
+                    {skills.slice(column1 + column2 + column3, column1 + column2 + column3 + column4).map((skill, index) => (
+                      <li key={index + column1 + column2 + column4}>{skill}</li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
     </StyledWrapper>
   );
 };
@@ -333,7 +333,7 @@ const isValidUrl = (string) => {
   }
 };
 
-export const T3Css=`
+export const T3Css = `
 @media print {
   * {
     -webkit-print-color-adjust: exact !important;
@@ -359,15 +359,15 @@ export const T3Css=`
   .resume {
     width: 210mm !important;
     max-width: 210mm !important;
-    height: 297mm !important;
-    max-height: 297mm !important;
+    height: auto !important;
+    min-height: 297mm !important;
     background: #ffffff !important;
     border-radius: 0 !important;
     padding: 15mm !important;
     box-shadow: none !important;
     margin: 0 auto !important;
-    page-break-after: avoid !important;
-    overflow: hidden !important;
+    page-break-inside: auto !important;
+    overflow: visible !important;
   }
   
   .header {
@@ -377,11 +377,11 @@ export const T3Css=`
     padding: 30mm 5mm !important;
     border-radius: 0 !important;
     margin-bottom: 0 !important;
-    page-break-inside: avoid !important;
+    page-break-inside: auto !important;
   }
   
   .section {
-    page-break-inside: avoid !important;
+    page-break-inside: auto !important;
   }
 }
 

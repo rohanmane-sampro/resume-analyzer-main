@@ -11,7 +11,7 @@ const parseMarkdown = (text) => {
     .replace(/\n/g, ' '); // Convert line breaks to spaces for continuous text
 };
 
-const StyledWrapper=styled.div`* {
+const StyledWrapper = styled.div`* {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -164,113 +164,113 @@ h3 {
 
 export const T5 = ({ jsonData, desc }) => {
   const handlePortfolioLink = (portfolio) => {
-   return portfolio.indexOf('.') > -1 ? `https://${portfolio}` : `https://github.com/${portfolio}`;
- };
+    return portfolio.indexOf('.') > -1 ? `https://${portfolio}` : `https://github.com/${portfolio}`;
+  };
 
   return (
     <StyledWrapper>
-    <div className="resume-container" id="capture-content">
-      <div className="header">
-        <h1><b>{jsonData.contactInfo.fullName}</b></h1><br />
-        <div>
-          <a className="DecorationNone" href={handlePortfolioLink(jsonData.contactInfo.portfolio)} target="_blank" rel="noreferrer">
-            {jsonData.contactInfo.portfolio.replace(/^https?:\/\//, '')}
-          </a> | <a className="DecorationNone" href="#"> {jsonData.contactInfo.phoneNumber}</a> | <a href={`mailto:${jsonData.contactInfo.emailAddress}`} className="DecorationNone" target="_blank" rel="noreferrer">
-            {jsonData.contactInfo.emailAddress}
-          </a> <br /> 
-          <div style={{ marginTop: "6px" }}>{jsonData.contactInfo.Location}</div>
+      <div className="resume-container" id="capture-content">
+        <div className="header">
+          <h1><b>{jsonData.contactInfo.fullName}</b></h1><br />
+          <div>
+            <a className="DecorationNone" href={handlePortfolioLink(jsonData.contactInfo.portfolio)} target="_blank" rel="noreferrer">
+              {jsonData.contactInfo.portfolio.replace(/^https?:\/\//, '')}
+            </a> | <a className="DecorationNone" href="#"> {jsonData.contactInfo.phoneNumber}</a> | <a href={`mailto:${jsonData.contactInfo.emailAddress}`} className="DecorationNone" target="_blank" rel="noreferrer">
+              {jsonData.contactInfo.emailAddress}
+            </a> <br />
+            <div style={{ marginTop: "6px" }}>{jsonData.contactInfo.Location}</div>
+          </div>
         </div>
-      </div>
 
-      <div className="summary">
-        <h3><b>Summary</b></h3>
-        <p>{jsonData.Description.UserDescription}</p>
-      </div>
+        <div className="summary">
+          <h3><b>Summary</b></h3>
+          <p>{jsonData.Description.UserDescription}</p>
+        </div>
 
-      {jsonData.workExperience && jsonData.workExperience.length > 0 && jsonData.workExperience[0].companyName && (
-      <div className="experience">
-        <h3><b>Work Experience</b></h3>
-        {jsonData.workExperience.map((exp, index) => (
-          <div key={index} className="experience-item">
-            <ul className="circle-list">
-              <li>
-                <h4 className="spacebetween">
-                  {exp.companyName} | {exp.jobTitle} <span>{exp.WorkDuration}</span>
-                </h4>
-              </li>
-              {/* Assuming keyAchievements is a string of HTML that needs to be rendered */}
-              <div dangerouslySetInnerHTML={{ __html: parseMarkdown(exp.keyAchievements) }} />
-            </ul>
-          </div>
-        ))}
-      </div>
-      )}
-
-      <div className="education-section">
-        <h3><b>Education</b></h3>
-        {jsonData.education.map((edu, index) => (
-          <div key={index} className="education-item">
-            <ul className="square-list">
-              <li>
-                <h4 className="spacebetween">
-                  {edu.degreeName}<span>{edu.graduationYear}</span>
-                </h4>
-              </li>
-              <p>{edu.institutionName} | CGPA: {edu.currentCGPA}</p>
-            </ul>
-          </div>
-        ))}
-      </div>
-
-      <div className="projects">
-        <h3><b>Projects</b></h3>
-        {jsonData.projects.map((proj, index) => (
-          <div key={index} className="project-item">
-
-            <h4 >
-              <span style={{ marginRight: "8px", color: "#007acc" }}>➤</span>
-              <b>{proj.projectTitle}</b>
-            </h4>
-            <p style={{ marginLeft: "24px", marginTop: "4px" }} dangerouslySetInnerHTML={{ __html: parseMarkdown(proj.toolsTechUsed) }} />
-          </div>
-        ))}
-      </div>
-
-      {jsonData.certificates && jsonData.certificates.length > 0 && jsonData.certificates[0].certificateName && (
-      <div className="Certifications">
-        <h3><b>Certifications</b></h3>
-        <div className="Certificate-item">
-          {jsonData.certificates.map((cert, index) => (
-            <div key={index} style={{ marginBottom: '12px' }}>
-              <div style={{ fontWeight: 'bold', color: '#1a1a1a' }}>
-                {cert.certificateName}
+        {jsonData.workExperience && jsonData.workExperience.length > 0 && jsonData.workExperience[0].companyName && (
+          <div className="experience">
+            <h3><b>Work Experience</b></h3>
+            {jsonData.workExperience.map((exp, index) => (
+              <div key={index} className="experience-item">
+                <ul className="circle-list">
+                  <li>
+                    <h4 className="spacebetween">
+                      {exp.companyName} | {exp.jobTitle} <span>{exp.WorkDuration}</span>
+                    </h4>
+                  </li>
+                  {/* Assuming keyAchievements is a string of HTML that needs to be rendered */}
+                  <div dangerouslySetInnerHTML={{ __html: parseMarkdown(exp.keyAchievements) }} />
+                </ul>
               </div>
-              <div style={{ color: '#4a4a4a', fontSize: '0.9em' }}>
-                {cert.providerName} - ({cert.courseDuration})
-              </div>
+            ))}
+          </div>
+        )}
+
+        <div className="education-section">
+          <h3><b>Education</b></h3>
+          {jsonData.education.map((edu, index) => (
+            <div key={index} className="education-item">
+              <ul className="square-list">
+                <li>
+                  <h4 className="spacebetween">
+                    {edu.degreeName}<span>{edu.graduationYear}</span>
+                  </h4>
+                </li>
+                <p>{edu.institutionName} | CGPA: {edu.currentCGPA}</p>
+              </ul>
             </div>
           ))}
         </div>
-      </div>
-      )}
 
-      <div className="skills">
-        <h3><b>Skills</b></h3>
-        <p className="skills-item">
-          <strong style={{ color: "rgb(75, 77, 77)" }}>Soft Skills: </strong>
-          {jsonData.skills.softSkills}
-        </p>
-        <p className="skills-item">
-          <strong style={{ color: "rgb(75, 77, 77)" }}>Tech Skills: </strong>
-          <span>{jsonData.skills.hardSkills}</span>
-        </p>
+        <div className="projects">
+          <h3><b>Projects</b></h3>
+          {jsonData.projects.map((proj, index) => (
+            <div key={index} className="project-item">
+
+              <h4 >
+                <span style={{ marginRight: "8px", color: "#007acc" }}>➤</span>
+                <b>{proj.projectTitle}</b>
+              </h4>
+              <p style={{ marginLeft: "24px", marginTop: "4px" }} dangerouslySetInnerHTML={{ __html: parseMarkdown(proj.toolsTechUsed) }} />
+            </div>
+          ))}
+        </div>
+
+        {jsonData.certificates && jsonData.certificates.length > 0 && jsonData.certificates[0].certificateName && (
+          <div className="Certifications">
+            <h3><b>Certifications</b></h3>
+            <div className="Certificate-item">
+              {jsonData.certificates.map((cert, index) => (
+                <div key={index} style={{ marginBottom: '12px' }}>
+                  <div style={{ fontWeight: 'bold', color: '#1a1a1a' }}>
+                    {cert.certificateName}
+                  </div>
+                  <div style={{ color: '#4a4a4a', fontSize: '0.9em' }}>
+                    {cert.providerName} - ({cert.courseDuration})
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="skills">
+          <h3><b>Skills</b></h3>
+          <p className="skills-item">
+            <strong style={{ color: "rgb(75, 77, 77)" }}>Soft Skills: </strong>
+            {jsonData.skills.softSkills}
+          </p>
+          <p className="skills-item">
+            <strong style={{ color: "rgb(75, 77, 77)" }}>Tech Skills: </strong>
+            <span>{jsonData.skills.hardSkills}</span>
+          </p>
+        </div>
       </div>
-    </div>
     </StyledWrapper>
   );
 };
 
-export const T5Css=`
+export const T5Css = `
 @media print {
   * {
     -webkit-print-color-adjust: exact !important;
@@ -297,19 +297,19 @@ export const T5Css=`
  .resume-container {
    width: 210mm !important;
    max-width: 210mm !important;
-   height: 297mm !important;
-   max-height: 297mm !important;
+   height: auto !important;
+   min-height: 297mm !important;
    margin: 0 auto !important;
    background: #fff !important;
    border-radius: 0 !important;
    box-shadow: none !important;
    padding: 15mm !important;
-   page-break-after: avoid !important;
-   overflow: hidden !important;
+   page-break-inside: auto !important;
+   overflow: visible !important;
  }
  
  .header, .section {
-   page-break-inside: avoid !important;
+   page-break-inside: auto !important;
  }
 }
 

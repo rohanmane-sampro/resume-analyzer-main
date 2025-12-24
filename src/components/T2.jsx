@@ -224,12 +224,12 @@ ul{
 export const T2 = ({ jsonData }) => {
   const skills = (jsonData?.skills?.hardSkills || '').split(',').map(skill => skill.trim()).filter(skill => skill !== '');
   const eachColumn = Math.floor(skills.length / 4);
-  
+
   let column1 = eachColumn;
   let column2 = eachColumn;
   let column3 = eachColumn;
   let column4 = eachColumn;
-  
+
   if (skills.length % 4 === 1) {
     column1 += 1;
   } else if (skills.length % 4 === 2) {
@@ -243,123 +243,123 @@ export const T2 = ({ jsonData }) => {
 
   return (
     <StyledWrapper>
-    <div className="resume-container" id="capture-content">
-      <div className="header">
-        <h1 className="Name">{jsonData?.contactInfo?.fullName || 'Your Name'}</h1>
-        <h2 className="fontBold" style={{ fontWeight: 700 }}>{jsonData?.contactInfo?.jobTitle || 'Job Title'}</h2>
-        <p style={{ color: '#333' }}> 
-          <a href="#" className="NoneDecoration">{jsonData?.contactInfo?.Location || 'Location'}</a> | <a className="NoneDecoration" href={`mailto:${jsonData?.contactInfo?.emailAddress || ''}`} target="_blank" rel="noreferrer">{jsonData?.contactInfo?.phoneNumber || 'Phone'}</a> | <a className="NoneDecoration" href={`https://www.linkedin.com/in/${jsonData?.contactInfo?.linkedin || ''}`} target="_blank" rel="noreferrer">{jsonData?.contactInfo?.linkedin || 'LinkedIn'}</a>
-        </p>
-      </div>
+      <div className="resume-container" id="capture-content">
+        <div className="header">
+          <h1 className="Name">{jsonData?.contactInfo?.fullName || 'Your Name'}</h1>
+          <h2 className="fontBold" style={{ fontWeight: 700 }}>{jsonData?.contactInfo?.jobTitle || 'Job Title'}</h2>
+          <p style={{ color: '#333' }}>
+            <a href="#" className="NoneDecoration">{jsonData?.contactInfo?.Location || 'Location'}</a> | <a className="NoneDecoration" href={`mailto:${jsonData?.contactInfo?.emailAddress || ''}`} target="_blank" rel="noreferrer">{jsonData?.contactInfo?.phoneNumber || 'Phone'}</a> | <a className="NoneDecoration" href={`https://www.linkedin.com/in/${jsonData?.contactInfo?.linkedin || ''}`} target="_blank" rel="noreferrer">{jsonData?.contactInfo?.linkedin || 'LinkedIn'}</a>
+          </p>
+        </div>
 
-      <h3 className="Heading">Summary</h3>
-      <div className="summary">
-        <p>{jsonData?.Description?.UserDescription || 'Professional summary will be displayed here'}</p>
-        <br />
-      </div>
+        <h3 className="Heading">Summary</h3>
+        <div className="summary">
+          <p>{jsonData?.Description?.UserDescription || 'Professional summary will be displayed here'}</p>
+          <br />
+        </div>
 
-      <h3 className="Heading">Education</h3>
-      <div className="education">
-        {(jsonData?.education || []).map((ed, index) => (
-          <div className="education-item" key={index}>
-            <ul>
-              <li><h4 className="SpaceBetween">{ed?.degreeName || 'Degree'} <span style={{ marginRight: '6%' }}>( {ed?.graduationYear || 'Year'} )</span></h4></li>
-              <p>{ed?.institutionName || 'Institution'} || CGPA: {ed?.currentCGPA || 'N/A'}</p>
-            </ul>  
-          </div>
-        ))}
-        <br />
-      </div>
-
-      {jsonData?.workExperience && jsonData.workExperience.length > 0 && jsonData.workExperience[0]?.companyName && (
-      <>
-      <h3 className="Heading">Work Experience</h3>
-      <div className="experience">
-        {(jsonData?.workExperience || []).map((exp, index) => (
-          <div className="experience-item" key={index}>
-            <ul>
-              <li className="SpaceBetween">🔸{exp?.companyName || 'Company'} | {exp?.jobTitle || 'Position'} <span>( {exp?.WorkDuration || 'Duration'} )</span></li>
-              <p style={{ marginLeft: '22px' }} dangerouslySetInnerHTML={{ __html: parseMarkdown(exp?.keyAchievements || 'Key achievements and responsibilities') }} />
-            </ul>
-          </div>
-        ))}
-        <br />
-      </div>
-      </>
-      )}
-    
-      <h3 className="Heading">Projects</h3>
-      <div className="education">
-        {(jsonData?.projects || []).map((proj, index) => (
-          <div className="Projects-items" key={index}>
-            <ul>
-              <li><h4 className="fontlight">{proj?.projectTitle || 'Project Title'}</h4></li>
-              <p dangerouslySetInnerHTML={{ __html: parseMarkdown(proj?.toolsTechUsed || 'Technologies used') }} />
-            </ul>  
-          </div>
-        ))}
-        <br />
-      </div>
-
-      {jsonData?.certificates && jsonData.certificates.length > 0 && jsonData.certificates[0]?.certificateName && (
-      <>
-      <h3 className="Heading">Certifications</h3>
-      <div className="Certificats">
-        {(jsonData?.certificates || []).map((cer, index) => (
-          <div key={index} style={{ marginBottom: '15px' }}>
-            <div style={{ fontWeight: 'bold', color: '#1a1a1a' }}>
-              {cer?.certificateName || 'Certificate'}
+        <h3 className="Heading">Education</h3>
+        <div className="education">
+          {(jsonData?.education || []).map((ed, index) => (
+            <div className="education-item" key={index}>
+              <ul>
+                <li><h4 className="SpaceBetween">{ed?.degreeName || 'Degree'} <span style={{ marginRight: '6%' }}>( {ed?.graduationYear || 'Year'} )</span></h4></li>
+                <p>{ed?.institutionName || 'Institution'} || CGPA: {ed?.currentCGPA || 'N/A'}</p>
+              </ul>
             </div>
-            <div style={{ color: '#4a4a4a', fontSize: '0.9em' }}>
-              {cer?.providerName || 'Provider'} - ({cer?.courseDuration || 'Duration'})
-            </div>
-          </div>
-        ))}
-      </div>
-      </>
-      )}
+          ))}
+          <br />
+        </div>
 
-      <h3 className="Heading">Technical Skills</h3>
-      <div className="skills SpaceBetween">
-        <ul>
-          {skills.slice(0, column1).map((skill, index) => (
-            <React.Fragment key={index}>
-              <li>{skill}</li>
-              {/* {index < column1 - 1 && <br />} */}
-            </React.Fragment>
+        {jsonData?.workExperience && jsonData.workExperience.length > 0 && jsonData.workExperience[0]?.companyName && (
+          <>
+            <h3 className="Heading">Work Experience</h3>
+            <div className="experience">
+              {(jsonData?.workExperience || []).map((exp, index) => (
+                <div className="experience-item" key={index}>
+                  <ul>
+                    <li className="SpaceBetween">🔸{exp?.companyName || 'Company'} | {exp?.jobTitle || 'Position'} <span>( {exp?.WorkDuration || 'Duration'} )</span></li>
+                    <p style={{ marginLeft: '22px' }} dangerouslySetInnerHTML={{ __html: parseMarkdown(exp?.keyAchievements || 'Key achievements and responsibilities') }} />
+                  </ul>
+                </div>
+              ))}
+              <br />
+            </div>
+          </>
+        )}
+
+        <h3 className="Heading">Projects</h3>
+        <div className="education">
+          {(jsonData?.projects || []).map((proj, index) => (
+            <div className="Projects-items" key={index}>
+              <ul>
+                <li><h4 className="fontlight">{proj?.projectTitle || 'Project Title'}</h4></li>
+                <p dangerouslySetInnerHTML={{ __html: parseMarkdown(proj?.toolsTechUsed || 'Technologies used') }} />
+              </ul>
+            </div>
           ))}
-        </ul>
-        <ul>
-          {skills.slice(column1, column1 + column2).map((skill, index) => (
-            <React.Fragment key={index + column1}>
-              <li>{skill}</li>
-              {/* {index < column2 - 1 && <br />} */}
-            </React.Fragment>
-          ))}
-        </ul>
-        <ul>
-          {skills.slice(column1 + column2, column1 + column2 + column3).map((skill, index) => (
-            <React.Fragment key={index + column1 + column2}>
-              <li>{skill}</li>
-              {/* {index < column3 - 1 && <br />} */}
-            </React.Fragment>
-          ))}
-        </ul>
-        <ul>
-          {skills.slice(column1 + column2 + column3, column1 + column2 + column3 + column4).map((skill, index) => (
-            <React.Fragment key={index + column1 + column2 + column4}>
-              <li>{skill}</li>
-              {/* {index < column4 - 1 && <br />} */}
-            </React.Fragment>
-          ))}
-        </ul>
+          <br />
+        </div>
+
+        {jsonData?.certificates && jsonData.certificates.length > 0 && jsonData.certificates[0]?.certificateName && (
+          <>
+            <h3 className="Heading">Certifications</h3>
+            <div className="Certificats">
+              {(jsonData?.certificates || []).map((cer, index) => (
+                <div key={index} style={{ marginBottom: '15px' }}>
+                  <div style={{ fontWeight: 'bold', color: '#1a1a1a' }}>
+                    {cer?.certificateName || 'Certificate'}
+                  </div>
+                  <div style={{ color: '#4a4a4a', fontSize: '0.9em' }}>
+                    {cer?.providerName || 'Provider'} - ({cer?.courseDuration || 'Duration'})
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        <h3 className="Heading">Technical Skills</h3>
+        <div className="skills SpaceBetween">
+          <ul>
+            {skills.slice(0, column1).map((skill, index) => (
+              <React.Fragment key={index}>
+                <li>{skill}</li>
+                {/* {index < column1 - 1 && <br />} */}
+              </React.Fragment>
+            ))}
+          </ul>
+          <ul>
+            {skills.slice(column1, column1 + column2).map((skill, index) => (
+              <React.Fragment key={index + column1}>
+                <li>{skill}</li>
+                {/* {index < column2 - 1 && <br />} */}
+              </React.Fragment>
+            ))}
+          </ul>
+          <ul>
+            {skills.slice(column1 + column2, column1 + column2 + column3).map((skill, index) => (
+              <React.Fragment key={index + column1 + column2}>
+                <li>{skill}</li>
+                {/* {index < column3 - 1 && <br />} */}
+              </React.Fragment>
+            ))}
+          </ul>
+          <ul>
+            {skills.slice(column1 + column2 + column3, column1 + column2 + column3 + column4).map((skill, index) => (
+              <React.Fragment key={index + column1 + column2 + column4}>
+                <li>{skill}</li>
+                {/* {index < column4 - 1 && <br />} */}
+              </React.Fragment>
+            ))}
+          </ul>
+        </div>
       </div>
-    </div>
     </StyledWrapper>
   );
 };
 
-export const T2Css=`
+export const T2Css = `
       @media print {
         * {
           -webkit-print-color-adjust: exact !important;
@@ -386,20 +386,20 @@ export const T2Css=`
         .resume-container {
           width: 210mm !important;
           max-width: 210mm !important;
-          height: 297mm !important;
-          max-height: 297mm !important;
+          height: auto !important;
+          min-height: 297mm !important;
           margin: 0 auto !important;
           background: #E5E7EB !important;
           border: none !important;
           border-radius: 0 !important;
           box-shadow: none !important;
           padding: 15mm !important;
-          page-break-after: avoid !important;
-          overflow: hidden !important;
+          page-break-inside: auto !important;
+          overflow: visible !important;
         }
         
         .header, .section {
-          page-break-inside: avoid !important;
+          page-break-inside: auto !important;
         }
       }
       
