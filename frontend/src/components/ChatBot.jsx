@@ -57,7 +57,7 @@ const ChatBot = ({ isOpen, onToggle, currentSection = 'general', userData = {} }
         completionLevel: calculateFormCompletion()
       };
 
-      const response = await fetch('http://localhost:5001/chatbot', {
+      const response = await fetch('http://localhost:5000/chatbot', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -88,7 +88,7 @@ const ChatBot = ({ isOpen, onToggle, currentSection = 'general', userData = {} }
       const errorMessage = {
         id: Date.now() + 1,
         type: 'bot',
-        content: "Sorry, I'm having trouble connecting right now. Please make sure the AI backend is running on port 5001, or try again later.",
+        content: "Sorry, I'm having trouble connecting right now. Please make sure the backend is running on port 5000, or try again later.",
         timestamp: new Date()
       };
       setMessages(prev => [...prev, errorMessage]);
@@ -117,7 +117,7 @@ const ChatBot = ({ isOpen, onToggle, currentSection = 'general', userData = {} }
   // Clean markdown symbols from AI responses
   const cleanMarkdownText = (text) => {
     if (!text) return text;
-    
+
     return text
       // Remove bold markers
       .replace(/\*\*(.*?)\*\*/g, '$1')
@@ -147,7 +147,7 @@ const ChatBot = ({ isOpen, onToggle, currentSection = 'general', userData = {} }
 
   const quickQuestions = [
     "Give me a professional summary sample",
-    "What skills should I include?", 
+    "What skills should I include?",
     "How to describe achievements with numbers?",
     "ATS-friendly keywords for my role",
     "How to make my experience sound impressive?"
@@ -162,11 +162,10 @@ const ChatBot = ({ isOpen, onToggle, currentSection = 'general', userData = {} }
       {/* Chat Toggle Button */}
       <motion.button
         onClick={onToggle}
-        className={`fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-lg transition-all duration-200 ${
-          isOpen 
-            ? 'bg-red-500 hover:bg-red-600' 
+        className={`fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-lg transition-all duration-200 ${isOpen
+            ? 'bg-red-500 hover:bg-red-600'
             : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700'
-        }`}
+          }`}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         initial={{ opacity: 0, scale: 0 }}
@@ -220,11 +219,10 @@ const ChatBot = ({ isOpen, onToggle, currentSection = 'general', userData = {} }
                   className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`max-w-[80%] p-3 rounded-lg ${
-                      message.type === 'user'
+                    className={`max-w-[80%] p-3 rounded-lg ${message.type === 'user'
                         ? 'bg-blue-500 text-white'
                         : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-start space-x-2">
                       {message.type === 'bot' && (

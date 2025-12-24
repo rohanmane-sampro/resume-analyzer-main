@@ -3,18 +3,18 @@ import { ArrowLeft, Brain, Download, Sparkles, RefreshCw } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLocation, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import {T1} from './T1.jsx';
-import {T2} from './T2.jsx';
-import {T3} from './T3.jsx';
-import {T4} from './T4.jsx';
-import {T5} from './T5.jsx';
-import {T6} from './T6.jsx';
+import { T1 } from './T1.jsx';
+import { T2 } from './T2.jsx';
+import { T3 } from './T3.jsx';
+import { T4 } from './T4.jsx';
+import { T5 } from './T5.jsx';
+import { T6 } from './T6.jsx';
 
 const PreviewPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { resumeData, originalData } = location.state || {};
-  
+
   const [aiEnhancedData, setAiEnhancedData] = useState(null);
   const [isEnhancing, setIsEnhancing] = useState(false);
   const [selectedVersion, setSelectedVersion] = useState('original'); // 'original' or 'enhanced'
@@ -28,7 +28,7 @@ const PreviewPage = () => {
   const enhanceWithAI = async () => {
     setIsEnhancing(true);
     try {
-      const response = await fetch('http://localhost:5001/complete-resume', {
+      const response = await fetch('http://localhost:5000/complete-resume', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -41,12 +41,12 @@ const PreviewPage = () => {
 
       if (response.ok) {
         const data = await response.json();
-        
+
         // Check if the response contains an error or the original data unchanged
         if (data.error || (data.enhancedResume && JSON.stringify(data.enhancedResume) === JSON.stringify(resumeData))) {
           throw new Error(data.error || 'No enhancements made');
         }
-        
+
         const cleanedData = cleanupMarkdownInNonTargetSections(data.enhancedResume);
         setAiEnhancedData(cleanedData);
         setSelectedVersion('enhanced');
@@ -54,7 +54,7 @@ const PreviewPage = () => {
       } else {
         const errorData = await response.json();
         const errorMessage = errorData.error || errorData.message || 'Enhancement failed';
-        
+
         // Check for quota error
         if (errorMessage.includes('quota') || errorMessage.includes('rate limit') || errorMessage.includes('429')) {
           toast.error('API quota exceeded. Using built-in enhancements instead.', { duration: 4000 });
@@ -65,13 +65,13 @@ const PreviewPage = () => {
       }
     } catch (error) {
       console.error('AI enhancement error:', error);
-      
+
       // Show appropriate message based on error type
       const errorMsg = error.message || '';
       if (errorMsg.includes('quota') || errorMsg.includes('rate limit') || errorMsg.includes('429')) {
         toast.info('API limit reached. Using built-in AI enhancements...', { duration: 3000 });
       }
-      
+
       // Fallback enhancement
       const fallbackEnhanced = createFallbackEnhancement(resumeData);
       setAiEnhancedData(fallbackEnhanced);
@@ -84,12 +84,12 @@ const PreviewPage = () => {
   const cleanupMarkdownInNonTargetSections = (data) => {
     // Remove markdown (**text**) from sections where we don't parse it
     const cleaned = JSON.parse(JSON.stringify(data));
-    
+
     // Clean description/profile summary - no markdown
     if (cleaned.Description?.UserDescription) {
       cleaned.Description.UserDescription = cleaned.Description.UserDescription.replace(/\*\*/g, '');
     }
-    
+
     // Clean skills - no markdown
     if (cleaned.skills?.hardSkills) {
       cleaned.skills.hardSkills = cleaned.skills.hardSkills.replace(/\*\*/g, '');
@@ -97,7 +97,7 @@ const PreviewPage = () => {
     if (cleaned.skills?.softSkills) {
       cleaned.skills.softSkills = cleaned.skills.softSkills.replace(/\*\*/g, '');
     }
-    
+
     // Clean contact info - no markdown
     if (cleaned.contactInfo) {
       Object.keys(cleaned.contactInfo).forEach(key => {
@@ -106,7 +106,7 @@ const PreviewPage = () => {
         }
       });
     }
-    
+
     // Clean education - no markdown
     if (cleaned.education && Array.isArray(cleaned.education)) {
       cleaned.education.forEach(edu => {
@@ -117,10 +117,10 @@ const PreviewPage = () => {
         });
       });
     }
-    
+
     // Keep markdown in: projects (toolsTechUsed), workExperience (keyAchievements)
     // These sections will parse the markdown to bold text
-    
+
     return cleaned;
   };
 
@@ -135,11 +135,11 @@ const PreviewPage = () => {
     // ALWAYS enhance skills to show visible improvement - NO MARKDOWN FORMATTING
     const jobTitle = enhanced.contactInfo.jobTitle.toLowerCase();
     const additionalSkills = getSkillSuggestions(jobTitle);
-    
+
     if (enhanced.skills.hardSkills) {
       // Add additional skills if not already present
       const existingSkills = enhanced.skills.hardSkills.toLowerCase();
-      const skillsToAdd = additionalSkills.split(', ').filter(skill => 
+      const skillsToAdd = additionalSkills.split(', ').filter(skill =>
         !existingSkills.includes(skill.toLowerCase())
       );
       if (skillsToAdd.length > 0) {
@@ -152,7 +152,7 @@ const PreviewPage = () => {
     if (enhanced.skills.softSkills) {
       const softSkillsToAdd = ['Strategic Thinking', 'Analytical Skills', 'Adaptability'];
       const existingSoftSkills = enhanced.skills.softSkills.toLowerCase();
-      const newSoftSkills = softSkillsToAdd.filter(skill => 
+      const newSoftSkills = softSkillsToAdd.filter(skill =>
         !existingSoftSkills.includes(skill.toLowerCase())
       );
       if (newSoftSkills.length > 0) {
@@ -260,7 +260,7 @@ const PreviewPage = () => {
     try {
       const TemplateComponent = getTemplateComponent();
       const currentData = getCurrentData();
-      
+
       // Validate essential data exists
       if (!currentData || Object.keys(currentData).length === 0) {
         return (
@@ -295,11 +295,11 @@ const PreviewPage = () => {
   const handleBackToEdit = () => {
     // Navigate back to edit page with current resume data
     const dataToPass = selectedVersion === 'enhanced' && aiEnhancedData ? aiEnhancedData : resumeData;
-    navigate('/GetInfo', { 
-      state: { 
+    navigate('/GetInfo', {
+      state: {
         jsonData: dataToPass,
         fromPreview: true
-      } 
+      }
     });
   };
 
@@ -422,21 +422,19 @@ const PreviewPage = () => {
               <div className="flex bg-gray-800 rounded-lg p-1">
                 <button
                   onClick={() => setSelectedVersion('original')}
-                  className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                    selectedVersion === 'original' 
-                      ? 'bg-gray-600 text-white' 
+                  className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${selectedVersion === 'original'
+                      ? 'bg-gray-600 text-white'
                       : 'text-gray-400 hover:text-white'
-                  }`}
+                    }`}
                 >
                   Original
                 </button>
                 <button
                   onClick={() => setSelectedVersion('enhanced')}
-                  className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                    selectedVersion === 'enhanced' 
-                      ? 'bg-gray-600 text-white' 
+                  className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${selectedVersion === 'enhanced'
+                      ? 'bg-gray-600 text-white'
                       : 'text-gray-400 hover:text-white'
-                  }`}
+                    }`}
                 >
                   <Sparkles className="w-4 h-4 mr-1 inline" />
                   AI Enhanced
@@ -463,12 +461,11 @@ const PreviewPage = () => {
         <div className="max-w-7xl mx-auto">
           {/* Status Banner */}
           {aiEnhancedData && (
-            <div className={`mb-6 p-4 rounded-lg text-center ${
-              selectedVersion === 'enhanced' 
+            <div className={`mb-6 p-4 rounded-lg text-center ${selectedVersion === 'enhanced'
                 ? 'bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-700 text-purple-200'
                 : 'bg-gray-800/50 border border-gray-700 text-gray-300'
-            }`}>
-              {selectedVersion === 'enhanced' 
+              }`}>
+              {selectedVersion === 'enhanced'
                 ? '✨ Viewing AI-Enhanced Resume with improved content, keywords, and professional formatting'
                 : '📝 Viewing Original Resume as you created it'
               }
@@ -492,7 +489,7 @@ const PreviewPage = () => {
 
           {/* AI Enhancement Info */}
           {aiEnhancedData && selectedVersion === 'enhanced' && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="mt-8 bg-gradient-to-r from-blue-900/20 to-purple-900/20 rounded-lg p-6 border border-blue-800"

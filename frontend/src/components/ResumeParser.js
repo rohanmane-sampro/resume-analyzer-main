@@ -330,7 +330,7 @@ export async function parseResume(file) {
     // Extract structured data using AI (Try first)
     try {
       console.log('Attempting AI parsing...');
-      const response = await fetch('http://localhost:5001/parse-resume-with-ai', {
+      const response = await fetch('http://localhost:5000/parse-resume-with-ai', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

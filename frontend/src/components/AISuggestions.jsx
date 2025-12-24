@@ -12,9 +12,9 @@ const AISuggestions = ({ jobTitle = '', userData = {}, onApplySuggestion }) => {
   const generateSuggestions = async () => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
-      const response = await fetch('http://localhost:5001/generate-profile-suggestions', {
+      const response = await fetch('http://localhost:5000/generate-profile-suggestions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -40,7 +40,7 @@ const AISuggestions = ({ jobTitle = '', userData = {}, onApplySuggestion }) => {
             }
             return String(suggestion);
           }).filter(s => s && s.trim() !== '');
-          
+
           if (processedSuggestions.length > 0) {
             setSuggestions(processedSuggestions);
             setShowSuggestions(true);
@@ -56,7 +56,7 @@ const AISuggestions = ({ jobTitle = '', userData = {}, onApplySuggestion }) => {
       }
     } catch (error) {
       console.error('AI suggestions error:', error);
-      
+
       // Always use fallback suggestions on error
       const fallbackSuggestions = generateFallbackSuggestions();
       setSuggestions(fallbackSuggestions);
@@ -69,16 +69,16 @@ const AISuggestions = ({ jobTitle = '', userData = {}, onApplySuggestion }) => {
 
   const generateFallbackSuggestions = () => {
     const baseTitle = (jobTitle && jobTitle.trim() !== '') ? jobTitle : 'Professional';
-    
+
     return [
       `Results-driven ${baseTitle} with proven expertise in delivering high-quality solutions. Passionate about leveraging cutting-edge technologies to drive innovation and exceed performance targets.`,
-      
+
       `Experienced ${baseTitle} with strong analytical and problem-solving abilities. Demonstrated track record of successful project delivery and team collaboration in fast-paced environments.`,
-      
+
       `Detail-oriented ${baseTitle} committed to excellence and continuous improvement. Skilled in stakeholder communication and process optimization with focus on measurable results.`,
-      
+
       `Dynamic ${baseTitle} with entrepreneurial mindset and strong leadership qualities. Proven ability to adapt to new challenges and drive organizational growth through strategic thinking.`,
-      
+
       `Innovative ${baseTitle} passionate about creating impactful solutions that drive business value. Strong communicator with experience in cross-functional collaboration and project management.`
     ];
   };
@@ -150,41 +150,41 @@ const AISuggestions = ({ jobTitle = '', userData = {}, onApplySuggestion }) => {
           >
             {suggestions.map((suggestion, index) => {
               // Ensure suggestion is a string before rendering
-              const suggestionText = typeof suggestion === 'string' 
-                ? suggestion 
+              const suggestionText = typeof suggestion === 'string'
+                ? suggestion
                 : (suggestion?.text || suggestion?.title || suggestion?.description || String(suggestion));
-              
+
               return (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-white dark:bg-gray-800 p-3 rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm hover:shadow-md transition-shadow"
-              >
-                <p className="text-sm text-gray-700 dark:text-gray-300 mb-3 leading-relaxed">
-                  {suggestionText}
-                </p>
-                <div className="flex gap-2">
-                  <motion.button
-                    onClick={() => applySuggestion(suggestionText)}
-                    className="flex-1 bg-green-600 hover:bg-green-700 text-white py-1.5 px-3 rounded text-xs font-medium transition-colors"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <CheckCircle className="w-3 h-3 inline mr-1" />
-                    Use This
-                  </motion.button>
-                  <motion.button
-                    onClick={() => copySuggestion(suggestionText)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white py-1.5 px-3 rounded text-xs font-medium transition-colors"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <Copy className="w-3 h-3" />
-                  </motion.button>
-                </div>
-              </motion.div>
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="bg-white dark:bg-gray-800 p-3 rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm hover:shadow-md transition-shadow"
+                >
+                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-3 leading-relaxed">
+                    {suggestionText}
+                  </p>
+                  <div className="flex gap-2">
+                    <motion.button
+                      onClick={() => applySuggestion(suggestionText)}
+                      className="flex-1 bg-green-600 hover:bg-green-700 text-white py-1.5 px-3 rounded text-xs font-medium transition-colors"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <CheckCircle className="w-3 h-3 inline mr-1" />
+                      Use This
+                    </motion.button>
+                    <motion.button
+                      onClick={() => copySuggestion(suggestionText)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white py-1.5 px-3 rounded text-xs font-medium transition-colors"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <Copy className="w-3 h-3" />
+                    </motion.button>
+                  </div>
+                </motion.div>
               );
             })}
           </motion.div>

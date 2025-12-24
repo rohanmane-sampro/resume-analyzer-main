@@ -11,7 +11,7 @@ const AIAnalysis = ({ resumeData, jobTitle }) => {
   const analyzeResume = async () => {
     setIsAnalyzing(true);
     try {
-      const response = await fetch('http://localhost:5001/suggest-improvements', {
+      const response = await fetch('http://localhost:5000/suggest-improvements', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -22,7 +22,7 @@ const AIAnalysis = ({ resumeData, jobTitle }) => {
       });
 
       const data = await response.json();
-      
+
       if (response.ok) {
         setAnalysis(data);
         setShowDetails(true);
