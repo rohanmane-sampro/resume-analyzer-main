@@ -9,10 +9,7 @@ def init_ai_client(api_key):
     if api_key:
         try:
             from groq import Groq
-            # Initialize without proxies to avoid 'proxies' kwarg error
-            groq_client = Groq(
-                api_key=api_key,
-            )
+            groq_client = Groq(api_key=api_key)
             print("SUCCESS: Groq AI configured (Primary)")
         except ImportError:
             print("WARNING: 'groq' package not installed. Run 'pip install groq'")
@@ -49,17 +46,18 @@ def safe_ai_call(prompt, max_retries=3):
                 # print(f"Attempt {attempt + 1}: Making Groq AI call...")
                 completion = groq_client.chat.completions.create(
                     messages=[{"role": "user", "content": prompt}],
-                    model="llama-3.3-70b-versatile",
+                    model="llama3-70b-8192",
                     temperature=0.7,
                     max_tokens=4096,
                 )
                 response = completion.choices[0].message.content
                 if response: return response
             except Exception as e:
-                print(f"Groq call failed: {str(e)}")
+                print(f"Groq call failed (Att {attempt+1}): {str(e)}")
     
     # Fallback to Gemini
     if gemini_configured:
+        print("Falling back to Gemini...")
         try:
             import google.generativeai as genai
             model = genai.GenerativeModel('gemini-1.5-flash')
@@ -68,6 +66,6 @@ def safe_ai_call(prompt, max_retries=3):
                 return response.text
         except Exception as e:
             print(f"Gemini call failed: {str(e)}")
-            return f"AI Service Error: {str(e)}"
+            return f"AI Service Error: Gemini failed: {str(e)}"
 
     return "AI Error: No AI providers configured (Groq or Gemini). Check .env."

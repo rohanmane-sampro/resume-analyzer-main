@@ -12,6 +12,7 @@ class Config:
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
     CORS_ORIGINS = [
         "http://localhost:5173",
+        "http://127.0.0.1:5173",
         "https://prashantparshuramkar.host20.uk",
         "https://nishanttech.host20.uk"
     ]

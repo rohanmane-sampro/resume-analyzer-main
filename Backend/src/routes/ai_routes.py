@@ -22,10 +22,14 @@ def enhance_content():
 def chatbot():
     try:
         data = request.get_json()
+        print(f"CHATBOT REQUEST: {data}")
         user_message = data.get('message')
-        if not user_message: return jsonify({'error': 'No message provided'}), 400
+        if not user_message: 
+            print("CHATBOT ERROR: No message provided")
+            return jsonify({'error': 'No message provided'}), 400
         prompt = f"User asks: {user_message}. Answer as Resume Assistant."
         response = safe_ai_call(prompt)
+        print(f"CHATBOT RESPONSE: {response[:50]}...")
         return jsonify({'response': response, 'section': data.get('section', 'general')})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
