@@ -15,7 +15,7 @@ if Config.GROQ_API_KEY:
 else:
     print("ERROR: GROQ_API_KEY not found in environment variables!")
 
-def safe_ai_call(prompt, max_retries=3):
+def safe_ai_call(prompt, max_retries=3, max_tokens=4096):
     """Safely call AI using ONLY Groq"""
     global groq_client
     
@@ -24,12 +24,12 @@ def safe_ai_call(prompt, max_retries=3):
     
     for attempt in range(max_retries):
         try:
-            print(f"Attempt {attempt + 1}: Making Groq AI call...")
+            print(f"Attempt {attempt + 1}: Making Groq AI call (max_tokens={max_tokens})...")
             completion = groq_client.chat.completions.create(
                 messages=[{"role": "user", "content": prompt}],
                 model="llama-3.3-70b-versatile", # Supported model
                 temperature=0.7,
-                max_tokens=4096,
+                max_tokens=max_tokens,
             )
             response = completion.choices[0].message.content
             if response:
@@ -508,82 +508,130 @@ class AIService:
             
         print(f"Parsing resume text with AI (length: {len(resume_text)})")
         
+        # Limit text but keep more content for better parsing
+        text_to_parse = resume_text[:30000] if len(resume_text) > 30000 else resume_text
+        
         prompt = f"""
-        You are an expert resume parser. Extract structured data from this resume text and return it as JSON.
+        You are an expert resume parser with deep understanding of various resume formats. 
+        Extract ALL available structured data from this resume text and return it as valid JSON.
+        
+        IMPORTANT INSTRUCTIONS:
+        - Extract EVERY piece of information you can find
+        - For work experience, include ALL jobs listed (not just the first one)
+        - For education, include ALL degrees/institutions
+        - For projects, extract ALL projects mentioned
+        - For skills, separate technical/hard skills from soft skills
+        - If a section has multiple entries, include them all in the array
+        - Be thorough and don't skip any content
         
         RESUME TEXT:
-        {resume_text[:20000]}  # Limit text length just in case
+        {text_to_parse}
         
-        Extract the following fields in this EXACT structure:
+        Extract the following fields in this EXACT JSON structure:
         {{
             "contactInfo": {{
-                "fullName": "",
-                "emailAddress": "",
-                "phoneNumber": "",
-                "linkedin": "",
-                "portfolio": "",
-                "jobTitle": "Professional",  # infer from experience or header
-                "Location": "",
-                "Languages": ""
+                "fullName": "",           # Extract full name from header
+                "emailAddress": "",       # Find email address
+                "phoneNumber": "",        # Find phone number
+                "linkedin": "",           # LinkedIn profile URL if present
+                "portfolio": "",          # Portfolio/GitHub/website URL
+                "jobTitle": "",           # Current job title or desired role
+                "Location": "",           # City, State or location
+                "Languages": ""           # Languages known (comma separated)
             }},
             "skills": {{
-                "hardSkills": "", # comma separated string
-                "softSkills": ""  # comma separated string
+                "hardSkills": "",         # Technical skills (comma separated: Python, Java, React, etc.)
+                "softSkills": ""          # Soft skills (comma separated: Leadership, Communication, etc.)
             }},
-            "workExperience": [
+            "workExperience": [          # Array of ALL work experiences
                 {{
-                    "jobTitle": "",
-                    "companyName": "",
-                    "WorkDuration": "", # e.g. "Jan 2020 - Present"
-                    "keyAchievements": "" # summary/achievements text
+                    "jobTitle": "",       # Job position/title
+                    "companyName": "",    # Company name
+                    "WorkDuration": "",   # e.g. "Jan 2020 - Present" or "2020-2022"
+                    "keyAchievements": "" # Responsibilities and achievements (can be multi-line)
                 }}
             ],
-            "projects": [
+            "projects": [                # Array of ALL projects
                 {{
-                    "projectTitle": "",
-                    "toolsTechUsed": "" # comma separated
+                    "projectTitle": "",   # Project name
+                    "toolsTechUsed": ""   # Technologies used (comma separated)
                 }}
             ],
-            "education": [
+            "education": [               # Array of ALL education entries
                 {{
-                    "institutionName": "",
-                    "degreeName": "",
-                    "graduationYear": "",
-                    "currentCGPA": ""
+                    "institutionName": "", # University/College name
+                    "degreeName": "",      # Degree type and field (e.g., "B.Tech in Computer Science")
+                    "graduationYear": "",  # Year of graduation
+                    "currentCGPA": ""      # GPA/CGPA/Percentage if mentioned
                 }}
             ],
-            "certificates": [
+            "certificates": [            # Array of ALL certifications
                 {{
-                    "certificateName": "",
-                    "providerName": "",
-                    "courseDuration": ""
+                    "certificateName": "", # Certificate name
+                    "providerName": "",    # Issuing organization
+                    "courseDuration": ""   # Duration or year obtained
                 }}
             ],
             "Description": {{
-                "UserDescription": "" # Brief professional summary/about me
+                "UserDescription": ""     # Professional summary/objective from resume
             }}
         }}
         
-        Rules:
-        1. If information is missing, leave as empty string.
-        2. Combine multiple skills sections into hard/soft skills strings.
-        3. Infer the jobTitle from the most recent role or the resume header.
-        4. Return ONLY valid JSON.
+        CRITICAL RULES:
+        1. Extract ALL entries for arrays (workExperience, projects, education, certificates)
+        2. If a section is not present, use empty string for strings or empty array [] for arrays
+        3. Combine all skills into comma-separated strings
+        4. For workExperience keyAchievements, include all bullet points/responsibilities
+        5. Return ONLY valid JSON - no explanations, no markdown, just the JSON object
+        6. Ensure all field names match exactly as shown above
         """
         
-        response = safe_ai_call(prompt)
-        
-        # Clean up code blocks if present
-        json_text = response.strip()
-        if json_text.startswith('```json'):
-            json_text = json_text[7:]
-        if json_text.endswith('```'):
-            json_text = json_text[:-3]
-        json_text = json_text.strip()
+        try:
+            response = safe_ai_call(prompt, max_retries=3, max_tokens=8192)
             
-        parsed_data = json.loads(json_text)
-        
-        return {
-            'success': True,
-            'data': parsed_data
-        }
+            if not response or "AI Error" in response or "AI Service Error" in response:
+                raise Exception(f"AI service returned error: {response}")
+            
+            # Clean up code blocks if present
+            json_text = response.strip()
+            
+            # Remove markdown code blocks
+            if json_text.startswith('```json'):
+                json_text = json_text[7:]
+            elif json_text.startswith('```'):
+                json_text = json_text[3:]
+                
+            if json_text.endswith('```'):
+                json_text = json_text[:-3]
+                
+            json_text = json_text.strip()
+            
+            # Parse JSON
+            parsed_data = json.loads(json_text)
+            
+            # Validate structure
+            required_keys = ['contactInfo', 'skills', 'workExperience', 'projects', 'education', 'certificates', 'Description']
+            for key in required_keys:
+                if key not in parsed_data:
+                    print(f"WARNING: Missing key '{key}' in parsed data, adding empty value")
+                    if key in ['workExperience', 'projects', 'education', 'certificates']:
+                        parsed_data[key] = []
+                    elif key == 'Description':
+                        parsed_data[key] = {'UserDescription': ''}
+                    else:
+                        parsed_data[key] = {}
+            
+            print(f"Successfully parsed resume with AI: {len(parsed_data.get('workExperience', []))} jobs, {len(parsed_data.get('education', []))} education entries")
+            
+            return {
+                'success': True,
+                'data': parsed_data
+            }
+            
+        except json.JSONDecodeError as e:
+            print(f"JSON parsing error: {e}")
+            print(f"Response was: {response[:500]}...")
+            raise Exception(f"Failed to parse AI response as JSON: {str(e)}")
+        except Exception as e:
+            print(f"Error in AI parsing: {e}")
+            raise
