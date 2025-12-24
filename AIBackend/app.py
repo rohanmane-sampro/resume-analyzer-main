@@ -37,30 +37,51 @@ if GROQ_API_KEY:
 else:
     print("ERROR: GROQ_API_KEY not found in environment variables!")
 
-def safe_ai_call(prompt, max_retries=3):
-    """Safely call AI using ONLY Groq"""
+def safe_ai_call(prompt, max_retries=3, json_mode=False):
+    """Safely call AI using Groq with model fallback"""
     global groq_client
     
     if not groq_client:
         return "AI Error: Groq is not configured. Please check your .env file."
     
-    for attempt in range(max_retries):
+    # List of models to try in order of preference
+    models = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768"]
+    
+    last_error = None
+    
+    for model in models:
         try:
-            print(f"Attempt {attempt + 1}: Making Groq AI call...")
-            completion = groq_client.chat.completions.create(
-                messages=[{"role": "user", "content": prompt}],
-                model="llama-3.3-70b-versatile", # Supported model
-                temperature=0.7,
-                max_tokens=4096,
-            )
+            print(f"Attempting AI call with model: {model} (JSON mode: {json_mode})...")
+            
+            kwargs = {
+                "messages": [{"role": "user", "content": prompt}],
+                "model": model,
+                "temperature": 0.5 if json_mode else 0.7, # Lower temp for JSON
+                "max_tokens": 4096,
+            }
+            
+            if json_mode:
+                kwargs["response_format"] = {"type": "json_object"}
+            
+            completion = groq_client.chat.completions.create(**kwargs)
             response = completion.choices[0].message.content
+            
             if response:
-                print(f"SUCCESS: Groq response received (length: {len(response)})")
+                print(f"SUCCESS: Response received from {model} (length: {len(response)})")
                 return response
+                
         except Exception as e:
-            print(f"Groq call failed (Attempt {attempt+1}): {str(e)}")
-            if attempt == max_retries - 1:
-                return f"AI Service Error: {str(e)}"
+            error_msg = str(e)
+            print(f"Model {model} failed: {error_msg}")
+            last_error = error_msg
+            
+            if "429" in error_msg or "rate limit" in error_msg.lower():
+                print(f"Rate limit hit for {model}. Switching to next model...")
+                continue
+            
+            continue
+            
+    return f"AI Service Error: All models failed. Last error: {last_error}"
     
 @app.route('/enhance-content', methods=['POST'])
 def enhance_content():
@@ -292,7 +313,7 @@ def suggest_improvements():
         }}
         """
         
-        response = safe_ai_call(prompt)
+        response = safe_ai_call(prompt, json_mode=True)
         
         try:
             # Try to parse as JSON, fallback to text if failed
@@ -341,7 +362,7 @@ def generate_keywords():
         }}
         """
         
-        response = safe_ai_call(prompt)
+        response = safe_ai_call(prompt, json_mode=True)
         
         try:
             keywords = json.loads(response)
@@ -368,13 +389,13 @@ def test_ai():
         return jsonify({
             'status': 'success',
             'response': result,
-            'api_key_configured': bool(GEMINI_API_KEY)
+            'api_key_configured': bool(GROQ_API_KEY)
         })
     except Exception as e:
         return jsonify({
             'status': 'error',
             'error': str(e),
-            'api_key_configured': bool(GEMINI_API_KEY)
+            'api_key_configured': bool(GROQ_API_KEY)
         }), 500
 
 @app.route('/complete-resume', methods=['POST'])
@@ -566,7 +587,7 @@ def generate_profile_suggestions():
         }}
         """
         
-        response = safe_ai_call(prompt)
+        response = safe_ai_call(prompt, json_mode=True)
         
         try:
             suggestions = json.loads(response)
@@ -669,7 +690,7 @@ def parse_resume_with_ai():
         4. Return ONLY valid JSON.
         """
         
-        response = safe_ai_call(prompt)
+        response = safe_ai_call(prompt, json_mode=True)
         
         # Clean up code blocks if present
         json_text = response.strip()
@@ -695,7 +716,7 @@ def health_check():
     """Health check endpoint"""
     return jsonify({
         'status': 'healthy',
-        'ai_configured': bool(GEMINI_API_KEY),
+        'ai_configured': bool(GROQ_API_KEY),
         'service': 'Resume AI Assistant'
     })
 
