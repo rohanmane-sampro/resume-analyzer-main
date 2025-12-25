@@ -3,12 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import toast from "react-hot-toast";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { html as html_beautify } from 'js-beautify';
-import { T1, T1Css } from './T1.jsx';
-import { T2, T2Css } from './T2.jsx';
-import { T3, T3Css } from './T3.jsx';
-import { T4, T4Css } from './T4.jsx';
-import { T5, T5Css } from './T5.jsx';
-import { T6, T6Css } from './T6.jsx';
+import { T1, T1Css, T2, T2Css, T3, T3Css, T4, T4Css, T5, T5Css, T6, T6Css } from './Templates';
 import DownloadModal from './DownloadModal.jsx';
 import { ENDPOINTS } from '../apiConfig';
 

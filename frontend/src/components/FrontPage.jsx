@@ -105,8 +105,8 @@ const FrontPage = ({ views }) => {
           {/* <button className="sampro-nav-link" onClick={handleFeatures}>
             Features
           </button> */}
-          <button className="sampro-nav-link" onClick={handleViewTemplates}>
-            Templates
+          <button className="sampro-nav-link" onClick={handleFeatures}>
+            Features
           </button>
           <button className="sampro-nav-link" onClick={handleAboutUs}>
             About
