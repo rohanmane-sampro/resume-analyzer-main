@@ -99,12 +99,12 @@ const FrontPage = ({ views }) => {
           <button className="sampro-nav-link" onClick={handleContinue}>
             Create Resume
           </button>
-          <button className="sampro-nav-link" onClick={handleContinue}>
+          <button className="sampro-nav-link" onClick={handleAnalyze}>
             Resume Analysis
           </button>
-          <button className="sampro-nav-link" onClick={handleFeatures}>
+          {/* <button className="sampro-nav-link" onClick={handleFeatures}>
             Features
-          </button>
+          </button> */}
           <button className="sampro-nav-link" onClick={handleViewTemplates}>
             Templates
           </button>
