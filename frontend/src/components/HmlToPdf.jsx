@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useLocation } from 'react-router-dom';
+import { ENDPOINTS } from '../apiConfig';
 
 const HtmlToPdfConverter = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -46,7 +47,7 @@ const HtmlToPdfConverter = () => {
       const htmlContent = event.target.result;
 
       try {
-        const response = await fetch("https://html2pdf-backend.onrender.com/generate-pdf", {
+        const response = await fetch(ENDPOINTS.GENERATE_PDF, {
 
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -122,7 +123,7 @@ const HtmlToPdfConverter = () => {
                 "Generate PDF"
               )}
             </button>
-            
+
             {!preloadedFile && (
               <button
                 onClick={() => {

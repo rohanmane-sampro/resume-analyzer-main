@@ -123,6 +123,25 @@ def test_ai():
             'api_key_configured': bool(Config.GROQ_API_KEY)
         }), 500
 
+@ai_bp.route('/analyze-resume', methods=['POST'])
+def analyze_resume():
+    """Analyze resume based on job role"""
+    try:
+        data = request.get_json()
+        print(f"DEBUG: Received analysis request for role: {data.get('jobRole')}")
+        resume_text = data.get('resumeText', '')
+        job_role = data.get('jobRole', '')
+        
+        if not resume_text:
+            return jsonify({'error': 'Resume text is required'}), 400
+        if not job_role:
+            return jsonify({'error': 'Job role is required'}), 400
+            
+        result = AIService.analyze_resume(resume_text, job_role)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @ai_bp.route('/health', methods=['GET'])
 def health_check():
     """Health check endpoint"""

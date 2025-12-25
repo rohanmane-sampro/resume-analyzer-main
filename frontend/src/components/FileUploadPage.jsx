@@ -29,7 +29,7 @@ const FileUploadPage = () => {
   const parsingSteps = [
     { id: 1, label: "Parsing Resume", duration: 1500 },
     { id: 2, label: "Analyzing Content", duration: 1500 },
-    { id: 3, label: "Calculating ATS Score", duration: 1000 },
+    { id: 3, label: "Optimizing Keywords", duration: 1000 },
     { id: 4, label: "Generating Insights", duration: 1000 }
   ];
 
