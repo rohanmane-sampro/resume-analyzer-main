@@ -83,6 +83,7 @@ const App = () => {
         <Route path="/Preview" element={<PreviewPage />} />
         <Route path="/Result" element={<Result />} />
         <Route path="/ViewTemplates" element={<ViewTemplates />} />
+        <Route path="/Features" element={<Features />} />
         <Route path="/ResumeAnalyze" element={<ResumeAnalyze />} />
       </Routes>
     </div>

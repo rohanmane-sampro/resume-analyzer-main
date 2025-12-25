@@ -43,12 +43,12 @@ const Features = () => {
             description: "See your resume update in real-time as you enter information. Complete transparency and control over your content.",
             color: "from-orange-500 to-red-500"
         },
-        {
-            icon: <Bot className="w-8 h-8" />,
-            title: "AI Assistant Bot",
-            description: "Get smart, real-time suggestions to improve your content. The assistant helps you craft compelling descriptions.",
-            color: "from-indigo-500 to-purple-500"
-        },
+        // {
+        //     icon: <Bot className="w-8 h-8" />,
+        //     title: "AI Assistant Bot",
+        //     description: "Get smart, real-time suggestions to improve your content. The assistant helps you craft compelling descriptions.",
+        //     color: "from-indigo-500 to-purple-500"
+        // },
         {
             icon: <TrendingUp className="w-8 h-8" />,
             title: "ATS Optimization",

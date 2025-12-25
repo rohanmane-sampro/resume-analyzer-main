@@ -38,9 +38,6 @@ const Navbar = () => {
                     <button className="sampro-nav-link" onClick={() => navigate('/Features')}>
                         Features
                     </button>
-                    <button className="sampro-nav-link" onClick={() => navigate('/ViewTemplates')}>
-                        Templates
-                    </button>
                     <button className="sampro-nav-link" onClick={() => navigate('/AboutUs')}>
                         About
                     </button>

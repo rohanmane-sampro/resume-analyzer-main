@@ -7,12 +7,7 @@ import toast from "react-hot-toast";
 import Suggestions from "./Suggestions";
 import { useLocation } from 'react-router-dom';
 import JsonFiles from "./JsonFiles.jsx"
-import { T1 } from './T1.jsx';
-import { T2 } from './T2.jsx';
-import { T3 } from './T3.jsx';
-import { T4 } from './T4.jsx';
-import { T5 } from './T5.jsx';
-import { T6 } from './T6.jsx';
+import { T1, T2, T3, T4, T5, T6 } from './Templates';
 import ChatBot from './ChatBot.jsx';
 import AIAnalysis from './AIAnalysis.jsx';
 import AISuggestions from './AISuggestions.jsx';

@@ -3,12 +3,7 @@ import { Download, FileText, Code, Database, X, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { html as html_beautify } from 'js-beautify';
-import { T1Css } from './T1.jsx';
-import { T2Css } from './T2.jsx';
-import { T3Css } from './T3.jsx';
-import { T4Css } from './T4.jsx';
-import { T5Css } from './T5.jsx';
-import { T6Css } from './T6.jsx';
+import { T1Css, T2Css, T3Css, T4Css, T5Css, T6Css } from './Templates';
 
 const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
   const [downloading, setDownloading] = useState({});
@@ -43,7 +38,7 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
 
   const handleDownload = async (format) => {
     setDownloading(prev => ({ ...prev, [format.id]: true }));
-    
+
     try {
       switch (format.id) {
         case 'pdf':
@@ -56,7 +51,7 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
           await downloadJSON();
           break;
       }
-      
+
       setDownloadedFormats(prev => ({ ...prev, [format.id]: true }));
       toast.success(`${format.name} downloaded successfully!`);
     } catch (error) {
@@ -71,13 +66,13 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
     try {
       // Use the actual template HTML as shown in preview
       const htmlContent = generateActualTemplateHTML();
-      
+
       // Use browser's print-to-PDF functionality (Best for preserving styling)
       toast('Opening print dialog. Select "Save as PDF" or "Microsoft Print to PDF" to download.', {
         duration: 6000,
         icon: '🖨️'
       });
-      
+
       // Create a hidden iframe with the styled content
       const iframe = document.createElement('iframe');
       iframe.style.position = 'absolute';
@@ -86,23 +81,23 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
       iframe.style.border = 'none';
       iframe.style.visibility = 'hidden';
       document.body.appendChild(iframe);
-      
+
       // Write content to iframe
       const iframeDoc = iframe.contentWindow.document;
       iframeDoc.open();
       iframeDoc.write(htmlContent);
       iframeDoc.close();
-      
+
       // Wait for content to load, then trigger print
       let printTriggered = false;
-      
+
       iframe.contentWindow.onload = () => {
         if (!printTriggered) {
           printTriggered = true;
           setTimeout(() => {
             iframe.contentWindow.focus();
             iframe.contentWindow.print();
-            
+
             // Clean up after print dialog closes (give user time)
             setTimeout(() => {
               if (iframe.parentNode) {
@@ -112,14 +107,14 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
           }, 500);
         }
       };
-      
+
       // Fallback: trigger onload manually if it doesn't fire within 2 seconds
       setTimeout(() => {
         if (!printTriggered && iframe.parentNode) {
           printTriggered = true;
           iframe.contentWindow.focus();
           iframe.contentWindow.print();
-          
+
           // Clean up
           setTimeout(() => {
             if (iframe.parentNode) {
@@ -128,10 +123,10 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
           }, 1000);
         }
       }, 2000);
-      
+
     } catch (error) {
       console.error('PDF download error:', error);
-      
+
       // Final fallback: download HTML
       const htmlContent = generateActualTemplateHTML();
       const htmlBlob = new Blob([htmlContent], { type: 'text/html' });
@@ -161,7 +156,7 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
       certificates: resumeData.certificates || [],
       Description: resumeData.Description || { UserDescription: '' }
     };
-    
+
     const jsonString = JSON.stringify(structuredData, null, 2);
     const blob = new Blob([jsonString], { type: 'application/json' });
     downloadBlob(blob, 'resume-data.json', 'application/json');
@@ -184,22 +179,22 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
     // Try to get the actual rendered HTML from the preview
     // First try to find by ID (used in Result.jsx)
     let captureElement = document.getElementById('capture-content');
-    
+
     // If not found, try to find by class (used in preview pages)
     if (!captureElement) {
       captureElement = document.querySelector('.resume');
     }
-    
+
     if (captureElement) {
       // Get the inner content of the template
       const templateHTML = captureElement.innerHTML;
       const templateCss = getTemplateCss();
-      
+
       // Get the user's name for the title
-      const userName = resumeData.contactInfo?.fullName || 
-                      resumeData.contactInfo?.name || 
-                      'Resume';
-      
+      const userName = resumeData.contactInfo?.fullName ||
+        resumeData.contactInfo?.name ||
+        'Resume';
+
       // Prepare embedded JSON data for re-upload capability
       const embeddedData = {
         selectedTemplate: selectedTemplate,
@@ -211,7 +206,7 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
         certificates: resumeData.certificates || [],
         Description: resumeData.Description || { UserDescription: '' }
       };
-      
+
       const generatedCode = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -229,11 +224,11 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
     ${templateHTML}
 </body>
 </html>`;
-      
+
       // Beautify the HTML for better readability
       return html_beautify(generatedCode);
     }
-    
+
     // Fallback: generate basic HTML if element not found
     console.warn('Template element not found in DOM, using fallback HTML');
     return generateFallbackHTML();
@@ -241,7 +236,7 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
 
   const generateFallbackHTML = () => {
     const { contactInfo, Description, experience, education, skills, projects, certifications } = resumeData;
-    
+
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -452,11 +447,10 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
                 return (
                   <motion.div
                     key={format.id}
-                    className={`relative border-2 rounded-lg p-4 cursor-pointer transition-all ${
-                      format.recommended
+                    className={`relative border-2 rounded-lg p-4 cursor-pointer transition-all ${format.recommended
                         ? 'border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20'
                         : 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600'
-                    } ${isDownloaded ? 'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800' : ''}`}
+                      } ${isDownloaded ? 'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800' : ''}`}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => !isDownloading && handleDownload(format)}
@@ -510,8 +504,8 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
               >
                 <Download className="w-5 h-5" />
                 <span>
-                  {Object.keys(downloadedFormats).length === downloadFormats.length 
-                    ? 'All Formats Downloaded' 
+                  {Object.keys(downloadedFormats).length === downloadFormats.length
+                    ? 'All Formats Downloaded'
                     : 'Download All Formats'}
                 </span>
               </motion.button>
