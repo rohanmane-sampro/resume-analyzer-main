@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Brain, Download, Sparkles, RefreshCw } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -13,14 +13,29 @@ const PreviewPage = () => {
 
   const [aiEnhancedData, setAiEnhancedData] = useState(null);
   const [isEnhancing, setIsEnhancing] = useState(false);
-  const [selectedVersion, setSelectedVersion] = useState('original'); // 'original' or 'enhanced'
-  const [atsScores, setAtsScores] = useState(null); // Store ATS scores
-  const [showAtsModal, setShowAtsModal] = useState(false); // Control ATS modal visibility
+  const [selectedVersion, setSelectedVersion] = useState('original');
+  const [atsScores, setAtsScores] = useState(null);
+  const [showAtsModal, setShowAtsModal] = useState(false);
 
-  // If no data, redirect back
+  // Redirect back if no data - using useEffect to avoid render issues
+  useEffect(() => {
+    if (!resumeData) {
+      navigate('/');
+    }
+  }, [resumeData, navigate]);
+
+  // Show loading while no data
   if (!resumeData) {
-    navigate('/');
-    return null;
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-teal-500 rounded-xl flex items-center justify-center shadow-lg mx-auto mb-4">
+            <span className="text-white font-bold text-4xl">S</span>
+          </div>
+          <p className="text-gray-300">Loading preview...</p>
+        </div>
+      </div>
+    );
   }
 
   const enhanceWithAI = async () => {
