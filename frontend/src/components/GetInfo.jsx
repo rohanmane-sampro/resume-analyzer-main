@@ -8,7 +8,7 @@ import Suggestions from "./Suggestions";
 import { useLocation } from 'react-router-dom';
 import JsonFiles from "./JsonFiles.jsx"
 import { T1, T2, T3, T4, T5, T6 } from './Templates';
-import ChatBot from './ChatBot.jsx';
+// import ChatBot from './ChatBot.jsx'; // Disabled for now, kept for future use
 import AIAnalysis from './AIAnalysis.jsx';
 import AISuggestions from './AISuggestions.jsx';
 import DownloadModal from './DownloadModal.jsx';
@@ -26,7 +26,7 @@ const GetInfo = () => {
   const hasLoadedDataRef = useRef(false);
 
   // AI-related state
-  const [isChatBotOpen, setIsChatBotOpen] = useState(false);
+  // const [isChatBotOpen, setIsChatBotOpen] = useState(false); // Disabled for now
   const [showAIAnalysis, setShowAIAnalysis] = useState(false);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [enhancedResumeData, setEnhancedResumeData] = useState(null);
@@ -473,7 +473,7 @@ const GetInfo = () => {
             <div className="space-y-2">
               <div className="peer w-full">
                 <Suggestions
-                  label="Full Name"
+                  label={<span>Full Name <span className="text-red-500">*</span></span>}
                   placeholder="Your name"
                   value={isExampleProcessing ? ExampleJsonData.contactInfo.fullName : formData.contactInfo.fullName}
                   onChange={(val) => { handleInputChange("contactInfo", "fullName", val); }}
@@ -484,7 +484,7 @@ const GetInfo = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium dark:text-slate-300">Phone Number</label>
+              <label className="block text-sm font-medium dark:text-slate-300">Phone Number <span className="text-red-500">*</span></label>
               <input
                 type="number"
                 placeholder="96XXXXXXXX"
@@ -507,7 +507,7 @@ const GetInfo = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium dark:text-slate-300">Email Address</label>
+              <label className="block text-sm font-medium dark:text-slate-300">Email Address <span className="text-red-500">*</span></label>
               <input
                 type="email"
                 placeholder="abc123@gmail.com"
@@ -530,10 +530,10 @@ const GetInfo = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium dark:text-slate-300">LinkedIn UserName</label>
+              <label className="block text-sm font-medium dark:text-slate-300">LinkedIn UserName <span className="text-red-500">*</span></label>
               <input
                 type="text"
-                placeholder="abc123"
+                placeholder="www.linkedin.com/in/john-doe-85948b1aa"
                 className="w-full sm:px-6 sm:p-2 border rounded peer px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
                 value={isExampleProcessing ? ExampleJsonData.contactInfo.linkedin : formData.contactInfo.linkedin}
                 onChange={(e) => {
@@ -544,10 +544,10 @@ const GetInfo = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium dark:text-slate-300">Portfolio URL / Github UserName</label>
+              <label className="block text-sm font-medium dark:text-slate-300">Portfolio URL / Github UserName <span className="text-red-500">*</span></label>
               <input
                 type="text"
-                placeholder='Personal portfolio URL if have else add GitHub UserName'
+                placeholder='Portfolio link/Github username'
                 className="w-full sm:px-6 sm:p-2 border rounded peer px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
                 value={isExampleProcessing ? ExampleJsonData.contactInfo.portfolio : formData.contactInfo.portfolio}
                 onChange={(e) => {
@@ -560,14 +560,14 @@ const GetInfo = () => {
             <div className="space-y-2">
               <div className="peer w-full">
                 <Suggestions
-                  label="Job Title"
-                  placeholder="Data Scientist"
+                  label={<span>Job Title <span className="text-red-500">*</span></span>}
+                  placeholder="SAM Analyst"
                   value={isExampleProcessing ? ExampleJsonData.contactInfo.jobTitle : formData.contactInfo.jobTitle}
                   onChange={(val) => {
                     handleInputChange('contactInfo', 'jobTitle', val)
                     { (i == 3 && !isExampleProcessing) && setI(23) }
                   }}
-                  suggestions={['3D Animator', '3D Artist', 'AI Auditor', 'AI Content Creator', 'AI Ethics Researcher', 'AI Hardware Specialist', 'AI Policy Analyst', 'AI Product Manager', 'AI Researcher', 'AI Trainer', 'Academic Advisor', 'Account Manager', 'Accountant', 'Advertising Manager', 'Affiliate Marketing Manager', 'Agricultural Scientist', 'Algorithm Engineer', 'Android Developer', 'Animal Behaviorist', 'Animation Artist', 'Application Support Engineer', 'Archaeologist', 'Archivist', 'Astrophysicist', 'Athletic Trainer', 'Automation Engineer', 'Autonomous Vehicle Engineer', 'Backend Developer', 'Big Data Engineer', 'Bioinformatics Scientist', 'Biomedical Engineer', 'Blockchain Architect', 'Blockchain Developer', 'Botanist', 'Brand Manager', 'Business Analyst', 'Business Development Manager', 'Business Intelligence Analyst', 'Business Relationship Manager', 'Business Systems Analyst', 'CRM Specialist', 'Career Counselor', 'Change Management Specialist', 'Chief Data Officer (CDO)', 'Chief Information Officer (CIO)', 'Chief Marketing Officer (CMO)', 'Chief Technology Officer (CTO)', 'Chip Design Engineer', 'Climate Data Scientist', 'Clinical Data Manager', 'Clinical Research Coordinator', 'Cloud Architect', 'Cloud Consultant', 'Cloud Security Engineer', 'Community Manager', 'Compliance Officer', 'Computer Vision Engineer', 'Construction Project Manager', 'Content Manager', 'Content Strategist', 'Conversational AI Designer', 'Copywriter', 'Corporate Lawyer', 'Creative Director', 'Creative Technologist', 'Customer Success Manager', 'Cybersecurity Analyst', 'Cybersecurity Consultant', 'Data Analyst', 'Data Engineer', 'Data Privacy Consultant', 'Data Scientist', 'Data Visualization Specialist', 'Database Administrator', 'Deep Learning Engineer', 'DevOps Engineer', 'Dietitian', 'Digital Marketing Specialist', 'Digital Strategist', 'E-commerce Manager', 'ERP Consultant', 'EdTech Specialist', 'Education Consultant', 'Electronics Design Engineer', 'Email Marketing Specialist', 'Embedded Systems Engineer', 'Energy Analyst', 'Environmental Scientist', 'Esports Manager', 'Ethical Hacker', 'Event Manager', 'Fashion Designer', 'Film Director', 'Financial Analyst', 'Firmware Engineer', 'Fitness Trainer', 'Food Technologist', 'Forensic Accountant', 'Forestry Specialist', 'Fraud Analyst', 'Frontend Developer', 'Full Stack Developer', 'Fundraising Manager', 'Game Designer', 'Game Developer', 'Generative AI Specialist', 'Geospatial Data Scientist', 'Grant Writer', 'Graphic Designer', 'Growth Hacker', 'HR Manager', 'Hardware Engineer', 'Health Informatics Specialist', 'Healthcare Data Analyst', 'Historian', 'IT Compliance Analyst', 'IT Manager', 'IT Support Specialist', 'Industrial Engineer', 'Influencer Marketing Manager', 'Innovation Manager', 'Instructional Designer', 'Interior Designer', 'International Development Specialist', 'Investment Banker', 'IoT Engineer', 'Jewelry Designer', 'Knowledge Manager', 'LMS Administrator', 'Laboratory Technician', 'Learning Experience Designer', 'Learning and Development Specialist', 'Legal Advisor', 'Legal Tech Specialist', 'Lighting Technician', 'Linguist', 'Localization Specialist', 'Logistics Manager', 'MLOps Engineer', 'Machine Learning Engineer', 'Management Consultant', 'Marine Biologist', 'Market Research Analyst', 'Marketing Manager', 'Mechanical Design Engineer', 'Media Planner', 'Metaverse Architect', 'Mobile App Developer', 'Motion Graphics Designer', 'Museum Curator', 'Music Producer', 'NGO Coordinator', 'NLP Engineer', 'Network Administrator', 'Nonprofit Program Manager', 'Nutritionist', 'Occupational Therapist', 'Online Course Designer', 'Open Source Developer', 'Operations Analyst', 'Operations Manager', 'Organizational Development Manager', 'PR Specialist', 'Paid Media Specialist', 'Partnerships Manager', 'Patent Analyst', 'Penetration Tester', 'Personal Financial Advisor', 'Pharmaceutical Scientist', 'Physiotherapist', 'Platform Engineer', 'Podcast Producer', 'Policy Advisor', 'Policy Researcher', 'Political Analyst', 'Procurement Specialist', 'Product Designer', 'Product Manager', 'Program Manager', 'Project Manager', 'Prompt Engineer', 'Psychologist', 'Public Health Data Analyst', 'Quality Assurance Specialist', 'Quantum Algorithm Developer', 'Quantum Computing Researcher', 'Radio Jockey', 'Real Estate Analyst', 'Recruiter', 'Regulatory Affairs Specialist', 'Release Manager', 'Remote Sensing Specialist', 'Renewable Energy Consultant', 'Research Assistant', 'Research Scientist', 'Risk Analyst', 'Robotics Engineer', 'SAP Consultant', 'SDET (Software Development Engineer in Test)', 'SEO Specialist', 'SaaS Product Manager', 'Sales Executive', 'School Counselor', 'Screenwriter', 'Scrum Master', 'Security Engineer', 'Set Designer', 'Simulation Engineer', 'Site Reliability Engineer (SRE)', 'Smart Contract Developer', 'Social Media Manager', 'Sociologist', 'Software Engineer', 'Sound Engineer', 'Speech Recognition Engineer', 'Sports Coach', 'Startup Founder', 'Supply Chain Analyst', 'Sustainability Consultant', 'Systems Engineer', 'Talent Acquisition Specialist', 'Technical Account Manager', 'Technical Program Manager', 'Technical Recruiter', 'Technical Writer', 'Test Automation Engineer', 'Translation Specialist', 'UI/UX Designer', 'UX Researcher', 'Urban Designer', 'Urban Planner', 'VR/AR Developer', 'Venture Capital Analyst', 'Veterinarian', 'Video Editor', 'Visual Designer', 'Voice Actor', 'Voice User Interface Designer', 'Wealth Manager', 'Wildlife Biologist', 'Yoga Instructor', 'Zoologist', 'iOS Developer']}
+                  suggestions={['SAM - Software Asset Management', 'HAM - Hardware Asset Management', '3D Animator', '3D Artist', 'AI Auditor', 'AI Content Creator', 'AI Ethics Researcher', 'AI Hardware Specialist', 'AI Policy Analyst', 'AI Product Manager', 'AI Researcher', 'AI Trainer', 'Academic Advisor', 'Account Manager', 'Accountant', 'Advertising Manager', 'Affiliate Marketing Manager', 'Agricultural Scientist', 'Algorithm Engineer', 'Android Developer', 'Animal Behaviorist', 'Animation Artist', 'Application Support Engineer', 'Archaeologist', 'Archivist', 'Astrophysicist', 'Athletic Trainer', 'Automation Engineer', 'Autonomous Vehicle Engineer', 'Backend Developer', 'Big Data Engineer', 'Bioinformatics Scientist', 'Biomedical Engineer', 'Blockchain Architect', 'Blockchain Developer', 'Botanist', 'Brand Manager', 'Business Analyst', 'Business Development Manager', 'Business Intelligence Analyst', 'Business Relationship Manager', 'Business Systems Analyst', 'CRM Specialist', 'Career Counselor', 'Change Management Specialist', 'Chief Data Officer (CDO)', 'Chief Information Officer (CIO)', 'Chief Marketing Officer (CMO)', 'Chief Technology Officer (CTO)', 'Chip Design Engineer', 'Climate Data Scientist', 'Clinical Data Manager', 'Clinical Research Coordinator', 'Cloud Architect', 'Cloud Consultant', 'Cloud Security Engineer', 'Community Manager', 'Compliance Officer', 'Computer Vision Engineer', 'Construction Project Manager', 'Content Manager', 'Content Strategist', 'Conversational AI Designer', 'Copywriter', 'Corporate Lawyer', 'Creative Director', 'Creative Technologist', 'Customer Success Manager', 'Cybersecurity Analyst', 'Cybersecurity Consultant', 'Data Analyst', 'Data Engineer', 'Data Privacy Consultant', 'Data Scientist', 'Data Visualization Specialist', 'Database Administrator', 'Deep Learning Engineer', 'DevOps Engineer', 'Dietitian', 'Digital Marketing Specialist', 'Digital Strategist', 'E-commerce Manager', 'ERP Consultant', 'EdTech Specialist', 'Education Consultant', 'Electronics Design Engineer', 'Email Marketing Specialist', 'Embedded Systems Engineer', 'Energy Analyst', 'Environmental Scientist', 'Esports Manager', 'Ethical Hacker', 'Event Manager', 'Fashion Designer', 'Film Director', 'Financial Analyst', 'Firmware Engineer', 'Fitness Trainer', 'Food Technologist', 'Forensic Accountant', 'Forestry Specialist', 'Fraud Analyst', 'Frontend Developer', 'Full Stack Developer', 'Fundraising Manager', 'Game Designer', 'Game Developer', 'Generative AI Specialist', 'Geospatial Data Scientist', 'Grant Writer', 'Graphic Designer', 'Growth Hacker', 'HR Manager', 'Hardware Engineer', 'Health Informatics Specialist', 'Healthcare Data Analyst', 'Historian', 'IT Compliance Analyst', 'IT Manager', 'IT Support Specialist', 'Industrial Engineer', 'Influencer Marketing Manager', 'Innovation Manager', 'Instructional Designer', 'Interior Designer', 'International Development Specialist', 'Investment Banker', 'IoT Engineer', 'Jewelry Designer', 'Knowledge Manager', 'LMS Administrator', 'Laboratory Technician', 'Learning Experience Designer', 'Learning and Development Specialist', 'Legal Advisor', 'Legal Tech Specialist', 'Lighting Technician', 'Linguist', 'Localization Specialist', 'Logistics Manager', 'MLOps Engineer', 'Machine Learning Engineer', 'Management Consultant', 'Marine Biologist', 'Market Research Analyst', 'Marketing Manager', 'Mechanical Design Engineer', 'Media Planner', 'Metaverse Architect', 'Mobile App Developer', 'Motion Graphics Designer', 'Museum Curator', 'Music Producer', 'NGO Coordinator', 'NLP Engineer', 'Network Administrator', 'Nonprofit Program Manager', 'Nutritionist', 'Occupational Therapist', 'Online Course Designer', 'Open Source Developer', 'Operations Analyst', 'Operations Manager', 'Organizational Development Manager', 'PR Specialist', 'Paid Media Specialist', 'Partnerships Manager', 'Patent Analyst', 'Penetration Tester', 'Personal Financial Advisor', 'Pharmaceutical Scientist', 'Physiotherapist', 'Platform Engineer', 'Podcast Producer', 'Policy Advisor', 'Policy Researcher', 'Political Analyst', 'Procurement Specialist', 'Product Designer', 'Product Manager', 'Program Manager', 'Project Manager', 'Prompt Engineer', 'Psychologist', 'Public Health Data Analyst', 'Quality Assurance Specialist', 'Quantum Algorithm Developer', 'Quantum Computing Researcher', 'Radio Jockey', 'Real Estate Analyst', 'Recruiter', 'Regulatory Affairs Specialist', 'Release Manager', 'Remote Sensing Specialist', 'Renewable Energy Consultant', 'Research Assistant', 'Research Scientist', 'Risk Analyst', 'Robotics Engineer', 'SAP Consultant', 'SDET (Software Development Engineer in Test)', 'SEO Specialist', 'SaaS Product Manager', 'Sales Executive', 'School Counselor', 'Screenwriter', 'Scrum Master', 'Security Engineer', 'Set Designer', 'Simulation Engineer', 'Site Reliability Engineer (SRE)', 'Smart Contract Developer', 'Social Media Manager', 'Sociologist', 'Software Engineer', 'Sound Engineer', 'Speech Recognition Engineer', 'Sports Coach', 'Startup Founder', 'Supply Chain Analyst', 'Sustainability Consultant', 'Systems Engineer', 'Talent Acquisition Specialist', 'Technical Account Manager', 'Technical Program Manager', 'Technical Recruiter', 'Technical Writer', 'Test Automation Engineer', 'Translation Specialist', 'UI/UX Designer', 'UX Researcher', 'Urban Designer', 'Urban Planner', 'VR/AR Developer', 'Venture Capital Analyst', 'Veterinarian', 'Video Editor', 'Visual Designer', 'Voice Actor', 'Voice User Interface Designer', 'Wealth Manager', 'Wildlife Biologist', 'Yoga Instructor', 'Zoologist', 'iOS Developer']}
                   isMultiSuggestion={false}
                 />
               </div>
@@ -656,14 +656,14 @@ const GetInfo = () => {
             <div className="space-y-2">
               <div className="peer">
                 <Suggestions
-                  label="Languages you are familiar with"
+                  label="Languages you are familiar with (Optional)"
                   placeholder="English, Hindi, Marathi"
                   value={isExampleProcessing ? ExampleJsonData.contactInfo.Languages : formData.contactInfo.Languages}
                   onChange={(val) => {
                     { (i === 6 && !isExampleProcessing) && setI(7) }
                     handleInputChange("contactInfo", "Languages", val);
                   }}
-                  suggestions={["Hindi", "English", "Spanish", "Bengali", "Portuguese", "Russian", "Japanese", "Punjabi", "Marathi", "Telugu", "French", "German", "Tamil", "Urdu"]}
+                  suggestions={["English", "Hindi", "Spanish", "Mandarin Chinese", "Arabic", "Bengali", "Portuguese", "Russian", "Japanese", "Punjabi", "Marathi", "Telugu", "French", "German", "Tamil", "Urdu", "Italian", "Turkish", "Korean", "Vietnamese", "Polish", "Ukrainian", "Thai", "Dutch", "Greek", "Swedish", "Romanian", "Czech", "Hungarian", "Indonesian", "Malay", "Filipino", "Kannada", "Gujarati", "Malayalam", "Odia", "Assamese", "Nepali", "Sinhala"]}
                 />
               </div>
               <div className="ml-4 w-0 h-1 rounded-full bg-blue-500 transition-all duration-300 peer-hover:w-[60%] peer-focus:w-[88%] sm:peer-focus:w-[94%]"></div>
@@ -921,8 +921,8 @@ const GetInfo = () => {
                   <div className="space-y-2">
                     <div className="peer">
                       <Suggestions
-                        label="Tools/Tech Used"
-                        placeholder='React.js, Tailwind CSS, Node.js, Express.js, MongoDB, RESTful APIs, Postman'
+                        label="Description"
+                        placeholder='Built a full-stack web application with user authentication and real-time features'
                         value={project.toolsTechUsed}
                         onChange={(val) => {
                           handleInputChange('projects', 'toolsTechUsed', val, index)
@@ -976,8 +976,8 @@ const GetInfo = () => {
                   <div className="space-y-2">
                     <div className="peer w-full">
                       <Suggestions
-                        label="Tools/Tech Used"
-                        placeholder='Tensorflow, NumPy, Pandas, Matplotlib, Multi30k Dataset, ModelSubclassing'
+                        label="Description"
+                        placeholder='Developed a machine learning model for image classification with 95% accuracy'
                         value={project.toolsTechUsed}
                         onChange={(val) => {
                           handleInputChange('projects', 'toolsTechUsed', val, index)
@@ -1538,7 +1538,7 @@ const GetInfo = () => {
                 Description
               </h2>
               <p className="font-semibold mb-6 text-gray-600 dark:text-gray-200">
-                Hint: Consider to edit them more and make professional
+                Hint: Review and refine the AI-generated description to make it more professional and personalized.
               </p>
 
               {/* AI Suggested Description Section */}
@@ -1579,7 +1579,7 @@ const GetInfo = () => {
                 Description
               </h2>
               <p className="text-xl font-semibold mb-6 text-gray-600 dark:text-gray-200">
-                Hint: Consider to edit them more and make professional
+                Hint: Review and refine the description to make it more professional and personalized.
               </p>
               <div className="space-y-2 pt-8 pb-16">
                 <div className="peer">
@@ -1610,25 +1610,40 @@ const GetInfo = () => {
                 {[1, 2, 3, 4, 5, 6].map((template) => (
                   <div
                     key={template}
-                    onClick={() => {
-                      if (selectTemp) {
-                        setFormData((prev) => ({ ...prev, selectedTemplate: String(template) }));
-                        { i === 2 && setI(1) }
-                        const timer2 = setTimeout(() => {
-                          { (i === 1 || i === 2) && setI(2) };
-                        }, 50);
-                        return () => clearTimeout(timer2);
-                      }
-                    }}
-                    className={`p-4 border-2 rounded-lg cursor-pointer transition-transform duration-150 shadow-md hover:scale-95 dark:shadow-gray-600  ${formData.selectedTemplate === String(template) ? 'border-blue-600 bg-blue-50 dark:bg-slate-800' : 'dark:border-gray-700'
+                    className={`relative p-4 border-2 rounded-lg transition-all duration-150 shadow-md hover:shadow-xl dark:shadow-gray-600 ${formData.selectedTemplate === String(template) ? 'border-blue-600 bg-blue-50 dark:bg-slate-800 ring-2 ring-blue-300' : 'dark:border-gray-700 hover:border-blue-400'
                       }`}
                   >
-                    <img
-                      src={`${import.meta.env.BASE_URL}Temp/cv${template}.png`}
-                      alt={`Template ${template}`}
-                      className="w-full h-auto rounded-lg dark:filter dark:brightness-90"
-                    />
-                    <p className="text-center mt-2 dark:text-gray-200">{AboutTemps[template - 1]}</p>
+                    <div
+                      onClick={() => {
+                        if (selectTemp) {
+                          setFormData((prev) => ({ ...prev, selectedTemplate: String(template) }));
+                          { i === 2 && setI(1) }
+                          const timer2 = setTimeout(() => {
+                            { (i === 1 || i === 2) && setI(2) };
+                          }, 50);
+                          return () => clearTimeout(timer2);
+                        }
+                      }}
+                      className="cursor-pointer"
+                    >
+                      <img
+                        src={`${import.meta.env.BASE_URL}Temp/cv${template}.png`}
+                        alt={`Template ${template}`}
+                        className="w-full h-auto rounded-lg dark:filter dark:brightness-90"
+                      />
+                      <p className="text-center mt-2 dark:text-gray-200 font-semibold">{AboutTemps[template - 1]}</p>
+                    </div>
+
+                    {/* Use This Template Button */}
+                    {formData.selectedTemplate === String(template) && (
+                      <button
+                        onClick={handleNext}
+                        className="mt-3 w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg font-bold text-sm transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+                      >
+                        <Check size={18} />
+                        Use This Template
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
@@ -1643,16 +1658,31 @@ const GetInfo = () => {
                 {[1, 2, 3, 4, 5, 6].map((template) => (
                   <div
                     key={template}
-                    onClick={() => setExampleJsonData((prev) => ({ ...prev, selectedTemplate: String(template) }))}
-                    className={`p-4 border-2 rounded-lg cursor-pointer transition-transform duration-150 shadow-md hover:scale-95 dark:shadow-gray-600  ${ExampleJsonData.selectedTemplate === String(template) ? 'border-blue-600 bg-blue-50 dark:bg-slate-800' : 'dark:border-gray-700'
+                    className={`relative p-4 border-2 rounded-lg transition-all duration-150 shadow-md hover:shadow-xl dark:shadow-gray-600 ${ExampleJsonData.selectedTemplate === String(template) ? 'border-blue-600 bg-blue-50 dark:bg-slate-800 ring-2 ring-blue-300' : 'dark:border-gray-700 hover:border-blue-400'
                       }`}
                   >
-                    <img
-                      src={`/Resume-builder/Temp/cv${template}.png`}
-                      alt={`Template ${template}`}
-                      className="w-full h-auto rounded-lg dark:filter dark:brightness-90"
-                    />
-                    <p className="text-center mt-2 dark:text-gray-200">{AboutTemps[template - 1]}</p>
+                    <div
+                      onClick={() => setExampleJsonData((prev) => ({ ...prev, selectedTemplate: String(template) }))}
+                      className="cursor-pointer"
+                    >
+                      <img
+                        src={`/Resume-builder/Temp/cv${template}.png`}
+                        alt={`Template ${template}`}
+                        className="w-full h-auto rounded-lg dark:filter dark:brightness-90"
+                      />
+                      <p className="text-center mt-2 dark:text-gray-200 font-semibold">{AboutTemps[template - 1]}</p>
+                    </div>
+
+                    {/* Use This Template Button */}
+                    {ExampleJsonData.selectedTemplate === String(template) && (
+                      <button
+                        onClick={handleNext}
+                        className="mt-3 w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg font-bold text-sm transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+                      >
+                        <Check size={18} />
+                        Use This Template
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
@@ -1753,7 +1783,7 @@ const GetInfo = () => {
 
       {/* Main Content */}
       <div className={`flex-1 pt-20 pr-3 px-4 lg:py-8 transition-all duration-300 lg:ml-0`}>
-        <div className="md:max-w-[720px] md:mr-72 lg:ml-64 lg:max-w-[700px] xl:max-w-full xl:px-24 2xl:max-w-3xl mx-auto">
+        <div className="md:max-w-[600px] md:mr-96 lg:ml-64 lg:max-w-[650px] xl:max-w-[750px] xl:px-12 2xl:max-w-4xl mx-auto">
           {renderFormSection()}
 
           <div className="mt-8 flex justify-end">
@@ -1784,7 +1814,7 @@ const GetInfo = () => {
       {/* Right Preview Templates Sidebar */}
       <div
         className={`fixed top-0 right-0 h-full bg-white border-l shadow-md hover:shadow-xl p-0 md:p-4 transition-all duration-300 ease-in-out
-        ${isPreviewOpen ? "w-64" : "w-0"} md:w-72 dark:border-l-slate-800 dark:bg-slate-800`}
+        ${isPreviewOpen ? "w-80" : "w-0"} md:w-96 dark:border-l-slate-800 dark:bg-slate-800`}
       >
         <button
           onClick={() => {
@@ -1801,8 +1831,8 @@ const GetInfo = () => {
         <div className={`${isPreviewOpen || "hidden md:block"}`}>
           <h1 className="text-2xl font-bold pt-20 md:pt-4 text-center text-blue-800 dark:text-amber-300 cursor-pointer" title="Live preview. how your resume looks">Preview</h1>
           <div className="w-[25%] h-1 bg-blue-900 mb-4 mx-auto mt-1 rounded dark:bg-amber-400"></div>
-          <div className="px-2 w-[250px] ml-3 h-[calc(100vh-180px)] overflow-y-auto overflow-x-hidden bg-white dark:bg-slate-800">
-            <div className="scale-[0.27] origin-top-left flex">
+          <div className="px-2 w-[340px] ml-3 h-[calc(100vh-180px)] overflow-y-auto overflow-x-hidden bg-white dark:bg-slate-800">
+            <div className="scale-[0.35] origin-top-left flex">
               {(isExampleProcessing ? ExampleJsonData.selectedTemplate == 1 : formData.selectedTemplate == 1) ? <T1 jsonData={isExampleProcessing ? ExampleJsonData : formData} /> : (isExampleProcessing ? ExampleJsonData.selectedTemplate == 2 : formData.selectedTemplate == 2) ? <T2 jsonData={isExampleProcessing ? ExampleJsonData : formData} /> : (isExampleProcessing ? ExampleJsonData.selectedTemplate == 3 : formData.selectedTemplate == 3) ? <T3 jsonData={isExampleProcessing ? ExampleJsonData : formData} /> : (isExampleProcessing ? ExampleJsonData.selectedTemplate == 4 : formData.selectedTemplate == 4) ? <T4 jsonData={isExampleProcessing ? ExampleJsonData : formData} /> : (isExampleProcessing ? ExampleJsonData.selectedTemplate == 5 : formData.selectedTemplate == 5) ? <T5 jsonData={isExampleProcessing ? ExampleJsonData : formData} /> : (isExampleProcessing ? ExampleJsonData.selectedTemplate == 6 : formData.selectedTemplate == 6) ? <T6 jsonData={isExampleProcessing ? ExampleJsonData : formData} /> : <div></div>}
             </div>
           </div>
@@ -1820,13 +1850,14 @@ const GetInfo = () => {
         </div>
       </div>
 
-      {/* AI Features */}
+      {/* AI Features - ChatBot Disabled for now, kept for future use
       <ChatBot
         isOpen={isChatBotOpen}
         onToggle={() => setIsChatBotOpen(!isChatBotOpen)}
         currentSection={steps[currentStep]?.title || 'general'}
         userData={isExampleProcessing ? ExampleJsonData : formData}
       />
+      */}
 
       {/* AI Analysis Modal */}
       {showAIAnalysis && (
@@ -1865,7 +1896,7 @@ const GetInfo = () => {
         <span className="hidden sm:inline text-sm font-medium">AI Analysis</span>
       </button>
 
-      {/* AI Chatbot Component */}
+      {/* AI Chatbot Component - Disabled for now, kept for future use
       <ChatBot
         isOpen={isChatBotOpen}
         onToggle={() => setIsChatBotOpen(!isChatBotOpen)}
@@ -1885,6 +1916,7 @@ const GetInfo = () => {
           formData: formData
         }}
       />
+      */}
 
       {/* Download Modal */}
       {showDownloadModal && (

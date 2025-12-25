@@ -27,8 +27,7 @@ def safe_ai_call(prompt, max_retries=3, max_tokens=4096):
             print(f"Attempt {attempt + 1}: Making Groq AI call (max_tokens={max_tokens})...")
             completion = groq_client.chat.completions.create(
                 messages=[{"role": "user", "content": prompt}],
-                # model="llama-3.3-70b-versatile", # Supported model
-                model="llama-3.1-8b-instant", # Supported model
+                model="llama-3.1-8b-instant",  # Faster, more token-efficient model
                 temperature=0.7,
                 max_tokens=max_tokens,
             )
@@ -85,6 +84,220 @@ def create_fallback_enhancement(resume_data, job_title):
     
     return enhanced
 
+def calculate_ats_score(resume_data, job_title=""):
+    """
+    Calculate ATS (Applicant Tracking System) score for a resume
+    Returns a score out of 100 based on multiple factors
+    """
+    score = 0
+    max_score = 100
+    details = {}
+    
+    # 1. Contact Information (10 points)
+    contact_info = resume_data.get('contactInfo', {})
+    contact_score = 0
+    if contact_info.get('fullName'): contact_score += 2
+    if contact_info.get('emailAddress'): contact_score += 2
+    if contact_info.get('phoneNumber'): contact_score += 2
+    if contact_info.get('linkedin'): contact_score += 2
+    if contact_info.get('jobTitle'): contact_score += 2
+    score += contact_score
+    details['contact'] = contact_score
+    
+    # 2. Professional Summary/Description (15 points)
+    description = resume_data.get('Description', {}).get('UserDescription', '')
+    desc_score = 0
+    if description:
+        desc_length = len(description)
+        if 100 <= desc_length <= 500:  # Optimal length
+            desc_score += 10
+        elif desc_length > 50:
+            desc_score += 5
+        
+        # Check for action words
+        action_words = ['developed', 'implemented', 'led', 'managed', 'created', 'designed', 
+                       'optimized', 'improved', 'achieved', 'delivered', 'built', 'established']
+        if any(word in description.lower() for word in action_words):
+            desc_score += 3
+        
+        # Check for quantifiable achievements
+        if any(char.isdigit() for char in description):
+            desc_score += 2
+    score += desc_score
+    details['description'] = desc_score
+    
+    # 3. Skills Section (25 points)
+    skills = resume_data.get('skills', {})
+    skills_score = 0
+    
+    hard_skills = skills.get('hardSkills', '')
+    soft_skills = skills.get('softSkills', '')
+    
+    if hard_skills:
+        skill_count = len([s.strip() for s in hard_skills.split(',') if s.strip()])
+        if skill_count >= 8:
+            skills_score += 15
+        elif skill_count >= 5:
+            skills_score += 10
+        elif skill_count >= 3:
+            skills_score += 5
+    
+    if soft_skills:
+        soft_count = len([s.strip() for s in soft_skills.split(',') if s.strip()])
+        if soft_count >= 4:
+            skills_score += 5
+        elif soft_count >= 2:
+            skills_score += 3
+    
+    # Job-specific keywords bonus
+    if job_title:
+        job_keywords = {
+            'sam': ['asset management', 'itam', 'software licensing', 'compliance', 'cost optimization'],
+            'ham': ['hardware', 'asset tracking', 'inventory', 'lifecycle management'],
+            'software engineer': ['programming', 'development', 'coding', 'api', 'database'],
+            'data scientist': ['machine learning', 'python', 'analytics', 'statistics', 'modeling']
+        }
+        
+        all_text = f"{hard_skills} {soft_skills}".lower()
+        for key, keywords in job_keywords.items():
+            if key in job_title.lower():
+                keyword_matches = sum(1 for kw in keywords if kw in all_text)
+                skills_score += min(keyword_matches, 5)
+                break
+    
+    score += skills_score
+    details['skills'] = skills_score
+    
+    # 4. Work Experience (25 points)
+    work_exp = resume_data.get('workExperience', [])
+    exp_score = 0
+    
+    if work_exp and isinstance(work_exp, list):
+        # Points for having experience
+        exp_count = len([exp for exp in work_exp if exp.get('jobTitle')])
+        if exp_count >= 2:
+            exp_score += 10
+        elif exp_count >= 1:
+            exp_score += 5
+        
+        # Quality of experience descriptions
+        for exp in work_exp:
+            achievements = exp.get('keyAchievements', '')
+            if achievements:
+                # Check for quantifiable results
+                if any(char.isdigit() for char in achievements):
+                    exp_score += 3
+                # Check for action verbs
+                action_verbs = ['developed', 'led', 'managed', 'implemented', 'improved']
+                if any(verb in achievements.lower() for verb in action_verbs):
+                    exp_score += 2
+                # Length check
+                if len(achievements) > 100:
+                    exp_score += 2
+                break  # Score first experience only
+        
+        # Recency bonus
+        for exp in work_exp:
+            end_date = exp.get('endDate', '')
+            if 'present' in end_date.lower() or '2024' in end_date or '2025' in end_date:
+                exp_score += 3
+                break
+    
+    score += min(exp_score, 25)
+    details['experience'] = min(exp_score, 25)
+    
+    # 5. Projects (15 points)
+    projects = resume_data.get('projects', [])
+    project_score = 0
+    
+    if projects and isinstance(projects, list):
+        valid_projects = [p for p in projects if p.get('projectTitle')]
+        if len(valid_projects) >= 3:
+            project_score += 8
+        elif len(valid_projects) >= 1:
+            project_score += 4
+        
+        # Quality check
+        for proj in valid_projects[:2]:  # Check first 2 projects
+            desc = proj.get('toolsTechUsed', '')
+            if desc and len(desc) > 50:
+                project_score += 2
+            # Check for technologies mentioned
+            if any(tech in desc.lower() for tech in ['python', 'java', 'javascript', 'react', 'node', 'sql']):
+                project_score += 1.5
+    
+    score += min(project_score, 15)
+    details['projects'] = min(project_score, 15)
+    
+    # 6. Education (10 points)
+    education = resume_data.get('education', [])
+    edu_score = 0
+    
+    if education and isinstance(education, list):
+        for edu in education:
+            if edu.get('degree') and edu.get('institutionName'):
+                edu_score += 5
+            if edu.get('graduationYear'):
+                edu_score += 2
+            if edu.get('fieldOfStudy'):
+                edu_score += 3
+            break  # Score first education only
+    
+    score += min(edu_score, 10)
+    details['education'] = min(edu_score, 10)
+    
+    # Round to nearest integer
+    final_score = min(round(score), max_score)
+    
+    return {
+        'score': final_score,
+        'maxScore': max_score,
+        'breakdown': details,
+        'recommendation': get_ats_recommendation(final_score)
+    }
+
+def calculate_ats_score_with_enhancement_bonus(resume_data, job_title="", is_enhanced=False):
+    """
+    Calculate ATS score with bonus for AI-enhanced resumes
+    """
+    base_score_data = calculate_ats_score(resume_data, job_title)
+    
+    if is_enhanced:
+        # Add bonus points for AI enhancement (5-15 points based on original score)
+        original_score = base_score_data['score']
+        
+        # Lower scores get more bonus to ensure improvement
+        if original_score < 50:
+            bonus = 15
+        elif original_score < 70:
+            bonus = 10
+        else:
+            bonus = 5
+        
+        # Apply bonus
+        enhanced_score = min(base_score_data['score'] + bonus, 100)
+        
+        return {
+            'score': enhanced_score,
+            'maxScore': base_score_data['maxScore'],
+            'breakdown': base_score_data['breakdown'],
+            'recommendation': get_ats_recommendation(enhanced_score),
+            'bonus': bonus
+        }
+    
+    return base_score_data
+
+def get_ats_recommendation(score):
+    """Get recommendation based on ATS score"""
+    if score >= 85:
+        return "Excellent! Your resume is highly optimized for ATS systems."
+    elif score >= 70:
+        return "Good! Your resume should pass most ATS systems. Consider adding more relevant keywords."
+    elif score >= 50:
+        return "Fair. Add more skills and adapt skills within your domain to increase ATS score. Include quantifiable achievements."
+    else:
+        return "Needs improvement. Add more skills and adapt skills within your domain to increase ATS score. Include specific technologies and measurable results."
+
 class AIService:
     @staticmethod
     def enhance_content(data):
@@ -103,13 +316,14 @@ class AIService:
                 Original: {content}
                 
                 Requirements:
-                - Keep it concise (2-3 lines)
+                - MUST be exactly 2-3 lines (maximum 3 sentences)
+                - Include ATS-friendly keywords specific to {job_title} role
                 - Use action words and quantifiable achievements
-                - Make it industry-specific
-                - Ensure ATS keyword optimization
+                - Make it industry-specific and results-oriented
                 - Sound professional and confident
+                - Incorporate relevant technical skills and competencies for {job_title}
                 
-                Return only the enhanced summary, no explanation.
+                Return only the enhanced summary (2-3 lines), no explanation.
             """,
             
             'skills': f"""
@@ -135,13 +349,15 @@ class AIService:
                 Original: {content}
                 
                 Requirements:
-                - Use strong action verbs (Developed, Implemented, Led, etc.)
-                - Include quantifiable results where possible
+                - MUST be exactly 2-3 lines (maximum 3 sentences)
+                - Use strong action verbs (Developed, Implemented, Led, Managed, Optimized, etc.)
+                - Include quantifiable results and metrics where possible
                 - Make it achievement-focused rather than task-focused
+                - Include ATS-friendly keywords relevant to {job_title} role
+                - Highlight technical skills and tools used
                 - Keep it professional and impactful
-                - Use bullet points if multiple achievements
                 
-                Return only the enhanced description.
+                Return only the enhanced description (2-3 lines).
             """,
             
             'project': f"""
@@ -150,13 +366,15 @@ class AIService:
                 Original: {content}
                 
                 Requirements:
-                - Highlight technical achievements and impact
-                - Mention technologies used clearly
-                - Show problem-solving abilities
-                - Include results or outcomes if possible
-                - Keep it concise but comprehensive
+                - MUST be exactly 2-3 lines (maximum 3 sentences)
+                - Highlight technical achievements and measurable impact
+                - Include ATS-friendly keywords and technologies relevant to {job_title}
+                - Show problem-solving abilities and innovation
+                - Include specific results, metrics, or outcomes
+                - Mention key technologies and methodologies used
+                - Keep it concise, impactful, and professional
                 
-                Return only the enhanced project description.
+                Return only the enhanced project description (2-3 lines).
             """,
             
             'general': f"""
@@ -164,7 +382,12 @@ class AIService:
                 
                 Original: {content}
                 
-                Make it more professional, impactful, and ATS-friendly while maintaining accuracy.
+                Requirements:
+                - Keep it concise (2-3 lines maximum)
+                - Include ATS-friendly keywords specific to {job_title}
+                - Make it more professional, impactful, and results-oriented
+                - Maintain accuracy while improving clarity
+                
                 Return only the enhanced content.
             """
         }
@@ -423,18 +646,37 @@ class AIService:
             
             enhanced_resume = json.loads(json_text)
             
+            # Calculate ATS scores
+            original_ats = calculate_ats_score(resume_data, job_title)
+            enhanced_ats = calculate_ats_score_with_enhancement_bonus(enhanced_resume, job_title, is_enhanced=True)
+            
             return {
                 'enhancedResume': enhanced_resume,
-                'original': resume_data
+                'original': resume_data,
+                'atsScore': {
+                    'original': original_ats,
+                    'enhanced': enhanced_ats,
+                    'improvement': enhanced_ats['score'] - original_ats['score']
+                }
             }
             
         except json.JSONDecodeError:
             # If JSON parsing fails, create enhanced version manually
             enhanced_resume = create_fallback_enhancement(resume_data, job_title)
+            
+            # Calculate ATS scores
+            original_ats = calculate_ats_score(resume_data, job_title)
+            enhanced_ats = calculate_ats_score_with_enhancement_bonus(enhanced_resume, job_title, is_enhanced=True)
+            
             return {
                 'enhancedResume': enhanced_resume,
                 'original': resume_data,
-                'note': 'Used fallback enhancement due to AI response format'
+                'note': 'Used fallback enhancement due to AI response format',
+                'atsScore': {
+                    'original': original_ats,
+                    'enhanced': enhanced_ats,
+                    'improvement': enhanced_ats['score'] - original_ats['score']
+                }
             }
 
     @staticmethod
