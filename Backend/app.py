@@ -7,8 +7,12 @@ from src.routes.pdf_routes import pdf_bp
 def create_app():
     app = Flask(__name__)
     
-    # Configure CORS - Allow all for development to prevent connection issues
-    CORS(app, resources={r"/*": {"origins": "*"}})
+    # Configure CORS - Use dynamic origins from config for better flexibility
+    CORS(app, resources={r"/*": {
+        "origins": Config.CORS_ORIGINS,
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"]
+    }})
     
     # Register Blueprints
     app.register_blueprint(ai_bp)
@@ -31,5 +35,5 @@ app = create_app()
 
 if __name__ == '__main__':
     print("Starting Unified Backend (AI + PDF) on 0.0.0.0:5000...")
-    # Host 0.0.0.0 makes it accessible from other devices and avoids localhost/127.0.0.1 confusion
+    # Host 0.0.0.0 makes it accessible from any local address and avoids resolution issues
     app.run(debug=True, port=5000, host='0.0.0.0')

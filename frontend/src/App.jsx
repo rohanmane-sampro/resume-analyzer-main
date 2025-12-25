@@ -13,6 +13,7 @@ import ViewTemplates from './components/ViewTemplates.jsx';
 import HtmlToPdfConverter from './components/HmlToPdf.jsx'
 import FileUploadPage from './components/FileUploadPage.jsx';
 import Loader from './components/Loader.jsx'
+import ResumeAnalyze from './components/ResumeAnalyze.jsx';
 // import T5 from './components/T5.jsx'
 
 // Use environment variable for Firebase URL
@@ -81,6 +82,7 @@ const App = () => {
         <Route path="/Preview" element={<PreviewPage />} />
         <Route path="/Result" element={<Result />} />
         <Route path="/ViewTemplates" element={<ViewTemplates />} />
+        <Route path="/ResumeAnalyze" element={<ResumeAnalyze />} />
       </Routes>
     </div>
   );
