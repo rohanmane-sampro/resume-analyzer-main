@@ -1626,7 +1626,7 @@ const GetInfo = () => {
                       }`}
                   >
                     <img
-                      src={`/Resume-builder/Temp/cv${template}.png`}
+                      src={`${import.meta.env.BASE_URL}Temp/cv${template}.png`}
                       alt={`Template ${template}`}
                       className="w-full h-auto rounded-lg dark:filter dark:brightness-90"
                     />
@@ -1766,8 +1766,8 @@ const GetInfo = () => {
               }
               onClick={handleNext}
               className={`flex items-center gap-2 px-6 py-2 mt-5 text-white rounded-full transition-all duration-300 ${NextError
-                  ? "bg-red-500 hover:bg-red-600 scale-105 cursor-not-allowed"
-                  : "bg-blue-600 hover:bg-blue-700"
+                ? "bg-red-500 hover:bg-red-600 scale-105 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700"
                 }`}
             >
               {currentStep === steps.length - 1 ? "Submit" : "Next"}

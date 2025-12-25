@@ -35,13 +35,24 @@ def load_all_envs():
             print(f"DEBUG: Manual parse failed: {e}")
 
     print(f"DEBUG: Current GROQ_API_KEY value: {key[:10] if key else 'None'}...")
+    print(f"DEBUG: Configured CORS_ORIGINS: {os.getenv('CORS_ORIGINS', '*')}")
 
 load_all_envs()
 
 class Config:
     GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-    CORS_ORIGINS = [
-        "http://localhost:5173",
-        "https://prashantparshuramkar.host20.uk",
-        "https://nishanttech.host20.uk"
-    ]
+    
+    # Fully automated CORS: 
+    # 1. Use environment variable if set
+    # 2. Default to allow all (*) for maximum compatibility
+    # 3. Always include common local dev ports for reliability
+    env_origins = os.getenv("CORS_ORIGINS")
+    if not env_origins or env_origins == "*":
+        CORS_ORIGINS = "*"
+    else:
+        CORS_ORIGINS = env_origins.split(",")
+        # Ensure common local ports are allowed to prevent "Failed to fetch" on port shifts
+        local_ports = ["5173", "5174", "5175", "3000"]
+        for port in local_ports:
+            CORS_ORIGINS.append(f"http://localhost:{port}")
+            CORS_ORIGINS.append(f"http://127.0.0.1:{port}")

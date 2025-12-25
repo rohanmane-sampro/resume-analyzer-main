@@ -1,5 +1,6 @@
 import * as pdfjsLib from 'pdfjs-dist';
 import mammoth from 'mammoth';
+import { ENDPOINTS } from '../apiConfig';
 
 // Set up PDF.js worker - using the npm package's worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
@@ -330,12 +331,13 @@ export async function parseResume(file) {
     // Extract structured data using AI (Try first)
     try {
       console.log('Attempting AI parsing...');
-      const response = await fetch('http://localhost:5000/parse-resume-with-ai', {
+      const response = await fetch(ENDPOINTS.PARSE_RESUME, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ text }),
+        signal: AbortSignal.timeout(30000) // 30 seconds timeout for parsing
       });
 
       if (response.ok) {
