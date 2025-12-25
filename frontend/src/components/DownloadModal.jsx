@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Download, FileText, Code, Database, X, Check } from 'lucide-react';
+import { Download, FileText, X, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { html as html_beautify } from 'js-beautify';
@@ -13,25 +13,17 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
     {
       id: 'pdf',
       name: 'PDF Document',
-      description: 'Professional PDF format for job applications',
+      description: 'Professional PDF format - Best for job applications',
       icon: FileText,
       color: 'bg-red-500',
       recommended: true
     },
     {
-      id: 'html',
-      name: 'HTML File',
-      description: 'Web format for online portfolios',
-      icon: Code,
+      id: 'word',
+      name: 'Word Document',
+      description: 'Editable format for Microsoft Word',
+      icon: FileText,
       color: 'bg-blue-500',
-      recommended: false
-    },
-    {
-      id: 'json',
-      name: 'JSON Data',
-      description: 'Raw data for backup or transfer',
-      icon: Database,
-      color: 'bg-green-500',
       recommended: false
     }
   ];
@@ -44,11 +36,8 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
         case 'pdf':
           await downloadPDF();
           break;
-        case 'html':
-          await downloadHTML();
-          break;
-        case 'json':
-          await downloadJSON();
+        case 'word':
+          await downloadWord();
           break;
       }
 
@@ -64,16 +53,15 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
 
   const downloadPDF = async () => {
     try {
-      // Use the actual template HTML as shown in preview
       const htmlContent = generateActualTemplateHTML();
+      const userName = resumeData?.contactInfo?.fullName || 'Resume';
+      const fileName = `${userName.replace(/[^a-zA-Z0-9]/g, '_')}_Resume`;
 
-      // Use browser's print-to-PDF functionality (Best for preserving styling)
-      toast('Opening print dialog. Select "Save as PDF" or "Microsoft Print to PDF" to download.', {
+      toast('Opening print dialog. Select "Save as PDF" to download.', {
         duration: 6000,
         icon: '🖨️'
       });
 
-      // Create a hidden iframe with the styled content
       const iframe = document.createElement('iframe');
       iframe.style.position = 'absolute';
       iframe.style.width = '0';
@@ -82,56 +70,45 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
       iframe.style.visibility = 'hidden';
       document.body.appendChild(iframe);
 
-      // Write content to iframe
       const iframeDoc = iframe.contentWindow.document;
       iframeDoc.open();
-      iframeDoc.write(htmlContent);
+      // Set the title so browsers suggest it as filename
+      iframeDoc.write(`<html><head><title>${fileName}</title></head><body>${htmlContent}</body></html>`);
       iframeDoc.close();
 
-      // Wait for content to load, then trigger print
       let printTriggered = false;
-
       iframe.contentWindow.onload = () => {
         if (!printTriggered) {
           printTriggered = true;
           setTimeout(() => {
             iframe.contentWindow.focus();
             iframe.contentWindow.print();
-
-            // Clean up after print dialog closes (give user time)
             setTimeout(() => {
-              if (iframe.parentNode) {
-                document.body.removeChild(iframe);
-              }
+              if (iframe.parentNode) document.body.removeChild(iframe);
             }, 1000);
           }, 500);
         }
       };
 
-      // Fallback: trigger onload manually if it doesn't fire within 2 seconds
       setTimeout(() => {
         if (!printTriggered && iframe.parentNode) {
           printTriggered = true;
           iframe.contentWindow.focus();
           iframe.contentWindow.print();
-
-          // Clean up
           setTimeout(() => {
-            if (iframe.parentNode) {
-              document.body.removeChild(iframe);
-            }
+            if (iframe.parentNode) document.body.removeChild(iframe);
           }, 1000);
         }
       }, 2000);
 
     } catch (error) {
       console.error('PDF download error:', error);
-
-      // Final fallback: download HTML
       const htmlContent = generateActualTemplateHTML();
+      const userName = resumeData?.contactInfo?.fullName || 'Resume';
+      const fileName = `${userName.replace(/[^a-zA-Z0-9]/g, '_')}_Resume.html`;
       const htmlBlob = new Blob([htmlContent], { type: 'text/html' });
-      downloadBlob(htmlBlob, 'resume.html', 'text/html');
-      toast('Downloaded as HTML. Open it and press Ctrl+P, then select "Save as PDF".', {
+      downloadBlob(htmlBlob, fileName, 'text/html');
+      toast('Downloaded as HTML. Open it and use Ctrl+P → Save as PDF.', {
         icon: 'ℹ️',
         duration: 6000
       });
@@ -140,26 +117,53 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
 
   const downloadHTML = async () => {
     const htmlContent = generateActualTemplateHTML();
+    const userName = resumeData?.contactInfo?.fullName || 'Resume';
+    const fileName = `${userName.replace(/[^a-zA-Z0-9]/g, '_')}_Resume.html`;
     const blob = new Blob([htmlContent], { type: 'text/html' });
-    downloadBlob(blob, 'resume.html', 'text/html');
+    downloadBlob(blob, fileName, 'text/html');
   };
 
-  const downloadJSON = async () => {
-    // Structure the JSON exactly as expected by FileUploadPage
-    const structuredData = {
-      selectedTemplate: selectedTemplate,
-      contactInfo: resumeData.contactInfo || {},
-      skills: resumeData.skills || { hardSkills: '', softSkills: '' },
-      workExperience: resumeData.workExperience || [],
-      projects: resumeData.projects || [],
-      education: resumeData.education || [],
-      certificates: resumeData.certificates || [],
-      Description: resumeData.Description || { UserDescription: '' }
-    };
+  const downloadWord = async () => {
+    try {
+      const htmlContent = generateActualTemplateHTML();
 
-    const jsonString = JSON.stringify(structuredData, null, 2);
-    const blob = new Blob([jsonString], { type: 'application/json' });
-    downloadBlob(blob, 'resume-data.json', 'application/json');
+      // Create Word-compatible HTML document
+      const wordDoc = `
+        <!DOCTYPE html>
+        <html xmlns:o='urn:schemas-microsoft-com:office:office' 
+              xmlns:w='urn:schemas-microsoft-com:office:word' 
+              xmlns='http://www.w3.org/TR/REC-html40'>
+        <head>
+          <meta charset="utf-8">
+          <title>Resume</title>
+          <!--[if gte mso 9]>
+          <xml>
+            <w:WordDocument>
+              <w:View>Print</w:View>
+              <w:Zoom>100</w:Zoom>
+            </w:WordDocument>
+          </xml>
+          <![endif]-->
+          <style>
+            body { font-family: Arial, sans-serif; margin: 1in; }
+            h1, h2, h3 { color: #333; }
+            p { line-height: 1.5; }
+          </style>
+        </head>
+        <body>
+          ${document.getElementById('capture-content')?.innerHTML || 'Resume content not found'}
+        </body>
+        </html>
+      `;
+
+      const blob = new Blob([wordDoc], { type: 'application/msword' });
+      const userName = resumeData?.contactInfo?.fullName || 'Resume';
+      downloadBlob(blob, `${userName.replace(/[^a-zA-Z0-9]/g, '_')}_Resume.doc`, 'application/msword');
+
+    } catch (error) {
+      console.error('Word download error:', error);
+      toast.error('Failed to generate Word document');
+    }
   };
 
   const generateActualTemplateHTML = () => {
@@ -395,7 +399,7 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
   };
 
   const getFileName = () => {
-    const name = resumeData.contactInfo?.name || 'Resume';
+    const name = resumeData.contactInfo?.fullName || 'Resume';
     const cleanName = name.replace(/[^a-zA-Z0-9]/g, '_');
     return cleanName;
   };
@@ -448,8 +452,8 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
                   <motion.div
                     key={format.id}
                     className={`relative border-2 rounded-lg p-4 cursor-pointer transition-all ${format.recommended
-                        ? 'border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20'
-                        : 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600'
+                      ? 'border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20'
+                      : 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600'
                       } ${isDownloaded ? 'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800' : ''}`}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}

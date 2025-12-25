@@ -656,7 +656,7 @@ const GetInfo = () => {
             <div className="space-y-2">
               <div className="peer">
                 <Suggestions
-                  label="Languages you are familiar with (Optional)"
+                  label="Languages you are familiar with"
                   placeholder="English, Hindi, Marathi"
                   value={isExampleProcessing ? ExampleJsonData.contactInfo.Languages : formData.contactInfo.Languages}
                   onChange={(val) => {
