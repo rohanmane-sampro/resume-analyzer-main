@@ -18,7 +18,8 @@ export default function ViewTemplates() {
     "Creative Blocks",
     "Minimalist Professional",
     "Tech-Focused Resume",
-    "Bold & Visual Design"
+    "Bold & Visual Design",
+    "Professional Developer"
   ];
 
   const items = [
@@ -94,6 +95,12 @@ export default function ViewTemplates() {
       title: titles[12],
       codeLink: "https://github.com/PrashantPKP/cv-templates/blob/main/cv12.html",
       templateLink: "https://prashantparshuramkar.host20.uk/cv-templates/cv12.html",
+    },
+    {
+      img: `${import.meta.env.BASE_URL}Temp/cv13.png`,
+      title: titles[13],
+      codeLink: "#/template/7",
+      templateLink: "#/template/7",
     },
   ];
 
