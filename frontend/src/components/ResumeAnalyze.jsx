@@ -558,9 +558,6 @@ const Dashboard = ({ data, onReset }) => {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
                 {/* Skill Radar - Column 1-7 */}
                 <div className="lg:col-span-7 bg-white dark:bg-slate-900 rounded-[3rem] p-10 border border-slate-200 dark:border-slate-800 shadow-xl shadow-indigo-500/5 relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover:scale-110 group-hover:opacity-[0.05] transition-all duration-700">
-                        <Layers size={300} strokeWidth={1} />
-                    </div>
 
                     <div className="flex items-center justify-between mb-10">
                         <h3 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-3">
