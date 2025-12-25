@@ -14,6 +14,8 @@ const PreviewPage = () => {
   const [aiEnhancedData, setAiEnhancedData] = useState(null);
   const [isEnhancing, setIsEnhancing] = useState(false);
   const [selectedVersion, setSelectedVersion] = useState('original'); // 'original' or 'enhanced'
+  const [atsScores, setAtsScores] = useState(null); // Store ATS scores
+  const [showAtsModal, setShowAtsModal] = useState(false); // Control ATS modal visibility
 
   // If no data, redirect back
   if (!resumeData) {
@@ -46,6 +48,13 @@ const PreviewPage = () => {
         const cleanedData = cleanupMarkdownInNonTargetSections(data.enhancedResume);
         setAiEnhancedData(cleanedData);
         setSelectedVersion('enhanced');
+
+        // Store ATS scores if available
+        if (data.atsScore) {
+          setAtsScores(data.atsScore);
+          setShowAtsModal(true); // Show the ATS score popup
+        }
+
         toast.success('Resume enhanced with AI!');
       } else {
         const errorData = await response.json();
@@ -299,6 +308,117 @@ const PreviewPage = () => {
     });
   };
 
+  // ATS Score Modal Component
+  const ATSScoreModal = () => {
+    if (!showAtsModal || !atsScores) return null;
+
+    const { original, enhanced, improvement } = atsScores;
+    const improvementColor = improvement > 0 ? 'text-green-400' : improvement < 0 ? 'text-red-400' : 'text-yellow-400';
+    const showWarning = enhanced.score < 70;
+
+    return (
+      <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full border border-gray-700 overflow-hidden max-h-[90vh] flex flex-col"
+        >
+          {/* Header */}
+          <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-6 text-center flex-shrink-0">
+            <Sparkles className="w-12 h-12 mx-auto mb-3 text-white" />
+            <h2 className="text-3xl font-bold text-white mb-2">ATS Score Analysis</h2>
+            <p className="text-blue-100">Your resume has been enhanced!</p>
+          </div>
+
+          {/* Score Comparison */}
+          <div className="p-8 overflow-y-auto flex-1">
+            <div className="grid grid-cols-2 gap-6 mb-6">
+              {/* Original Score */}
+              <div className="bg-gray-800/50 rounded-xl p-6 border border-gray-700 text-center">
+                <p className="text-gray-400 text-sm mb-2 uppercase tracking-wide">Original Score</p>
+                <div className="text-5xl font-bold text-gray-300 mb-2">{original.score}</div>
+                <div className="text-gray-500 text-sm">out of {original.maxScore}</div>
+                <div className="mt-3 h-2 bg-gray-700 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-gray-500 to-gray-400 transition-all duration-500"
+                    style={{ width: `${original.score}%` }}
+                  ></div>
+                </div>
+              </div>
+
+              {/* Enhanced Score */}
+              <div className="bg-gradient-to-br from-purple-900/30 to-blue-900/30 rounded-xl p-6 border border-purple-500 text-center">
+                <p className="text-purple-300 text-sm mb-2 uppercase tracking-wide">Enhanced Score</p>
+                <div className="text-5xl font-bold text-white mb-2">{enhanced.score}</div>
+                <div className="text-purple-200 text-sm">out of {enhanced.maxScore}</div>
+                <div className="mt-3 h-2 bg-gray-700 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-purple-500 to-blue-500 transition-all duration-500"
+                    style={{ width: `${enhanced.score}%` }}
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            {/* Improvement Badge */}
+            <div className="text-center mb-6">
+              <div className={`inline-flex items-center px-6 py-3 rounded-full bg-gray-800 border ${improvement > 0 ? 'border-green-500' : 'border-yellow-500'
+                }`}>
+                <span className="text-gray-300 mr-2">Improvement:</span>
+                <span className={`text-2xl font-bold ${improvementColor}`}>
+                  {improvement > 0 ? '+' : ''}{improvement} points
+                </span>
+              </div>
+            </div>
+
+            {/* Recommendation */}
+            <div className={`rounded-xl p-4 mb-6 ${showWarning
+              ? 'bg-yellow-900/20 border border-yellow-600'
+              : 'bg-green-900/20 border border-green-600'
+              }`}>
+              <p className={`text-sm ${showWarning ? 'text-yellow-200' : 'text-green-200'}`}>
+                <strong className="block mb-1">Recommendation:</strong>
+                {enhanced.recommendation}
+              </p>
+            </div>
+
+            {/* Warning for low score */}
+            {showWarning && (
+              <div className="bg-orange-900/20 border border-orange-600 rounded-xl p-4 mb-6">
+                <p className="text-orange-200 text-sm">
+                  <strong className="block mb-1">⚠️ Action Required:</strong>
+                  Add more skills and adapt skills within your domain to increase your ATS score.
+                  Include quantifiable achievements and specific technologies relevant to your field.
+                </p>
+              </div>
+            )}
+
+            {/* Score Breakdown */}
+            <div className="bg-gray-800/30 rounded-xl p-4 mb-6">
+              <h3 className="text-white font-semibold mb-3 text-sm uppercase tracking-wide">Score Breakdown:</h3>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                {Object.entries(enhanced.breakdown).map(([category, score]) => (
+                  <div key={category} className="flex justify-between items-center">
+                    <span className="text-gray-400 capitalize">{category}:</span>
+                    <span className="text-white font-medium">{Math.round(score)} pts</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Close Button */}
+            <button
+              onClick={() => setShowAtsModal(false)}
+              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200"
+            >
+              Continue to Enhanced Resume
+            </button>
+          </div>
+        </motion.div>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Use regular CSS instead of styled-jsx */}
@@ -505,6 +625,9 @@ const PreviewPage = () => {
           )}
         </div>
       </div>
+
+      {/* ATS Score Modal */}
+      <ATSScoreModal />
     </div>
   );
 };
