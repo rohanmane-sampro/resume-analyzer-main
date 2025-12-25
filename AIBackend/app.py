@@ -368,13 +368,13 @@ def test_ai():
         return jsonify({
             'status': 'success',
             'response': result,
-            'api_key_configured': bool(GEMINI_API_KEY)
+            'api_key_configured': bool(GROQ_API_KEY)
         })
     except Exception as e:
         return jsonify({
             'status': 'error',
             'error': str(e),
-            'api_key_configured': bool(GEMINI_API_KEY)
+            'api_key_configured': bool(GROQ_API_KEY)
         }), 500
 
 @app.route('/complete-resume', methods=['POST'])
@@ -695,7 +695,7 @@ def health_check():
     """Health check endpoint"""
     return jsonify({
         'status': 'healthy',
-        'ai_configured': bool(GEMINI_API_KEY),
+        'ai_configured': bool(GROQ_API_KEY),
         'service': 'Resume AI Assistant'
     })
 
