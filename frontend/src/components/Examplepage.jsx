@@ -2,23 +2,23 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 
-const Examplepage = ({ 
+const Examplepage = ({
   images = [
-      '/Resume-builder/Temp/cv1.png',
-      '/Resume-builder/Temp/cv2.png',
-      '/Resume-builder/Temp/cv3.png',
-      '/Resume-builder/Temp/cv4.png',
-      '/Resume-builder/Temp/cv5.png',
-      '/Resume-builder/Temp/cv6.png'
-    ], 
+    '/Resume-builder/Temp/cv1.png',
+    '/Resume-builder/Temp/cv2.png',
+    '/Resume-builder/Temp/cv3.png',
+    '/Resume-builder/Temp/cv4.png',
+    '/Resume-builder/Temp/cv5.png',
+    '/Resume-builder/Temp/cv6.png'
+  ],
   interval = 3000,
-  showIndicators = true 
+  showIndicators = true
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const [direction, setDirection] = useState(null); 
+  const [direction, setDirection] = useState(null);
   const slideContainerRef = useRef(null);
-  
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -31,7 +31,7 @@ const Examplepage = ({
 
   useEffect(() => {
     if (images.length <= 1) return;
-    
+
     const timer = setInterval(() => {
       setDirection('right');
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -65,17 +65,15 @@ const Examplepage = ({
     if (isMobile) {
       return "transition-all duration-500 ease-in-out px-4";
     }
-    
-    if (i === 1) { 
+
+    if (i === 1) {
       return "transition-all duration-700 ease-in-out px-4 scale-110 z-10 opacity-90";
-    } else if (i === 0) { 
-      return `transition-all duration-700 ease-in-out px-4 scale-90 opacity-70 ${
-        direction === 'left' ? 'translate-x-8' : ''
-      }`;
-    } else { 
-      return `transition-all duration-700 ease-in-out px-4 scale-90 opacity-70 ${
-        direction === 'right' ? 'translate-x-8' : ''
-      }`;
+    } else if (i === 0) {
+      return `transition-all duration-700 ease-in-out px-4 scale-90 opacity-70 ${direction === 'left' ? 'translate-x-8' : ''
+        }`;
+    } else {
+      return `transition-all duration-700 ease-in-out px-4 scale-90 opacity-70 ${direction === 'right' ? 'translate-x-8' : ''
+        }`;
     }
   };
 
@@ -104,9 +102,8 @@ const Examplepage = ({
             {images.map((_, index) => (
               <button
                 key={`indicator-${index}`}
-                className={`w-3 h-3 rounded-full transition-colors focus:outline-none ${
-                  index === currentIndex ? 'bg-blue-500' : 'bg-gray-400 hover:bg-gray-500 dark:bg-gray-300 dark:hover:bg-gray-400'
-                }`}
+                className={`w-3 h-3 rounded-full transition-colors focus:outline-none ${index === currentIndex ? 'bg-blue-500' : 'bg-gray-400 hover:bg-gray-500 dark:bg-gray-300 dark:hover:bg-gray-400'
+                  }`}
                 onClick={() => goToSlide(index)}
                 aria-label={`Go to slide ${index + 1}`}
                 aria-current={index === currentIndex ? 'true' : 'false'}

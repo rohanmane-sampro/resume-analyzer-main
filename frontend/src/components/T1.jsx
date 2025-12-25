@@ -253,14 +253,14 @@ const isValidUrl = (url) => {
 };
 
 export const T1 = ({ jsonData }) => {
-  const Education = jsonData.education.map((edu,index) => (
+  const Education = jsonData.education.map((edu, index) => (
     <div key={`Education-${index}`}>
       <div className="TextLight">
-        <b>{edu.graduationYear}<br/>{edu.institutionName}</b>
+        <b>{edu.graduationYear}<br />{edu.institutionName}</b>
       </div>
-      {edu.degreeName} <br/>
+      {edu.degreeName} <br />
       CGPA: {edu.currentCGPA}
-      <br/> <br />
+      <br /> <br />
     </div>
   ));
 
@@ -270,7 +270,7 @@ export const T1 = ({ jsonData }) => {
   let column2 = eachColumn;
   let column3 = eachColumn;
   let column4 = eachColumn;
-  
+
   if (skills.length % 4 === 1) {
     column1 += 1;
   } else if (skills.length % 4 === 2) {
@@ -321,7 +321,7 @@ export const T1 = ({ jsonData }) => {
         {we.companyName}
         <div>{we.WorkDuration}</div>
       </div>
-      ({we.jobTitle}) <br/>
+      ({we.jobTitle}) <br />
       <span dangerouslySetInnerHTML={{ __html: parseMarkdown(we.keyAchievements) }} /> <br />{index < column4 - 1 && <br />}
     </li>
   ));
@@ -335,114 +335,114 @@ export const T1 = ({ jsonData }) => {
 
   return (
     <StyledWrapper>
-    <div className="resume" id="capture-content">
-      <div className="header">
-        <h1>{jsonData.contactInfo.fullName}</h1>
-        <h2>{jsonData.contactInfo.jobTitle}</h2>
-      </div>
-
-      <div className="upperContent">
-        <div className="Contact">
-          <div className="section-title"><b>Contact</b> <i className="fas fa-address-card"></i></div>
-          <div className="Litem"><i className="fa fa-phone TextLight"></i> {jsonData.contactInfo.phoneNumber}</div>
-          <div className="Litem NoneDecorationBlack">
-            <i className="fas fa-envelope TextLight"></i> <a href={`mailto:${jsonData.contactInfo.emailAddress}`}>{jsonData.contactInfo.emailAddress.split('@')[0]}</a>
-          </div>
-          <div className="Litem NoneDecorationBlack">
-            <i className="fab fa-linkedin TextLight"></i> <a href={`https://www.linkedin.com/in/${jsonData.contactInfo.linkedin}`} target="_blank" rel="noreferrer">{jsonData.contactInfo.linkedin}</a>
-          </div>
-          <div className="Litem NoneDecorationBlack">
-            <i className="fas fa-globe TextLight"></i> <a href={isValidUrl(jsonData.contactInfo.portfolio) ? jsonData.contactInfo.portfolio : `https://github.com/${jsonData.contactInfo.portfolio}`} target="_blank" rel="noreferrer"> {jsonData.contactInfo.portfolio.replace(/^https?:\/\//, '')}</a>
-          </div>
-          <div className="Litem">
-            <i className="fa fa-map-marker TextLight"></i> {jsonData.contactInfo.Location}
-          </div><br/>
-        </div>
-        
-        <div className="Usection">
-          <div className="section-title"><b>Profile Summary</b></div>
-          <div className="Litem">
-            <p className="Ritem">{jsonData.Description.UserDescription}</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="content">
-        <div className="left">
-          <div className="SUsection">
-            <div className="section-title"><b>Education </b><i className="fas fa-graduation-cap"></i></div>
-            {Education}
-          </div>
-
-          <div className="section">
-            <div className="section-title"><b>Soft Skills </b><i className="fa fa-book"></i></div>
-            <ul>
-              {softSkillsList}
-              <br/>
-            </ul>
-          </div>
-
-          <div className="LDsection">
-            <div className="section-title"><b>Languages </b><i className="fa fa-language"></i></div>
-            <ul>
-              {languagesList}
-            </ul>
-          </div>
+      <div className="resume" id="capture-content">
+        <div className="header">
+          <h1>{jsonData.contactInfo.fullName}</h1>
+          <h2>{jsonData.contactInfo.jobTitle}</h2>
         </div>
 
-        <div className="right">
-          <div className="SUsection section">
-            <div className="section-title"><b>Projects</b></div>
-            <ul>
-              {projectsList}
-            </ul>
-          </div>
-          
-          {jsonData.workExperience && jsonData.workExperience.length > 0 && jsonData.workExperience[0].companyName && (
-          <div className="section">
-            <div className="section-title"><b>Work Experience</b></div>
-            <div className="Ritem">
-              <ul>
-                {workExpList}
-              </ul>
+        <div className="upperContent">
+          <div className="Contact">
+            <div className="section-title"><b>Contact</b> <i className="fas fa-address-card"></i></div>
+            <div className="Litem"><i className="fa fa-phone TextLight"></i> {jsonData.contactInfo.phoneNumber}</div>
+            <div className="Litem NoneDecorationBlack">
+              <i className="fas fa-envelope TextLight"></i> <a href={`mailto:${jsonData.contactInfo.emailAddress}`}>{jsonData.contactInfo.emailAddress.split('@')[0]}</a>
             </div>
-          </div>
-          )}
-
-          {jsonData.certificates && jsonData.certificates.length > 0 && jsonData.certificates[0].certificateName && (
-          <div className="section">
-            <div className="section-title"><b>Certificates</b></div>
-            <div className="Ritem">
-              {certificatesList}
+            <div className="Litem NoneDecorationBlack">
+              <i className="fab fa-linkedin TextLight"></i> <a href={`https://www.linkedin.com/in/${jsonData.contactInfo.linkedin}`} target="_blank" rel="noreferrer">{jsonData.contactInfo.linkedin}</a>
             </div>
+            <div className="Litem NoneDecorationBlack">
+              <i className="fas fa-globe TextLight"></i> <a href={isValidUrl(jsonData.contactInfo.portfolio) ? jsonData.contactInfo.portfolio : `https://github.com/${jsonData.contactInfo.portfolio}`} target="_blank" rel="noreferrer"> {jsonData.contactInfo.portfolio.replace(/^https?:\/\//, '')}</a>
+            </div>
+            <div className="Litem">
+              <i className="fa fa-map-marker TextLight"></i> {jsonData.contactInfo.Location}
+            </div><br />
           </div>
-          )}
 
-          <div className="skills">
-            <div className="section-title"><b>Technical Skills</b></div>
-            <div className="Ritem subcont">
-              <ul>
-                {HardSkillsColumn1}
-              </ul>
-              <ul>
-                {HardSkillsColumn2}
-              </ul>
-              <ul>
-                {HardSkillsColumn3}
-              </ul>
-              <ul>
-                {HardSkillsColumn4}
-              </ul>
+          <div className="Usection">
+            <div className="section-title"><b>Profile Summary</b></div>
+            <div className="Litem">
+              <p className="Ritem">{jsonData.Description.UserDescription}</p>
             </div>
           </div>
         </div>
+
+        <div className="content">
+          <div className="left">
+            <div className="SUsection">
+              <div className="section-title"><b>Education </b><i className="fas fa-graduation-cap"></i></div>
+              {Education}
+            </div>
+
+            <div className="section">
+              <div className="section-title"><b>Soft Skills </b><i className="fa fa-book"></i></div>
+              <ul>
+                {softSkillsList}
+                <br />
+              </ul>
+            </div>
+
+            <div className="LDsection">
+              <div className="section-title"><b>Languages </b><i className="fa fa-language"></i></div>
+              <ul>
+                {languagesList}
+              </ul>
+            </div>
+          </div>
+
+          <div className="right">
+            <div className="SUsection section">
+              <div className="section-title"><b>Projects</b></div>
+              <ul>
+                {projectsList}
+              </ul>
+            </div>
+
+            {jsonData.workExperience && jsonData.workExperience.length > 0 && jsonData.workExperience[0].companyName && (
+              <div className="section">
+                <div className="section-title"><b>Work Experience</b></div>
+                <div className="Ritem">
+                  <ul>
+                    {workExpList}
+                  </ul>
+                </div>
+              </div>
+            )}
+
+            {jsonData.certificates && jsonData.certificates.length > 0 && jsonData.certificates[0].certificateName && (
+              <div className="section">
+                <div className="section-title"><b>Certificates</b></div>
+                <div className="Ritem">
+                  {certificatesList}
+                </div>
+              </div>
+            )}
+
+            <div className="skills">
+              <div className="section-title"><b>Technical Skills</b></div>
+              <div className="Ritem subcont">
+                <ul>
+                  {HardSkillsColumn1}
+                </ul>
+                <ul>
+                  {HardSkillsColumn2}
+                </ul>
+                <ul>
+                  {HardSkillsColumn3}
+                </ul>
+                <ul>
+                  {HardSkillsColumn4}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </StyledWrapper>
+    </StyledWrapper>
   );
 };
 
-export const T1Css=`
+export const T1Css = `
     @media print {
       * {
         -webkit-print-color-adjust: exact !important;
@@ -469,18 +469,20 @@ export const T1Css=`
       .resume {
         width: 210mm !important;
         max-width: 210mm !important;
-        height: 297mm !important;
-        max-height: 297mm !important;
+        min-height: 297mm !important;
         margin: 0 auto !important;
         border-radius: 0 !important;
         border: none !important;
         padding: 15mm !important;
         box-shadow: none !important;
-        page-break-after: avoid !important;
-        overflow: hidden !important;
+        overflow: visible !important;
       }
       
       .header, .section {
+        page-break-inside: avoid !important;
+      }
+      
+      .experience-item, .project-item, .Ritem, .Litem {
         page-break-inside: avoid !important;
       }
     }

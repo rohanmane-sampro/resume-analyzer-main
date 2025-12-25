@@ -1,8 +1,8 @@
 
 
 import React, { useContext, useEffect } from "react";
-import Typed from "typed.js"; 
-import {Eye} from 'lucide-react';
+import Typed from "typed.js";
+import { Eye } from 'lucide-react';
 import Examplepages from './Examplepage.jsx'
 import { useNavigate } from 'react-router-dom';
 import { ThemeContext } from "./ThemeContext.jsx";
@@ -10,44 +10,44 @@ import { ThemeContext } from "./ThemeContext.jsx";
 import Switch from "./Switch.jsx";
 
 const features = [
-  "Create a professional resume in just 8 to 10 minutes — fast, stress-free, and efficient.",
-  "Assistant Bot helps guide you through each step of the resume-building process.",
-  "Choose from high-performing, ATS-optimized templates designed to get you hired.",
-  "Preview your resume live as you enter information — complete transparency and control.",
-  "Professionally designed layouts for every role, industry, and experience level.",
-  "Your data is never saved or shared — full privacy and security ensured.",
-  "Export your resume in multiple formats: PDF, HTML/CSS, and JSON database.",
-  "Use auto-filled JSON to skip re-entering data on future visits — save time effortlessly.",
-  "Get smart, real-time suggestions to improve your content as you type.",
-  "Each section is structured using proven resume-writing practices backed by HR research.",
-  "Browse and compare multiple templates instantly under the Generated Resumes section.",
-  "Supports light/dark themes and responsive layout for all screen sizes."
+  "AI-powered resume analysis with instant ATS compatibility scoring.",
+  "Create professional resumes in minutes with intelligent formatting.",
+  "Real-time suggestions to optimize your resume content for maximum impact.",
+  "Choose from ATS-optimized templates designed by industry experts.",
+  "Comprehensive resume analysis including keyword optimization and formatting checks.",
+  "Smart content recommendations based on your industry and experience level.",
+  "Export your resume in multiple formats: PDF, HTML/CSS, and JSON.",
+  "Privacy-first approach — your data is never saved or shared.",
+  "Live preview as you build — see changes in real-time.",
+  "AI-powered content enhancement to make your achievements stand out.",
+  "Supports multiple resume templates for different industries and roles.",
+  "Mobile-responsive design with light/dark theme support."
 ];
 
 
-const FrontPage=({views})=>{
-  const navigate=useNavigate();
+const FrontPage = ({ views }) => {
+  const navigate = useNavigate();
 
-  const handleContinue=()=>{
+  const handleContinue = () => {
     navigate('/FileUploadPage');
   };
 
-  const handleViewTemplates=()=>{
+  const handleViewTemplates = () => {
     navigate('/ViewTemplates');
   };
 
-  const handleAboutUs=()=>{
+  const handleAboutUs = () => {
     navigate('/AboutUs');
   };
 
-  const { isDark, setIsDark }=useContext(ThemeContext);
+  const { isDark, setIsDark } = useContext(ThemeContext);
 
-  const handleTheme=()=>{
-    setIsDark((prev)=>!prev);
+  const handleTheme = () => {
+    setIsDark((prev) => !prev);
   };
 
-  useEffect(()=>{
-    const typedMobile=new Typed("#mobile-typing-text",{
+  useEffect(() => {
+    const typedMobile = new Typed("#mobile-typing-text", {
       strings: features,
       loop: true,
       typeSpeed: 20,
@@ -56,7 +56,7 @@ const FrontPage=({views})=>{
       cursorChar: " ",
     });
 
-    const typed=new Typed("#desktop-typing-text",{
+    const typed = new Typed("#desktop-typing-text", {
       strings: features,
       loop: true,
       typeSpeed: 20,
@@ -65,119 +65,144 @@ const FrontPage=({views})=>{
       cursorChar: " "
     });
 
-    return ()=>{
+    return () => {
       typedMobile.destroy();
       typed.destroy();
     };
   }, []);
 
   return (
-    <div className="flex flex-col h-screen bg-white text-center px-4 dark:bg-slate-950">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 text-center px-4">
       {/* Desktop Navigation */}
-      <div className="hidden md:flex justify-between items-center w-full px-6 py-4 bg-white/80 backdrop-blur-lg shadow-lg rounded-3xl mt-4 dark:bg-slate-800/80 border border-gray-200/50 dark:border-slate-700/50">
-        <div className="flex items-center gap-3">
-          <button 
-            className="mr-2 mt-1 transition-transform hover:scale-110"
-            title="The Dark/Light mode will be chosen randomly on each refresh, allowing users to experience both modes. You can also set it as you prefer"
-            onClick={handleTheme}>
-              <Switch/>
-          </button>
-         
-          <button
-            className="px-5 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-2xl hover:from-blue-600 hover:to-indigo-700 hover:scale-105 transition-all duration-300 shadow-md hover:shadow-xl font-medium"
-            onClick={handleViewTemplates}
-            title="View Generated resume samples"
-          >
-            Generated Resumes
-          </button>
-        </div>
-        
-        <h1 className="text-2xl ml-10 font-bold no-underline flex items-center gap-2">
-          <a href="#" title="AI-Powered Resume Builder" target="_blank" className="cursor-default flex items-center gap-2">
-            <span className="text-1xl">✨</span>
-            <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent font-extrabold">
-              AI-Powered Resume Builder
-            </span>
-          </a>
-        </h1>
-        <div className="flex space-x-3 items-center">
-          <div className="flex items-center gap-2 px-3 py-2 bg-gray-100 dark:bg-slate-700 rounded-xl dark:text-gray-200 font-medium" title="Number of peoples Engaged here">
-            <Eye className="w-5 h-5" />
-            <span className="text-sm">{views}</span>
+      <nav className="hidden md:flex justify-between items-center w-full px-8 py-4 sampro-nav">
+        <div className="flex items-center gap-2">
+          <div className="w-10 h-10 bg-teal-500 rounded-lg flex items-center justify-center">
+            <span className="text-white font-bold text-xl">S</span>
           </div>
-          <button className="px-5 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-2xl hover:from-green-600 hover:to-emerald-700 hover:scale-105 transition-all duration-300 shadow-md hover:shadow-xl font-medium" title="our contributions and contact information" onClick={handleAboutUs}>
-            About Us
+          <h1 className="text-2xl font-bold text-white">
+            SAMPRO <span className="text-teal-400">AI</span>
+          </h1>
+        </div>
+
+        <div className="flex items-center gap-1">
+          <button className="sampro-nav-link active" onClick={() => window.location.href = '/'}>
+            Home
           </button>
-          <button className="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl hover:from-purple-700 hover:to-pink-700 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl font-semibold" title="Continue filling details and craft future jobs" onClick={handleContinue}>
-            Continue ➤
+          <button className="sampro-nav-link" onClick={handleContinue}>
+            Create Resume
+          </button>
+          <button className="sampro-nav-link" onClick={handleContinue}>
+            Resume Analysis
+          </button>
+          <button className="sampro-nav-link" onClick={handleViewTemplates}>
+            Features
+          </button>
+          <button className="sampro-nav-link" onClick={handleAboutUs}>
+            About
           </button>
         </div>
-      </div>
+
+        <div className="flex items-center gap-3">
+          <button
+            className="transition-transform hover:scale-110"
+            title="Toggle dark/light mode"
+            onClick={handleTheme}>
+            <Switch />
+          </button>
+        </div>
+      </nav>
 
       {/* Desktop Hero Section */}
-      <div className="hidden md:flex flex-col items-center justify-center flex-1 mt-6 mb-3">
-        <div className="mb-6 text-center max-w-4xl">
-          <h1 className="text-3xl font-extrabold mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-            Level Up Your First Impression
+      <div className="hidden md:flex flex-col items-center justify-center flex-1 mt-12 mb-8 sampro-hero">
+        <div className="mb-8 text-center max-w-4xl px-4">
+          <h1 className="text-5xl font-extrabold mb-6 text-slate-800 leading-tight">
+            Master Your Career<br />with AI-Powered Resumes
           </h1>
-          <div className="flex items-center justify-center gap-2 px-6 py-3 bg-purple-50 dark:bg-purple-900/20 rounded-full border border-purple-200 dark:border-purple-700 inline-flex mx-auto">
-            <span className="text-xl">🤖</span>
-            <span className="text-lg font-medium text-purple-700 dark:text-purple-300">AI-Enhanced Resume Creation</span>
-            <span className="text-xl">✨</span>
+          <p className="text-lg text-slate-600 mb-8 max-w-2xl mx-auto">
+            Experience the future of resume building. AI-powered analysis, ATS optimization, and professional templates powered by SamproAI.
+          </p>
+
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold text-slate-800 mb-4">Start Your Journey</h3>
+            <p className="text-slate-600 mb-6">Select a mode to begin your AI-powered resume creation.</p>
+
+            <div className="flex gap-4 justify-center">
+              <button className="sampro-btn-primary" onClick={handleContinue}>
+                Create Resume
+              </button>
+              <button className="sampro-btn-secondary" onClick={handleViewTemplates}>
+                View Templates
+              </button>
+            </div>
           </div>
         </div>
-        <Examplepages />    
-        <div className="mt-6 mb-8 px-6 py-3 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md rounded-2xl shadow-lg min-h-[60px] flex items-center justify-center max-w-4xl">
-          <span id="desktop-typing-text" className="hidden md:inline-block text-base md:text-lg text-gray-800 dark:text-white font-normal"></span>
+
+        <Examplepages />
+
+        <div className="mt-8 mb-8 px-6 py-4 sampro-card min-h-[80px] flex items-center justify-center max-w-4xl">
+          <span id="desktop-typing-text" className="hidden md:inline-block text-base md:text-lg text-slate-700 font-normal"></span>
         </div>
       </div>
 
 
       {/* Mobile View */}
-      <div className="flex md:hidden justify-between items-center w-full px-6 py-3 bg-white/80 backdrop-blur-lg shadow-lg mt-6 rounded-3xl dark:bg-slate-800/80 border border-gray-200/50 dark:border-slate-700/50">
-        <button 
-          className="text-2xl mr-4 mt-1 transition-transform hover:scale-110"
-          title="The Dark/Light mode will be chosen randomly on each refresh, allowing users to experience both modes. You can also set it to your preferred mode."
-          onClick={handleTheme}>
-            <Switch/>
-        </button>
+      <nav className="flex md:hidden justify-between items-center w-full px-6 py-4 sampro-nav">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-teal-500 rounded-lg flex items-center justify-center">
+            <span className="text-white font-bold text-lg">S</span>
+          </div>
+          <h1 className="text-xl font-bold text-white">
+            SAMPRO <span className="text-teal-400">AI</span>
+          </h1>
+        </div>
 
-        <div className="md:hidden flex space-x-3">
-          <button className="px-5 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full hover:from-purple-700 hover:to-pink-700 shadow-md hover:shadow-lg transition-all duration-300 font-semibold" onClick={handleContinue}>
-            Continue ➤
+        <div className="flex items-center gap-3">
+          <button
+            className="transition-transform hover:scale-110"
+            onClick={handleTheme}>
+            <Switch />
+          </button>
+          <button className="px-4 py-2 bg-teal-600 text-white rounded-lg font-semibold" onClick={handleContinue}>
+            Start
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile Hero Section */}
+      <div className="md:hidden flex justify-center flex-col items-center flex-grow px-4 py-8 sampro-hero">
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl sm:text-4xl font-extrabold mb-4 text-slate-800 leading-tight">
+            Master Your Career with AI-Powered Resumes
+          </h1>
+          <p className="text-base text-slate-600 mb-6">
+            AI-powered resume analysis and building for your success.
+          </p>
+        </div>
+
+        <div className="w-full max-w-md px-4 py-3 sampro-card mb-6">
+          <span id="mobile-typing-text" className="md:hidden text-sm sm:text-base text-slate-700 font-normal block min-h-[50px]"></span>
+        </div>
+
+        <div className="flex flex-col gap-3 w-full max-w-md">
+          <button
+            onClick={handleContinue}
+            className="sampro-btn-primary w-full"
+          >
+            Create Resume
+          </button>
+          <button
+            onClick={handleViewTemplates}
+            className="sampro-btn-secondary w-full"
+          >
+            View Templates
           </button>
         </div>
       </div>
 
-      {/* Mobile Hero Section */}
-      <div className="md:hidden flex justify-center flex-col items-center flex-grow px-4">
-        <div className="mb-6 text-center">
-          <h1 className="text-4xl sm:text-5xl font-extrabold mb-3 dark:text-white">
-            <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 bg-clip-text text-transparent animate-pulse">
-              AI-Powered
-            </span>
-          </h1>
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white mb-4">
-            Resume Builder
-          </h2>
-        </div>
-        
-        <div className="w-full max-w-md px-4 py-3 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md rounded-2xl shadow-lg mb-6">
-          <span id="mobile-typing-text" className="md:hidden text-sm sm:text-base text-gray-800 dark:text-white font-normal block min-h-[50px]"></span>
-        </div>
-        
-        <button
-          onClick={handleViewTemplates}
-          className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-2xl hover:from-blue-600 hover:to-indigo-700 shadow-lg hover:shadow-xl transition-all duration-300 font-bold mb-4"
-        >
-          View Generated Templates
-        </button>
-      </div>
-
-      <div className="md:hidden absolute bottom-6 font-bold text-gray-800 left-1/2 -translate-x-1/2 text-center dark:text-white/80">
+      <div className="md:hidden absolute bottom-6 left-1/2 -translate-x-1/2 text-center">
         <button
           onClick={handleAboutUs}
-          className="cursor-pointer dark:text-gray-300 px-6 py-2 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-full hover:bg-white/70 dark:hover:bg-slate-800/70 transition-all duration-300"
+          className="text-slate-600 px-6 py-2 sampro-card hover:bg-slate-100 transition-all duration-300 font-medium"
         >
           About Us
         </button>
