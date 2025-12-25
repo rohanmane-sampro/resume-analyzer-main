@@ -20,19 +20,6 @@ export default function ViewTemplates() {
     "Tech-Focused Resume",
     "Bold & Visual Design"
   ];
-    "Default Classic",
-    "Simpler & Structured",
-    "Linear & Classic",
-    "Colourful & Attractive",
-    "Colourful & Highly Designed",
-    "Simpler & Linear",
-    "Highly Simpler & Classic",
-    "Elegant Modern Touch",
-    "Creative Blocks",
-    "Minimalist Professional",
-    "Tech-Focused Resume",
-    "Bold & Visual Design"
-  ];
 
   const items = [
     {
@@ -45,7 +32,6 @@ export default function ViewTemplates() {
       img: `${import.meta.env.BASE_URL}Temp/cv2.png`,
       title: titles[2],
       codeLink: "https://github.com/PrashantPKP/cv-templates/blob/main/cv2.html",
-      templateLink: "https://prashantparshuramkar.host20.uk/cv-templates/cv2.html",
       templateLink: "https://prashantparshuramkar.host20.uk/cv-templates/cv2.html",
     },
     {
