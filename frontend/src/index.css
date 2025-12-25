@@ -1,5 +1,50 @@
-
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* SAMPRO AI Custom Styles - Light Theme */
+@layer base {
+    body {
+        @apply bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50;
+        min-height: 100vh;
+    }
+}
+
+@layer components {
+
+    /* Navigation Styles */
+    .sampro-nav {
+        @apply bg-slate-800/95 backdrop-blur-lg border-b border-slate-700/50;
+    }
+
+    .sampro-nav-link {
+        @apply text-gray-300 hover:text-white transition-colors duration-200 px-4 py-2 rounded-lg hover:bg-slate-700/50;
+    }
+
+    .sampro-nav-link.active {
+        @apply text-white bg-slate-700/50;
+    }
+
+    /* Hero Section Styles */
+    .sampro-hero {
+        @apply text-slate-800;
+    }
+
+    .sampro-gradient-text {
+        @apply bg-gradient-to-r from-teal-600 via-cyan-600 to-blue-600 bg-clip-text text-transparent;
+    }
+
+    /* Button Styles */
+    .sampro-btn-primary {
+        @apply px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105;
+    }
+
+    .sampro-btn-secondary {
+        @apply px-6 py-3 bg-white border-2 border-slate-300 hover:border-slate-400 text-slate-700 rounded-lg font-semibold transition-all duration-300 hover:bg-slate-50;
+    }
+
+    /* Card Styles */
+    .sampro-card {
+        @apply bg-white/80 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200;
+    }
+}
