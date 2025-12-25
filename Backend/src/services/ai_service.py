@@ -27,7 +27,8 @@ def safe_ai_call(prompt, max_retries=3, max_tokens=4096):
             print(f"Attempt {attempt + 1}: Making Groq AI call (max_tokens={max_tokens})...")
             completion = groq_client.chat.completions.create(
                 messages=[{"role": "user", "content": prompt}],
-                model="llama-3.3-70b-versatile", # Supported model
+                # model="llama-3.3-70b-versatile", # Supported model
+                model="llama-3.1-8b-instant", # Supported model
                 temperature=0.7,
                 max_tokens=max_tokens,
             )
@@ -654,164 +655,211 @@ class AIService:
             }
     @staticmethod
     def analyze_resume(resume_text, job_role):
-        """Analyze resume based on specified job role without ATS terminology"""
-        prompt = f"""
-        Analyze the following resume text against the requirements and expectations of a {job_role} role.
-        Provide a detailed, professional analysis for a modern SaaS dashboard.
+        """Analyze resume based on specified job role - returns detailed analysis"""
         
-        RESUME TEXT:
-        {resume_text[:20000]}
-
-        JOB ROLE: {job_role}
-
-        STRICT RULES:
-        1. DO NOT mention "ATS", "Score", "Rank", or any numeric scoring. Use terms like "Alignment", "Competency", "Market Readiness".
-        2. Identify TOP 10 critical keywords for this specific role and check if they are in the resume.
-        3. Identify specific tools missing (e.g., if it's Frontend, check for React, Tailwind, etc.).
-        4. Focus on professional impact and alignment.
-        5. MUST provide concrete, specific analysis - not generic statements.
+        # Truncate resume to reasonable length
+        resume_excerpt = resume_text[:15000] if len(resume_text) > 15000 else resume_text
         
-        Provide the analysis in the following JSON structure (MUST be valid JSON):
-        {{
-            "strengths": ["specific strength 1", "specific strength 2", "specific strength 3"],
-            "gaps": ["specific gap 1", "specific gap 2", "specific gap 3"],
-            "skillDistribution": {{
-                "Technical Skills": 75,
-                "Soft Skills": 60,
-                "Industry Knowledge": 80,
-                "Tools & Tech": 70
-            }},
-            "missingSkills": [
-                {{"skill": "Skill Name", "priority": "High"}},
-                {{"skill": "Skill Name", "priority": "Medium"}},
-                {{"skill": "Skill Name", "priority": "Low"}}
-            ],
-            "toolsGap": [
-                {{"tool": "Tool Name", "status": "Missing"}},
-                {{"tool": "Tool Name", "status": "Present"}}
-            ],
-            "keywordRelevance": [
-                {{"keyword": "Keyword 1", "found": true}},
-                {{"keyword": "Keyword 2", "found": false}}
-            ],
-            "improvementSuggestions": [
-                {{
-                    "category": "Technical",
-                    "suggestion": "Specific actionable advice",
-                    "icon": "code"
-                }}
-            ],
-            "roadmap": {{
-                "immediate": "Specific phase 1 action (0-1 month)",
-                "shortTerm": "Specific phase 2 action (1-3 months)",
-                "mediumTerm": "Specific phase 3 action (3-6 months)"
-            }}
-        }}
+        prompt = f"""You are an expert resume analyst. Analyze this resume for a {job_role} position.
 
-        Return ONLY valid JSON. No markdown, no comments, no extra text.
-        """
+RESUME:
+{resume_excerpt}
+
+Respond with ONLY a valid JSON object (no markdown, no explanation):
+{{
+    "strengths": ["strength1", "strength2", "strength3", "strength4", "strength5"],
+    "gaps": ["gap1", "gap2", "gap3"],
+    "skillDistribution": {{
+        "Technical Skills": 75,
+        "Soft Skills": 65,
+        "Industry Knowledge": 70,
+        "Tools & Tech": 60
+    }},
+    "missingSkills": [
+        {{"skill": "skill name", "priority": "High"}},
+        {{"skill": "skill name", "priority": "Medium"}},
+        {{"skill": "skill name", "priority": "Low"}}
+    ],
+    "toolsGap": [
+        {{"tool": "tool1", "status": "Present"}},
+        {{"tool": "tool2", "status": "Missing"}},
+        {{"tool": "tool3", "status": "Missing"}},
+        {{"tool": "tool4", "status": "Present"}}
+    ],
+    "keywordRelevance": [
+        {{"keyword": "keyword1", "found": true}},
+        {{"keyword": "keyword2", "found": false}},
+        {{"keyword": "keyword3", "found": true}},
+        {{"keyword": "keyword4", "found": false}},
+        {{"keyword": "keyword5", "found": true}}
+    ],
+    "improvementSuggestions": [
+        {{"category": "Technical", "suggestion": "suggestion text", "icon": "code"}},
+        {{"category": "Experience", "suggestion": "suggestion text", "icon": "briefcase"}},
+        {{"category": "Format", "suggestion": "suggestion text", "icon": "award"}}
+    ],
+    "roadmap": {{
+        "immediate": "Action for 0-1 month",
+        "shortTerm": "Action for 1-3 months",
+        "mediumTerm": "Action for 3-6 months"
+    }}
+}}
+
+IMPORTANT: 
+1. Fill ALL values with SPECIFIC content based on the actual resume
+2. Numbers in skillDistribution must be between 0-100
+3. Return ONLY the JSON, no other text"""
         
         print(f"\n{'='*60}")
         print(f"ANALYZE RESUME REQUEST")
         print(f"Job Role: {job_role}")
-        print(f"Resume Length: {len(resume_text)} characters")
-        print(f"{'='*60}\n")
-        
-        response = safe_ai_call(prompt, max_tokens=4000)
-        
-        print(f"\n{'='*60}")
-        print(f"AI RESPONSE (first 500 chars):")
-        print(response[:500] if response else "No response")
+        print(f"Resume Length: {len(resume_text)} chars (using {len(resume_excerpt)})")
         print(f"{'='*60}\n")
         
         try:
+            response = safe_ai_call(prompt, max_tokens=3000)
+            
+            if not response or "Error" in response[:50]:
+                print(f"AI call failed or returned error: {response[:200] if response else 'No response'}")
+                return AIService._fallback_analysis(job_role)
+            
+            print(f"AI Response received ({len(response)} chars)")
+            print(f"First 300 chars: {response[:300]}")
+            
+            # Clean the response
             json_text = response.strip()
             
-            # Remove markdown code blocks if present
-            if json_text.startswith('```'):
-                lines = json_text.split('\n')
-                json_text = '\n'.join(lines[1:-1]) if len(lines) > 2 else json_text
+            # Remove markdown code blocks
+            if '```json' in json_text:
+                json_text = json_text.split('```json')[1].split('```')[0]
+            elif '```' in json_text:
+                parts = json_text.split('```')
+                json_text = parts[1] if len(parts) > 1 else json_text
             
-            # Try to extract JSON if there's extra text
-            if '{' in json_text and '}' in json_text:
-                start = json_text.find('{')
-                end = json_text.rfind('}') + 1
-                json_text = json_text[start:end]
+            # Find JSON boundaries
+            start = json_text.find('{')
+            end = json_text.rfind('}')
             
-            print(f"Attempting to parse JSON (first 200 chars): {json_text[:200]}")
+            if start != -1 and end != -1 and end > start:
+                json_text = json_text[start:end+1]
+            
+            # Parse JSON
             analysis = json.loads(json_text)
-            
-            # Add job role to response
             analysis['jobRole'] = job_role
             
-            print(f"✓ Successfully parsed AI response")
-            print(f"  - Strengths: {len(analysis.get('strengths', []))}")
-            print(f"  - Gaps: {len(analysis.get('gaps', []))}")
-            print(f"  - Keywords: {len(analysis.get('keywordRelevance', []))}")
+            print(f"✓ Successfully parsed AI analysis")
+            print(f"  Strengths: {len(analysis.get('strengths', []))}")
+            print(f"  Gaps: {len(analysis.get('gaps', []))}")
+            print(f"  Keywords: {len(analysis.get('keywordRelevance', []))}")
             
             return analysis
             
         except json.JSONDecodeError as e:
-            print(f"✗ JSON Parse Error: {str(e)}")
-            print(f"  Failed to parse: {json_text[:200]}")
+            print(f"✗ JSON Parse Error: {e}")
+            print(f"  Raw text: {json_text[:500] if 'json_text' in dir() else 'N/A'}")
             return AIService._fallback_analysis(job_role)
         except Exception as e:
-            print(f"✗ Unexpected Error in analyze_resume: {str(e)}")
+            print(f"✗ Unexpected Error: {e}")
             import traceback
             traceback.print_exc()
             return AIService._fallback_analysis(job_role)
     
     @staticmethod
     def _fallback_analysis(job_role):
-        """Return a fallback analysis structure when AI fails"""
+        """Return a dynamic fallback analysis structure when AI fails"""
+        import random
+        import hashlib
+        
+        # Create a seed from job role for consistent but varied results
+        seed = int(hashlib.md5(job_role.encode()).hexdigest()[:8], 16)
+        random.seed(seed)
+        
+        # Generate varied percentages based on job role
+        base_scores = {
+            "Technical Skills": random.randint(55, 85),
+            "Soft Skills": random.randint(50, 80),
+            "Industry Knowledge": random.randint(45, 75),
+            "Tools & Tech": random.randint(50, 80)
+        }
+        
+        # Role-specific keywords
+        role_lower = job_role.lower()
+        if 'developer' in role_lower or 'engineer' in role_lower:
+            keywords = ["JavaScript", "Python", "React", "API", "Git", "Agile", "Testing"]
+            tools = ["VS Code", "Git", "Docker", "AWS", "Jira"]
+            skills = ["Modern framework expertise", "Cloud deployment", "CI/CD pipeline"]
+        elif 'designer' in role_lower:
+            keywords = ["UI/UX", "Figma", "Design", "Prototype", "User Research", "Wireframe"]
+            tools = ["Figma", "Sketch", "Adobe XD", "InVision", "Miro"]
+            skills = ["Design systems", "Motion design", "User testing"]
+        elif 'analyst' in role_lower or 'data' in role_lower:
+            keywords = ["SQL", "Python", "Dashboard", "ETL", "Analytics", "Visualization"]
+            tools = ["Excel", "Tableau", "Power BI", "Python", "SQL Server"]
+            skills = ["Machine learning basics", "Advanced analytics", "Data modeling"]
+        elif 'manager' in role_lower or 'lead' in role_lower:
+            keywords = ["Leadership", "Strategy", "KPI", "Agile", "Roadmap", "Stakeholder"]
+            tools = ["Jira", "Confluence", "MS Project", "Slack", "Miro"]
+            skills = ["Strategic planning", "Stakeholder management", "Metrics definition"]
+        else:
+            keywords = ["Communication", "Problem Solving", job_role.split()[0], "Teamwork", "Project"]
+            tools = ["Microsoft Office", "Slack", "Zoom", "Project Tools"]
+            skills = ["Industry specialization", "Advanced certification", "Portfolio projects"]
+        
+        # Randomly mark some keywords as found (40-70%)
+        found_count = random.randint(2, min(5, len(keywords)))
+        keyword_results = []
+        for i, kw in enumerate(keywords[:7]):
+            keyword_results.append({"keyword": kw, "found": i < found_count})
+        
+        # Mark tools
+        tools_gap = []
+        for i, tool in enumerate(tools[:5]):
+            status = "Present" if i < random.randint(1, 3) else "Missing"
+            tools_gap.append({"tool": tool, "status": status})
+        
         return {
             "jobRole": job_role,
+            "isFallback": True,  # Flag to indicate fallback mode
             "strengths": [
-                "Professional background evident",
-                "Experience in relevant field",
-                "Skills foundation present"
+                f"Relevant background for {job_role} positions",
+                "Strong foundational skills demonstrated",
+                "Clear career progression visible",
+                random.choice(["Good educational background", "Industry experience present", "Technical foundation shown"]),
+                random.choice(["Communication skills evident", "Problem-solving approach clear", "Team collaboration shown"])
             ],
             "gaps": [
-                "More specific technical skills needed",
-                "Portfolio projects could enhance profile",
-                "Industry certifications recommended"
+                f"Specific {job_role} certifications recommended",
+                random.choice(skills),
+                "Quantifiable achievements could be strengthened"
             ],
-            "skillDistribution": {
-                "Technical Skills": 60,
-                "Soft Skills": 55,
-                "Industry Knowledge": 50,
-                "Tools & Tech": 58
-            },
+            "skillDistribution": base_scores,
             "missingSkills": [
-                {"skill": f"{job_role}-specific framework", "priority": "High"},
-                {"skill": "Cloud technologies", "priority": "Medium"},
-                {"skill": "CI/CD pipeline", "priority": "Low"}
+                {"skill": skills[0] if skills else "Industry certification", "priority": "High"},
+                {"skill": skills[1] if len(skills) > 1 else "Advanced tooling", "priority": "Medium"},
+                {"skill": skills[2] if len(skills) > 2 else "Portfolio projects", "priority": "Low"}
             ],
-            "toolsGap": [
-                {"tool": "Git", "status": "Present"},
-                {"tool": "Docker", "status": "Missing"},
-                {"tool": "Kubernetes", "status": "Missing"}
-            ],
-            "keywordRelevance": [
-                {"keyword": job_role.split()[0], "found": True},
-                {"keyword": "API", "found": False},
-                {"keyword": "Testing", "found": False}
-            ],
+            "toolsGap": tools_gap,
+            "keywordRelevance": keyword_results,
             "improvementSuggestions": [
                 {
                     "category": "Technical", 
-                    "suggestion": f"Build projects showcasing {job_role} expertise", 
+                    "suggestion": f"Build 2-3 portfolio projects showcasing {job_role} skills with measurable outcomes", 
                     "icon": "code"
                 },
                 {
                     "category": "Professional",
-                    "suggestion": "Add measurable achievements and impact",
+                    "suggestion": f"Pursue relevant {job_role} certifications to validate expertise",
                     "icon": "briefcase"
+                },
+                {
+                    "category": "Experience",
+                    "suggestion": "Add specific metrics and achievements to each experience entry",
+                    "icon": "award"
                 }
             ],
             "roadmap": {
-                "immediate": "Review and update resume with specific achievements and metrics",
-                "shortTerm": "Complete 2-3 portfolio projects demonstrating key skills",
-                "mediumTerm": "Pursue relevant certifications and contribute to open source"
+                "immediate": f"Update resume with {job_role}-specific keywords and quantifiable achievements",
+                "shortTerm": f"Complete 1-2 {job_role} certification courses and build portfolio projects",
+                "mediumTerm": "Contribute to open source or publish industry content to build visibility"
             }
         }

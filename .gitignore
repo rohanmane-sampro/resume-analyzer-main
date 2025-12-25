@@ -33,10 +33,14 @@ venv.bak/
 
 # Environment Variables
 .env
+.env.*
 .env.local
 .env.*.local
+*.env
 AIBackend/.env
 Backend/.env
+backend/.env
+**/.env
 
 # Node.js
 node_modules/
