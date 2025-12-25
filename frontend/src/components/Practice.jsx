@@ -21,18 +21,18 @@ const Result = () => {
         <p className="text-[16px] text-red-500 dark:text-amber-300 font-bold text-center">
           The server is not connected to the frontend. <br />
           Please refer to the instructions provided in the Git repository: <br />
-          <a 
-            href="#" 
+          <a
+            href="#"
             target='_blank'
             className="text-blue-600 dark:text-blue-400 no-underline hover:underline"
           >
             <strong>AI-Powered-Resume-Builder</strong>
           </a> <br />
-          or contact with us <br /> <a href="mailto:prashantparshuramkar9146@gmail.com" className="text-blue-600 dark:text-blue-400 no-underline hover:underline">prashantparshuramkar9146@gmail.com</a>
+          or contact support for assistance.
         </p>
       ) : (
         <div className="relative w-[220px] h-[320px] rounded-[14px] overflow-hidden flex flex-col items-center justify-center shadow-[20px_20px_60px_#bebebe,-20px_-20px_60px_#ffffff] dark:shadow-[20px_20px_60px_#1a1a1a,-20px_-20px_60px_#2a2a2a] transition-all duration-300">
-          
+
           {/* Blob with custom animation */}
           <div className="absolute top-1/2 left-1/2 w-[200px] h-[200px] rounded-full bg-[#3449ff] dark:bg-gray-200 opacity-100 filter blur-[8px] animate-blob-bounce transition-colors duration-300"></div>
 

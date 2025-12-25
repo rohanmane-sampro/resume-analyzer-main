@@ -59,7 +59,7 @@ const App = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 2000);
+    }, 800); // Reduced from 2000ms for faster startup
     return () => clearTimeout(timer);
   }, []);
 

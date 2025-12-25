@@ -241,8 +241,8 @@ const GetInfo = () => {
   const handleVerify = (e) => {
     if (e.key === "Enter" || e.key == "Tab" || pin.length == 6) {
       if (pin === "2025") {
-        setExampleJsonData(JsonFiles[0]); // Load Prashant's data
-        toast.success("Authorized - Prashant's data loaded", {
+        setExampleJsonData(JsonFiles[0]); // Load Sample data 1
+        toast.success("Authorized - Sample data loaded", {
           duration: 3000,
           position: "top-right",
         });
@@ -1808,12 +1808,9 @@ const GetInfo = () => {
           </div>
           <div className={`whitespace-pre-line dark:text-slate-300 p-3 md:p-1 ${isExampleProcessing ? "hidden" : "block"}`}>
             <div className="flex items-center mb-3">
-              <img
-                src="https://prashantparshuramkar.host20.uk/cv-templates/resume-icon.png"
-                alt="N"
-                width="40"
-                height="40"
-              />
+              <div className="w-10 h-10 bg-teal-500 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-xl">S</span>
+              </div>
               <div className="ml-2">
                 <span className="font-semibold pb-[2px]">Assistant Bot</span>
                 <div className="w-[75%] h-[3px] bg-blue-800 mx-auto mt-1 rounded dark:bg-amber-500"></div>

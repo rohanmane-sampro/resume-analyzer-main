@@ -218,7 +218,7 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
       ${templateCss}
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="icon" href="https://prashantparshuramkar.host20.uk/cv-templates/resume-icon.png">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2314b8a6'/><text x='50' y='70' font-size='60' font-weight='bold' text-anchor='middle' fill='white'>S</text></svg>">
 </head>
 <body>
     ${templateHTML}
@@ -448,8 +448,8 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
                   <motion.div
                     key={format.id}
                     className={`relative border-2 rounded-lg p-4 cursor-pointer transition-all ${format.recommended
-                        ? 'border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20'
-                        : 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600'
+                      ? 'border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20'
+                      : 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600'
                       } ${isDownloaded ? 'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800' : ''}`}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}

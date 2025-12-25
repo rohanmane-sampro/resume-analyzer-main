@@ -62,12 +62,12 @@ const Result = () => {
           <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Designed by BRAVERS</title>
+            <title>Sampro-AI Resume</title>
             <style>
               ${Css}
             </style>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-            <link rel="icon" href="https://prashantparshuramkar.host20.uk/cv-templates/resume-icon.png">
+            <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2314b8a6'/><text x='50' y='70' font-size='60' font-weight='bold' text-anchor='middle' fill='white'>S</text></svg>">
           </head>
           <body>
             ${unformattedHTML.innerHTML}
