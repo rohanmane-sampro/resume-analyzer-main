@@ -1838,17 +1838,15 @@ const GetInfo = () => {
           </div>
           <div className={`whitespace-pre-line dark:text-slate-300 p-3 md:p-1 ${isExampleProcessing ? "hidden" : "block"}`}>
             <div className="flex items-center mb-3">
-              <img
-                src="https://prashantparshuramkar.host20.uk/cv-templates/resume-icon.png"
-                alt="N"
-                width="40"
-                height="40"
-              />
+              <div className="w-10 h-10 bg-teal-500 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-xl">S</span>
+              </div>
               <div className="ml-2">
                 <span className="font-semibold pb-[2px]">Assistant Bot</span>
                 <div className="w-[75%] h-[3px] bg-blue-800 mx-auto mt-1 rounded dark:bg-amber-500"></div>
               </div>
-            </div><span id="Suggestion-typing-text" className={` ${i === 2 && Number(formData.selectedTemplate) === 4 ? 'text-red-700 dark:text-red-400' : 'text-lime-700 dark:text-lime-400'}`}></span>
+            </div>
+            <span id="Suggestion-typing-text" className="text-lime-700 dark:text-lime-400"></span>
           </div>
         </div>
       </div>
