@@ -44,9 +44,12 @@ const Examplepage = ({
     if (isMobile) {
       return [currentIndex];
     } else {
-      const prevIndex = (currentIndex - 1 + images.length) % images.length;
-      const nextIndex = (currentIndex + 1) % images.length;
-      return [prevIndex, currentIndex, nextIndex];
+      // Show 4 slides on desktop
+      const indices = [];
+      for (let i = -1; i <= 2; i++) {
+        indices.push((currentIndex + i + images.length) % images.length);
+      }
+      return indices;
     }
   };
 
@@ -63,24 +66,29 @@ const Examplepage = ({
 
   const getSlideClasses = (i) => {
     if (isMobile) {
-      return "transition-all duration-500 ease-in-out px-4";
+      return "transition-all duration-700 ease-in-out px-4";
     }
 
+    // For desktop with 4 slides
     if (i === 1) {
-      return "transition-all duration-700 ease-in-out px-4 scale-110 z-10 opacity-90";
+      // Main center-left slide
+      return "transition-all duration-700 ease-in-out px-3 scale-105 z-20 opacity-100";
+    } else if (i === 2) {
+      // Main center-right slide
+      return "transition-all duration-700 ease-in-out px-3 scale-105 z-20 opacity-100";
     } else if (i === 0) {
-      return `transition-all duration-700 ease-in-out px-4 scale-90 opacity-70 ${direction === 'left' ? 'translate-x-8' : ''
-        }`;
+      // Left side slide
+      return "transition-all duration-700 ease-in-out px-3 scale-90 opacity-60";
     } else {
-      return `transition-all duration-700 ease-in-out px-4 scale-90 opacity-70 ${direction === 'right' ? 'translate-x-8' : ''
-        }`;
+      // Right side slide
+      return "transition-all duration-700 ease-in-out px-3 scale-90 opacity-60";
     }
   };
 
   return (
-    <div className="w-[65%] overflow-hidden">
+    <div className="w-[85%] overflow-hidden">
       <div className="w-full overflow-hidden py-8" ref={slideContainerRef}>
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center gap-2">
           {visibleIndices.map((index, i) => (
             <div
               key={`slide-${index}`}
@@ -89,7 +97,7 @@ const Examplepage = ({
               <img
                 src={images[index]}
                 alt={`Slide ${index + 1}`}
-                className="w-full h-auto object-contain rounded-lg shadow dark:filter dark:brightness-90"
+                className="w-full h-auto object-contain rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 dark:filter dark:brightness-90"
               />
             </div>
           ))}

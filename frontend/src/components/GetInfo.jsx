@@ -186,10 +186,13 @@ const GetInfo = () => {
       setFormData(UserjsonData);
       setIsExampleProcessing(false);
 
-      // Set all steps as completed and go to last step
+      // Set all steps as completed except template selection
       if (UserjsonData.selectedTemplate) {
-        setCurrentStep(7); // Last step - Description
-        setCompletedSteps(new Set([0, 1, 2, 3, 4, 5, 6, 7]));
+        setCurrentStep(0); // Start at Template selection
+        setCompletedSteps(new Set([1, 2, 3, 4, 5, 6, 7])); // Mark other steps as completed
+      } else {
+        setCurrentStep(0); // Start at Template selection
+        setCompletedSteps(new Set([1, 2, 3, 4, 5, 6, 7])); // Mark data steps as completed
       }
     }
   }, [UserjsonData, location.state]);
@@ -1766,8 +1769,8 @@ const GetInfo = () => {
               }
               onClick={handleNext}
               className={`flex items-center gap-2 px-6 py-2 mt-5 text-white rounded-full transition-all duration-300 ${NextError
-                  ? "bg-red-500 hover:bg-red-600 scale-105 cursor-not-allowed"
-                  : "bg-blue-600 hover:bg-blue-700"
+                ? "bg-red-500 hover:bg-red-600 scale-105 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700"
                 }`}
             >
               {currentStep === steps.length - 1 ? "Submit" : "Next"}
