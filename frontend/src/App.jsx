@@ -12,6 +12,7 @@ import GoogleVarification from './components/GoogleVarification.jsx';
 import ViewTemplates from './components/ViewTemplates.jsx';
 import HtmlToPdfConverter from './components/HmlToPdf.jsx'
 import FileUploadPage from './components/FileUploadPage.jsx';
+import Features from './components/Features.jsx';
 import Loader from './components/Loader.jsx'
 // import T5 from './components/T5.jsx'
 
@@ -81,6 +82,7 @@ const App = () => {
         <Route path="/Preview" element={<PreviewPage />} />
         <Route path="/Result" element={<Result />} />
         <Route path="/ViewTemplates" element={<ViewTemplates />} />
+        <Route path="/Features" element={<Features />} />
       </Routes>
     </div>
   );

@@ -439,33 +439,47 @@ class AIService:
     @staticmethod
     def generate_profile_suggestions(job_title, skills, experience_level='mid'):
         prompt = f"""
-        Create 3 different professional summary suggestions for a {job_title} with {experience_level}-level experience.
+        Create 3 SHORT, ATS-optimized professional summary suggestions for a {job_title} with {experience_level}-level experience.
         Skills: {skills}
         
-        Each suggestion should be:
-        - 2-3 sentences long
-        - Professional and impactful
-        - ATS-optimized with relevant keywords
-        - Unique in tone and focus
+        CRITICAL REQUIREMENTS:
+        - Each suggestion must be EXACTLY 3 lines
+        - Each line should be concise (around 40-50 characters)
+        - Focus on ATS keywords and quantifiable achievements
+        - Use industry-specific terminology
+        - Include relevant skills from the provided skills list
+        - NO fluff or generic statements
+        - Make each line impactful and keyword-rich
         
-        Suggestion 1: Achievement-focused
-        Suggestion 2: Skills-focused  
-        Suggestion 3: Industry-focused
+        Format for each suggestion (3 separate lines):
+        Line 1: Role/expertise statement with key skills
+        Line 2: Achievement or technical proficiency
+        Line 3: Impact or specialization focus
+        
+        Each suggestion should be:
+        - Professional and direct
+        - Keyword-rich for ATS systems
+        - Achievement or skill-focused
+        - Unique in approach
+        
+        Suggestion 1: Results-driven with quantifiable achievements
+        Suggestion 2: Skills and technology-focused
+        Suggestion 3: Industry expertise and impact-focused
         
         Format as JSON:
         {{
             "suggestions": [
                 {{
-                    "title": "Achievement-Focused",
-                    "text": "suggestion text here"
+                    "title": "Results-Driven Professional",
+                    "text": "Line 1 here. Line 2 here. Line 3 here."
                 }},
                 {{
-                    "title": "Skills-Focused", 
-                    "text": "suggestion text here"
+                    "title": "Technical Expert", 
+                    "text": "Line 1 here. Line 2 here. Line 3 here."
                 }},
                 {{
-                    "title": "Industry-Focused",
-                    "text": "suggestion text here"
+                    "title": "Industry Specialist",
+                    "text": "Line 1 here. Line 2 here. Line 3 here."
                 }}
             ]
         }}
@@ -481,20 +495,23 @@ class AIService:
                 json_text = json_text[:-3]
             suggestions = json.loads(json_text)
         except:
-            # Fallback suggestions if AI fails
+            # Fallback suggestions - 3 lines, SHORT and ATS-friendly
+            skill_list = skills.split(',')[:3] if skills else ['relevant technologies']
+            skill_str = ', '.join([s.strip() for s in skill_list])
+            
             suggestions = {
                 "suggestions": [
                     {
-                        "title": "Achievement-Focused",
-                        "text": f"Results-driven {job_title} with proven track record of delivering high-quality solutions and exceeding performance targets. Demonstrated expertise in driving organizational success through innovative problem-solving and strategic thinking."
+                        "title": "Results-Driven Professional",
+                        "text": f"{job_title} with proven expertise in {skill_str}. Delivered high-impact solutions driving measurable business results. Specialized in data-driven decision making and process optimization."
                     },
                     {
-                        "title": "Skills-Focused",
-                        "text": f"Skilled {job_title} with comprehensive expertise in {skills.split(',')[0] if skills else 'relevant technologies'}. Strong analytical and technical abilities combined with excellent communication skills to deliver impactful results."
+                        "title": "Technical Expert",
+                        "text": f"Skilled {job_title} proficient in {skill_str}. Strong technical foundation with hands-on project experience. Committed to innovation and continuous improvement."
                     },
                     {
-                        "title": "Industry-Focused", 
-                        "text": f"Professional {job_title} passionate about leveraging cutting-edge technologies and industry best practices. Committed to continuous learning and delivering exceptional value to organizations and stakeholders."
+                        "title": "Industry Specialist", 
+                        "text": f"Experienced {job_title} leveraging {skill_str} for business success. Applied analytical skills to solve complex challenges. Passionate about delivering value through technology."
                     }
                 ]
             }
