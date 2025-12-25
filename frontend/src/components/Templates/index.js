@@ -8,6 +8,7 @@ export { T3, T3Css } from './T3.jsx';
 export { T4, T4Css } from './T4.jsx';
 export { T5, T5Css } from './T5.jsx';
 export { T6, T6Css } from './T6.jsx';
+export { T7, T7Css } from './T7.jsx';
 
 // Template Configuration
 export const TEMPLATE_CONFIG = {
@@ -17,7 +18,8 @@ export const TEMPLATE_CONFIG = {
     4: { name: 'Executive Premium', component: 'T4', cssName: 'T4Css' },
     5: { name: 'Tech Starter', component: 'T5', cssName: 'T5Css' },
     6: { name: 'Simple Clean', component: 'T6', cssName: 'T6Css' },
+    7: { name: 'Professional Developer', component: 'T7', cssName: 'T7Css' },
 };
 
 // Template Count
-export const TOTAL_TEMPLATES = 6;
+export const TOTAL_TEMPLATES = 7;
