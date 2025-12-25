@@ -16,7 +16,7 @@ const features = [
   "Choose from professionally-optimized templates designed by industry experts.",
   "Comprehensive resume analysis including keyword optimization and formatting checks.",
   "Smart content recommendations based on your industry and experience level.",
-  "Export your resume in multiple formats: PDF, HTML/CSS, and JSON.",
+  "Export your resume in multiple formats: PDF, Word.",
   "Privacy-first approach — your data is never saved or shared.",
   "Live preview as you build — see changes in real-time.",
   "AI-powered content enhancement to make your achievements stand out.",
