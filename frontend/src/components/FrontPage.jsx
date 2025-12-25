@@ -10,10 +10,10 @@ import { ThemeContext } from "./ThemeContext.jsx";
 import Switch from "./Switch.jsx";
 
 const features = [
-  "AI-powered resume analysis with instant ATS compatibility scoring.",
+  "AI-powered resume analysis with instant role-specific optimization suggestions.",
   "Create professional resumes in minutes with intelligent formatting.",
   "Real-time suggestions to optimize your resume content for maximum impact.",
-  "Choose from ATS-optimized templates designed by industry experts.",
+  "Choose from professionally-optimized templates designed by industry experts.",
   "Comprehensive resume analysis including keyword optimization and formatting checks.",
   "Smart content recommendations based on your industry and experience level.",
   "Export your resume in multiple formats: PDF, HTML/CSS, and JSON.",
@@ -42,6 +42,10 @@ const FrontPage = ({ views }) => {
 
   const handleAboutUs = () => {
     navigate('/AboutUs');
+  };
+
+  const handleAnalyze = () => {
+    navigate('/ResumeAnalyze');
   };
 
   const { isDark, setIsDark } = useContext(ThemeContext);
@@ -202,6 +206,12 @@ const FrontPage = ({ views }) => {
             className="sampro-btn-secondary w-full"
           >
             View Templates
+          </button>
+          <button
+            onClick={handleAnalyze}
+            className="sampro-btn-secondary w-full border-indigo-200"
+          >
+            Resume Analyze
           </button>
         </div>
       </div>

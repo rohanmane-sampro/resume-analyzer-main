@@ -1,5 +1,4 @@
 
-
 import React, { useState, useEffect, useRef } from 'react';
 import toast from "react-hot-toast";
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -11,6 +10,7 @@ import { T4, T4Css } from './T4.jsx';
 import { T5, T5Css } from './T5.jsx';
 import { T6, T6Css } from './T6.jsx';
 import DownloadModal from './DownloadModal.jsx';
+import { ENDPOINTS } from '../apiConfig';
 
 const Result = () => {
   const [status, setStatus] = useState('preparing'); // 'preparing', 'waking', 'processing', 'completed', 'error'
@@ -72,7 +72,7 @@ const Result = () => {
               ${Css}
             </style>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-            <link rel="icon" href="hhttps://prashantparshuramkar.host20.uk/cv-templates/resume-icon.png">
+            <link rel="icon" href="https://prashantparshuramkar.host20.uk/cv-templates/resume-icon.png">
           </head>
           <body>
             ${unformattedHTML.innerHTML}
@@ -89,7 +89,7 @@ const Result = () => {
       setStatus('processing');
 
       try {
-        const response = await fetch("https://html2pdf-backend.onrender.com/generate-pdf", {
+        const response = await fetch(ENDPOINTS.GENERATE_PDF, {
 
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

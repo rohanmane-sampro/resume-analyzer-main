@@ -645,10 +645,173 @@ class AIService:
                 'data': parsed_data
             }
             
-        except json.JSONDecodeError as e:
-            print(f"JSON parsing error: {e}")
-            print(f"Response was: {response[:500]}...")
-            raise Exception(f"Failed to parse AI response as JSON: {str(e)}")
         except Exception as e:
             print(f"Error in AI parsing: {e}")
-            raise
+            return {
+                'success': False,
+                'error': str(e),
+                'data': None
+            }
+    @staticmethod
+    def analyze_resume(resume_text, job_role):
+        """Analyze resume based on specified job role without ATS terminology"""
+        prompt = f"""
+        Analyze the following resume text against the requirements and expectations of a {job_role} role.
+        Provide a detailed, professional analysis for a modern SaaS dashboard.
+        
+        RESUME TEXT:
+        {resume_text[:20000]}
+
+        JOB ROLE: {job_role}
+
+        STRICT RULES:
+        1. DO NOT mention "ATS", "Score", "Rank", or any numeric scoring. Use terms like "Alignment", "Competency", "Market Readiness".
+        2. Identify TOP 10 critical keywords for this specific role and check if they are in the resume.
+        3. Identify specific tools missing (e.g., if it's Frontend, check for React, Tailwind, etc.).
+        4. Focus on professional impact and alignment.
+        5. MUST provide concrete, specific analysis - not generic statements.
+        
+        Provide the analysis in the following JSON structure (MUST be valid JSON):
+        {{
+            "strengths": ["specific strength 1", "specific strength 2", "specific strength 3"],
+            "gaps": ["specific gap 1", "specific gap 2", "specific gap 3"],
+            "skillDistribution": {{
+                "Technical Skills": 75,
+                "Soft Skills": 60,
+                "Industry Knowledge": 80,
+                "Tools & Tech": 70
+            }},
+            "missingSkills": [
+                {{"skill": "Skill Name", "priority": "High"}},
+                {{"skill": "Skill Name", "priority": "Medium"}},
+                {{"skill": "Skill Name", "priority": "Low"}}
+            ],
+            "toolsGap": [
+                {{"tool": "Tool Name", "status": "Missing"}},
+                {{"tool": "Tool Name", "status": "Present"}}
+            ],
+            "keywordRelevance": [
+                {{"keyword": "Keyword 1", "found": true}},
+                {{"keyword": "Keyword 2", "found": false}}
+            ],
+            "improvementSuggestions": [
+                {{
+                    "category": "Technical",
+                    "suggestion": "Specific actionable advice",
+                    "icon": "code"
+                }}
+            ],
+            "roadmap": {{
+                "immediate": "Specific phase 1 action (0-1 month)",
+                "shortTerm": "Specific phase 2 action (1-3 months)",
+                "mediumTerm": "Specific phase 3 action (3-6 months)"
+            }}
+        }}
+
+        Return ONLY valid JSON. No markdown, no comments, no extra text.
+        """
+        
+        print(f"\n{'='*60}")
+        print(f"ANALYZE RESUME REQUEST")
+        print(f"Job Role: {job_role}")
+        print(f"Resume Length: {len(resume_text)} characters")
+        print(f"{'='*60}\n")
+        
+        response = safe_ai_call(prompt, max_tokens=4000)
+        
+        print(f"\n{'='*60}")
+        print(f"AI RESPONSE (first 500 chars):")
+        print(response[:500] if response else "No response")
+        print(f"{'='*60}\n")
+        
+        try:
+            json_text = response.strip()
+            
+            # Remove markdown code blocks if present
+            if json_text.startswith('```'):
+                lines = json_text.split('\n')
+                json_text = '\n'.join(lines[1:-1]) if len(lines) > 2 else json_text
+            
+            # Try to extract JSON if there's extra text
+            if '{' in json_text and '}' in json_text:
+                start = json_text.find('{')
+                end = json_text.rfind('}') + 1
+                json_text = json_text[start:end]
+            
+            print(f"Attempting to parse JSON (first 200 chars): {json_text[:200]}")
+            analysis = json.loads(json_text)
+            
+            # Add job role to response
+            analysis['jobRole'] = job_role
+            
+            print(f"✓ Successfully parsed AI response")
+            print(f"  - Strengths: {len(analysis.get('strengths', []))}")
+            print(f"  - Gaps: {len(analysis.get('gaps', []))}")
+            print(f"  - Keywords: {len(analysis.get('keywordRelevance', []))}")
+            
+            return analysis
+            
+        except json.JSONDecodeError as e:
+            print(f"✗ JSON Parse Error: {str(e)}")
+            print(f"  Failed to parse: {json_text[:200]}")
+            return AIService._fallback_analysis(job_role)
+        except Exception as e:
+            print(f"✗ Unexpected Error in analyze_resume: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            return AIService._fallback_analysis(job_role)
+    
+    @staticmethod
+    def _fallback_analysis(job_role):
+        """Return a fallback analysis structure when AI fails"""
+        return {
+            "jobRole": job_role,
+            "strengths": [
+                "Professional background evident",
+                "Experience in relevant field",
+                "Skills foundation present"
+            ],
+            "gaps": [
+                "More specific technical skills needed",
+                "Portfolio projects could enhance profile",
+                "Industry certifications recommended"
+            ],
+            "skillDistribution": {
+                "Technical Skills": 60,
+                "Soft Skills": 55,
+                "Industry Knowledge": 50,
+                "Tools & Tech": 58
+            },
+            "missingSkills": [
+                {"skill": f"{job_role}-specific framework", "priority": "High"},
+                {"skill": "Cloud technologies", "priority": "Medium"},
+                {"skill": "CI/CD pipeline", "priority": "Low"}
+            ],
+            "toolsGap": [
+                {"tool": "Git", "status": "Present"},
+                {"tool": "Docker", "status": "Missing"},
+                {"tool": "Kubernetes", "status": "Missing"}
+            ],
+            "keywordRelevance": [
+                {"keyword": job_role.split()[0], "found": True},
+                {"keyword": "API", "found": False},
+                {"keyword": "Testing", "found": False}
+            ],
+            "improvementSuggestions": [
+                {
+                    "category": "Technical", 
+                    "suggestion": f"Build projects showcasing {job_role} expertise", 
+                    "icon": "code"
+                },
+                {
+                    "category": "Professional",
+                    "suggestion": "Add measurable achievements and impact",
+                    "icon": "briefcase"
+                }
+            ],
+            "roadmap": {
+                "immediate": "Review and update resume with specific achievements and metrics",
+                "shortTerm": "Complete 2-3 portfolio projects demonstrating key skills",
+                "mediumTerm": "Pursue relevant certifications and contribute to open source"
+            }
+        }

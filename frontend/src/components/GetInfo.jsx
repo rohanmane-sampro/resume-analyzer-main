@@ -1629,7 +1629,7 @@ const GetInfo = () => {
                       }`}
                   >
                     <img
-                      src={`/Resume-builder/Temp/cv${template}.png`}
+                      src={`${import.meta.env.BASE_URL}Temp/cv${template}.png`}
                       alt={`Template ${template}`}
                       className="w-full h-auto rounded-lg dark:filter dark:brightness-90"
                     />

@@ -3,6 +3,7 @@ import { ArrowLeft, Brain, Download, Sparkles, RefreshCw } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLocation, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { ENDPOINTS } from '../apiConfig';
 import { T1 } from './T1.jsx';
 import { T2 } from './T2.jsx';
 import { T3 } from './T3.jsx';
@@ -28,7 +29,7 @@ const PreviewPage = () => {
   const enhanceWithAI = async () => {
     setIsEnhancing(true);
     try {
-      const response = await fetch('http://localhost:5000/complete-resume', {
+      const response = await fetch(ENDPOINTS.COMPLETE_RESUME, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -423,8 +424,8 @@ const PreviewPage = () => {
                 <button
                   onClick={() => setSelectedVersion('original')}
                   className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${selectedVersion === 'original'
-                      ? 'bg-gray-600 text-white'
-                      : 'text-gray-400 hover:text-white'
+                    ? 'bg-gray-600 text-white'
+                    : 'text-gray-400 hover:text-white'
                     }`}
                 >
                   Original
@@ -432,8 +433,8 @@ const PreviewPage = () => {
                 <button
                   onClick={() => setSelectedVersion('enhanced')}
                   className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${selectedVersion === 'enhanced'
-                      ? 'bg-gray-600 text-white'
-                      : 'text-gray-400 hover:text-white'
+                    ? 'bg-gray-600 text-white'
+                    : 'text-gray-400 hover:text-white'
                     }`}
                 >
                   <Sparkles className="w-4 h-4 mr-1 inline" />
@@ -462,8 +463,8 @@ const PreviewPage = () => {
           {/* Status Banner */}
           {aiEnhancedData && (
             <div className={`mb-6 p-4 rounded-lg text-center ${selectedVersion === 'enhanced'
-                ? 'bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-700 text-purple-200'
-                : 'bg-gray-800/50 border border-gray-700 text-gray-300'
+              ? 'bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-700 text-purple-200'
+              : 'bg-gray-800/50 border border-gray-700 text-gray-300'
               }`}>
               {selectedVersion === 'enhanced'
                 ? '✨ Viewing AI-Enhanced Resume with improved content, keywords, and professional formatting'

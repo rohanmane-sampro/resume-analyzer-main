@@ -20,28 +20,42 @@ export default function ViewTemplates() {
     "Tech-Focused Resume",
     "Bold & Visual Design"
   ];
+    "Default Classic",
+    "Simpler & Structured",
+    "Linear & Classic",
+    "Colourful & Attractive",
+    "Colourful & Highly Designed",
+    "Simpler & Linear",
+    "Highly Simpler & Classic",
+    "Elegant Modern Touch",
+    "Creative Blocks",
+    "Minimalist Professional",
+    "Tech-Focused Resume",
+    "Bold & Visual Design"
+  ];
 
   const items = [
     {
-      img: "/Resume-builder/Temp/cv1.png",
+      img: `${import.meta.env.BASE_URL}Temp/cv1.png`,
       title: titles[1],
       codeLink: "https://github.com/PrashantPKP/cv-templates/blob/main/cv1.html",
       templateLink: "https://prashantparshuramkar.host20.uk/cv-templates/cv1.html",
     },
     {
-      img: "/Resume-builder/Temp/cv2.png",
+      img: `${import.meta.env.BASE_URL}Temp/cv2.png`,
       title: titles[2],
       codeLink: "https://github.com/PrashantPKP/cv-templates/blob/main/cv2.html",
       templateLink: "https://prashantparshuramkar.host20.uk/cv-templates/cv2.html",
+      templateLink: "https://prashantparshuramkar.host20.uk/cv-templates/cv2.html",
     },
     {
-      img: "/Resume-builder/Temp/cv3.png",
+      img: `${import.meta.env.BASE_URL}Temp/cv3.png`,
       title: titles[3],
       codeLink: "https://github.com/PrashantPKP/cv-templates/blob/main/cv3.html",
       templateLink: "https://prashantparshuramkar.host20.uk/cv-templates/cv3.html",
     },
     {
-      img: "/Resume-builder/Temp/cv4.png",
+      img: `${import.meta.env.BASE_URL}Temp/cv4.png`,
       title: titles[4],
       codeLink: "https://github.com/PrashantPKP/cv-templates/blob/main/cv4.html",
       templateLink: "https://prashantparshuramkar.host20.uk/cv-templates/cv4.html",
@@ -54,31 +68,31 @@ export default function ViewTemplates() {
     },
 
     {
-      img: "/Resume-builder/Temp/cv6.png",
+      img: `${import.meta.env.BASE_URL}Temp/cv6.png`,
       title: titles[6],
       codeLink: "https://github.com/PrashantPKP/cv-templates/blob/main/cv6.html",
       templateLink: "https://prashantparshuramkar.host20.uk/cv-templates/cv6.html",
     },
     {
-      img: "/Resume-builder/Temp/cv7.png",
+      img: `${import.meta.env.BASE_URL}Temp/cv7.png`,
       title: titles[7],
       codeLink: "https://github.com/PrashantPKP/cv-templates/blob/main/cv7.html",
       templateLink: "https://prashantparshuramkar.host20.uk/cv-templates/cv7.html",
     },
     {
-      img: "/Resume-builder/Temp/cv8.png",
+      img: `${import.meta.env.BASE_URL}Temp/cv8.png`,
       title: titles[8],
       codeLink: "https://github.com/PrashantPKP/cv-templates/blob/main/cv8.html",
       templateLink: "https://prashantparshuramkar.host20.uk/cv-templates/cv8.html",
     },
     {
-      img: "/Resume-builder/Temp/cv9.png",
+      img: `${import.meta.env.BASE_URL}Temp/cv9.png`,
       title: titles[9],
       codeLink: "https://github.com/PrashantPKP/cv-templates/blob/main/cv9.html",
       templateLink: "https://prashantparshuramkar.host20.uk/cv-templates/cv9.html",
     },
     {
-      img: "/Resume-builder/Temp/cv10.png",
+      img: `${import.meta.env.BASE_URL}Temp/cv10.png`,
       title: titles[10],
       codeLink: "https://github.com/PrashantPKP/cv-templates/blob/main/cv10.html",
       templateLink: "https://prashantparshuramkar.host20.uk/cv-templates/cv10.html",
