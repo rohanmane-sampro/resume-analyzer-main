@@ -304,14 +304,6 @@ const Result = () => {
                 ← Back to Editor
               </button>
             </div>
-            <div className="dark:text-gray-200 font-bold">
-              <br />
-              🔧 Suggest Improvements:{" "}
-              <a href="#/AboutUs" className="text-green-600 hover:underline dark:text-green-400">
-                Go to About Us
-              </a>
-            </div>
-
           </div>
         )}
 
