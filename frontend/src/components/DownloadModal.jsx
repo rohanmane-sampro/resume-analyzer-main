@@ -72,8 +72,8 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
 
       const iframeDoc = iframe.contentWindow.document;
       iframeDoc.open();
-      // Set the title so browsers suggest it as filename
-      iframeDoc.write(`<html><head><title>${fileName}</title></head><body>${htmlContent}</body></html>`);
+      // Write the COMPLETE HTML with all styles
+      iframeDoc.write(htmlContent);
       iframeDoc.close();
 
       let printTriggered = false;
@@ -217,7 +217,31 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
     <title>${userName}</title>
     <!-- RESUME_DATA: ${JSON.stringify(embeddedData).replace(/-->/g, '--&gt;')} -->
     <style>
+      /* Force print color adjustment for all browsers */
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+      }
+      
+      /* Template-specific CSS */
       ${templateCss}
+      
+      /* Print-specific rules to preserve formatting */
+      @media print {
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+        body {
+          margin: 0;
+          padding: 0;
+        }
+        @page {
+          margin: 0;
+          size: A4;
+        }
+      }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="icon" href="https://prashantparshuramkar.host20.uk/cv-templates/resume-icon.png">

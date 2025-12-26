@@ -235,11 +235,13 @@ const Result = () => {
     <div className="flex flex-col items-center justify-center min-h-screen w-full bg-gray-100 dark:bg-slate-800 px-4 py-8 transition-colors duration-300">
       {/* Always render the template but keep it visible with proper sizing */}
       <div
-        id="capture-content"
         className={`text-left transition-all duration-300 bg-white rounded-lg shadow-2xl p-8 ${status === 'completed' ? 'relative visible' : 'absolute invisible'}`}
         style={{ width: '950px', maxWidth: '95%' }}
       >
-        {jsonData && renderSelectedTemplate()}
+        {/* Capture only the template content, not the wrapper */}
+        <div id="capture-content">
+          {jsonData && renderSelectedTemplate()}
+        </div>
       </div>
 
 

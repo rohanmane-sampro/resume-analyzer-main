@@ -105,7 +105,29 @@ const GetInfo = () => {
   const [pin, setPin] = useState("");
   const [error, setError] = useState(false);
   const [selectTemp, setSelectTemp] = useState(false);
-  const AboutTemps = ["Simpler and Structured", "Linear and Classic", "Colourfull and Attractive", "Colourful and Highly Designed", "Simpler and Linear", "Highly Simpler and Classic"]
+  const AboutTemps = [
+    "Simpler and Structured",
+    "Linear and Classic",
+    "Colourful and Attractive",
+    "Colourful and Highly Designed",
+    "Simpler and Linear",
+    "Highly Simpler and Classic",
+    "Elegant Modern Touch",
+    "", // T8 doesn't exist
+    "Creative Blocks",
+    "Minimalist Professional",
+    "Tech-Focused Resume",
+    "Bold & Visual Design",
+    "Professional Developer",
+    "Clean Professional",
+    "Minimalist Clean",
+    "Photo Profile",
+    "Dark Sidebar Professional",
+    "Modern CV",
+    "Professional Clean",
+    "Creative Designer",
+    "UX/UI Designer"
+  ]
   const Suggests = [
     "Hi, I'm here to assist you. 🤝",
     "First, start by choosing a template that best fits your style and profession.",
@@ -176,7 +198,21 @@ const GetInfo = () => {
 
   // Load data when coming back from Result or Preview page
   useEffect(() => {
-    if (UserjsonData && !hasLoadedDataRef.current) {
+    // Check if coming from ViewTemplates with a selected template
+    if (location.state?.selectedTemplate && !hasLoadedDataRef.current) {
+      hasLoadedDataRef.current = true;
+      setFormData(prev => ({
+        ...prev,
+        selectedTemplate: String(location.state.selectedTemplate)
+      }));
+      setCurrentStep(0); // Stay on template selection to show the selected template
+      // Show toast to confirm template selection
+      setTimeout(() => {
+        toast.success(`Template ${location.state.selectedTemplate} selected! Fill in your details to continue.`);
+      }, 500);
+    }
+    // Load data when coming back from Result or Preview page
+    else if (UserjsonData && !hasLoadedDataRef.current) {
       hasLoadedDataRef.current = true;
       setFormData(UserjsonData);
       setIsExampleProcessing(false);
@@ -1607,7 +1643,7 @@ const GetInfo = () => {
               <h2 className="text-xl sm:text-2xl font-bold border-b-4 pb-1 border-blue-900 mb-4 text-blue-800 dark:border-blue-500 dark:text-blue-400">Choose Template</h2>
               <p className='font-semibold mb-6 text-gray-600 dark:text-gray-200'>We will frequently add more template designs to provide more robust options.</p>
               <div className="grid grid-cols-2 gap-5">
-                {[1, 2, 3, 4, 5, 6].map((template) => (
+                {[1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21].map((template) => (
                   <div
                     key={template}
                     className={`relative p-4 border-2 rounded-lg transition-all duration-150 shadow-md hover:shadow-xl dark:shadow-gray-600 ${formData.selectedTemplate === String(template) ? 'border-blue-600 bg-blue-50 dark:bg-slate-800 ring-2 ring-blue-300' : 'dark:border-gray-700 hover:border-blue-400'
@@ -1655,7 +1691,7 @@ const GetInfo = () => {
               <h2 className="text-xl sm:text-2xl font-bold border-b-4 pb-1 border-blue-900 mb-4 text-blue-800 dark:border-blue-500 dark:text-blue-400">Choose Template</h2>
               <p className='font-semibold mb-6 text-gray-600 dark:text-gray-200'>We will frequently add more template designs to provide more resume options.</p>
               <div className="grid grid-cols-2 gap-5">
-                {[1, 2, 3, 4, 5, 6].map((template) => (
+                {[1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21].map((template) => (
                   <div
                     key={template}
                     className={`relative p-4 border-2 rounded-lg transition-all duration-150 shadow-md hover:shadow-xl dark:shadow-gray-600 ${ExampleJsonData.selectedTemplate === String(template) ? 'border-blue-600 bg-blue-50 dark:bg-slate-800 ring-2 ring-blue-300' : 'dark:border-gray-700 hover:border-blue-400'
@@ -1833,7 +1869,34 @@ const GetInfo = () => {
           <div className="w-[25%] h-1 bg-blue-900 mb-4 mx-auto mt-1 rounded dark:bg-amber-400"></div>
           <div className="px-2 w-[340px] ml-3 h-[calc(100vh-180px)] overflow-y-auto overflow-x-hidden bg-white dark:bg-slate-800">
             <div className="scale-[0.35] origin-top-left flex">
-              {(isExampleProcessing ? ExampleJsonData.selectedTemplate == 1 : formData.selectedTemplate == 1) ? <T1 jsonData={isExampleProcessing ? ExampleJsonData : formData} /> : (isExampleProcessing ? ExampleJsonData.selectedTemplate == 2 : formData.selectedTemplate == 2) ? <T2 jsonData={isExampleProcessing ? ExampleJsonData : formData} /> : (isExampleProcessing ? ExampleJsonData.selectedTemplate == 3 : formData.selectedTemplate == 3) ? <T3 jsonData={isExampleProcessing ? ExampleJsonData : formData} /> : (isExampleProcessing ? ExampleJsonData.selectedTemplate == 4 : formData.selectedTemplate == 4) ? <T4 jsonData={isExampleProcessing ? ExampleJsonData : formData} /> : (isExampleProcessing ? ExampleJsonData.selectedTemplate == 5 : formData.selectedTemplate == 5) ? <T5 jsonData={isExampleProcessing ? ExampleJsonData : formData} /> : (isExampleProcessing ? ExampleJsonData.selectedTemplate == 6 : formData.selectedTemplate == 6) ? <T6 jsonData={isExampleProcessing ? ExampleJsonData : formData} /> : <div></div>}
+              {(() => {
+                const templateNum = isExampleProcessing ? ExampleJsonData.selectedTemplate : formData.selectedTemplate;
+                const data = isExampleProcessing ? ExampleJsonData : formData;
+
+                switch (String(templateNum)) {
+                  case '1': return <T1 jsonData={data} />;
+                  case '2': return <T2 jsonData={data} />;
+                  case '3': return <T3 jsonData={data} />;
+                  case '4': return <T4 jsonData={data} />;
+                  case '5': return <T5 jsonData={data} />;
+                  case '6': return <T6 jsonData={data} />;
+                  case '7': return <T7 jsonData={data} />;
+                  case '9': return <T9 jsonData={data} />;
+                  case '10': return <T10 jsonData={data} />;
+                  case '11': return <T11 jsonData={data} />;
+                  case '12': return <T12 jsonData={data} />;
+                  case '13': return <T13 jsonData={data} />;
+                  case '14': return <T14 jsonData={data} />;
+                  case '15': return <T15 jsonData={data} />;
+                  case '16': return <T16 jsonData={data} />;
+                  case '17': return <T17 jsonData={data} />;
+                  case '18': return <T18 jsonData={data} />;
+                  case '19': return <T19 jsonData={data} />;
+                  case '20': return <T20 jsonData={data} />;
+                  case '21': return <T21 jsonData={data} />;
+                  default: return <div className="text-gray-500 p-4">Select a template to preview</div>;
+                }
+              })()}
             </div>
           </div>
           <div className={`whitespace-pre-line dark:text-slate-300 p-3 md:p-1 ${isExampleProcessing ? "hidden" : "block"}`}>
