@@ -28,31 +28,36 @@ const Navbar = () => {
 
                 {/* Navigation Links */}
                 <div className="hidden md:flex items-center gap-1">
-                    <button className="sampro-nav-link" onClick={() => navigate('/')}>
-                        Home
-                    </button>
-                    <button className="sampro-nav-link" onClick={() => navigate('/FileUploadPage')}>
-                        Create Resume
-                    </button>
-                    <button className="sampro-nav-link" onClick={() => navigate('/ResumeAnalyze')}>
-                        Analyze Resume
-                    </button>
-                    {user && (
-                        <button className="sampro-nav-link" onClick={() => navigate('/dashboard')}>
-                            Dashboard
-                        </button>
+                    {user?.role === 'admin' ? (
+                        <>
+                            <button className="sampro-nav-link text-teal-400 font-bold" onClick={() => navigate('/admin')}>
+                                Admin Dashboard
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            <button className="sampro-nav-link" onClick={() => navigate('/')}>
+                                Home
+                            </button>
+                            <button className="sampro-nav-link" onClick={() => navigate('/FileUploadPage')}>
+                                Create Resume
+                            </button>
+                            <button className="sampro-nav-link" onClick={() => navigate('/ResumeAnalyze')}>
+                                Analyze Resume
+                            </button>
+                            {user && (
+                                <button className="sampro-nav-link" onClick={() => navigate('/dashboard')}>
+                                    Dashboard
+                                </button>
+                            )}
+                            <button className="sampro-nav-link" onClick={() => navigate('/Features')}>
+                                Features
+                            </button>
+                            <button className="sampro-nav-link" onClick={() => navigate('/AboutUs')}>
+                                About
+                            </button>
+                        </>
                     )}
-                    {user?.role === 'admin' && (
-                        <button className="sampro-nav-link text-teal-400 font-bold" onClick={() => navigate('/admin')}>
-                            Admin
-                        </button>
-                    )}
-                    <button className="sampro-nav-link" onClick={() => navigate('/Features')}>
-                        Features
-                    </button>
-                    <button className="sampro-nav-link" onClick={() => navigate('/AboutUs')}>
-                        About
-                    </button>
                 </div>
 
                 {/* Left Side: Auth & Theme */}

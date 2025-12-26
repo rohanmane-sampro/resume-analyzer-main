@@ -20,11 +20,14 @@ def register():
     
     hashed_password = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt())
     
+    # Automatically assign 'admin' role if the email matches ADMIN_EMAIL
+    role = 'admin' if data['email'] == Config.ADMIN_EMAIL else 'user'
+    
     user_data = {
         'name': data['name'],
         'email': data['email'],
         'password': hashed_password,
-        'role': data.get('role', 'user'),  # Default to user
+        'role': role,
         'created_at': datetime.datetime.utcnow()
     }
     
@@ -54,6 +57,25 @@ def login():
     if not data or not data.get('email') or not data.get('password'):
         return jsonify({'message': 'Missing email or password!'}), 400
     
+    # 1. Check for hardcoded Admin credentials
+    if data['email'] == Config.ADMIN_EMAIL and data['password'] == Config.ADMIN_PASSWORD:
+        token = jwt.encode({
+            'user_id': 'admin_hardcoded',
+            'role': 'admin',
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
+        }, Config.JWT_SECRET, algorithm="HS256")
+        
+        return jsonify({
+            'token': token,
+            'user': {
+                'id': 'admin_hardcoded',
+                'name': 'System Admin',
+                'email': Config.ADMIN_EMAIL,
+                'role': 'admin'
+            }
+        }), 200
+
+    # 2. Proceed with DB check for regular users
     user = users_collection.find_one({'email': data['email']})
     
     if not user or not bcrypt.checkpw(data['password'].encode('utf-8'), user['password']):

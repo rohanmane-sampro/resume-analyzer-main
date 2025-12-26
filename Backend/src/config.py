@@ -44,6 +44,8 @@ class Config:
     MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017/resume_analyzer")
     JWT_SECRET = os.getenv("JWT_SECRET", "super-secret-key")
     JWT_EXPIRY = os.getenv("JWT_EXPIRY", "24h")
+    ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "admin@sampro.ai")
+    ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
     
     # Fully automated CORS: 
     # 1. Use environment variable if set

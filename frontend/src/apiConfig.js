@@ -37,6 +37,10 @@ export const ENDPOINTS = {
     },
     ADMIN: {
         STATS: `${API_BASE_URL}/api/resume/admin/stats`,
+        METRICS: `${API_BASE_URL}/api/admin/metrics`,
+        USERS: `${API_BASE_URL}/api/admin/users`,
+        UPDATE_LIMIT: (id) => `${API_BASE_URL}/api/admin/users/${id}/limit`,
+        TEMPLATE_ANALYTICS: `${API_BASE_URL}/api/admin/analytics/templates`,
         TEMPLATES: `${API_BASE_URL}/api/admin/templates`,
     }
 };

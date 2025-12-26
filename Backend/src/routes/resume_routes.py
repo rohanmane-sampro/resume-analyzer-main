@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from src.database import resumes_collection, templates_collection
+from src.database import resumes_collection, templates_collection, users_collection
 from src.middleware.auth import token_required, admin_required
 import datetime
 from bson import ObjectId
@@ -26,6 +26,31 @@ def track_create(current_user):
 @resume_bp.route('/track/download/<resume_id>', methods=['POST'])
 @token_required
 def track_download(current_user, resume_id):
+    # Allow hardcoded admin to bypass limit
+    if current_user['_id'] == 'admin_hardcoded':
+        resumes_collection.update_one(
+            {'_id': ObjectId(resume_id)},
+            {'$inc': {'download_count': 1}}
+        )
+        return jsonify({'message': 'Download tracked (Admin Bypass)'}), 200
+
+    # 1. Fetch user's aggregate usage
+    user_resumes = list(resumes_collection.find({'user_id': current_user['_id']}))
+    total_downloads_used = sum(r.get('download_count', 0) for r in user_resumes)
+    
+    # 2. Get user's limit (default to 5 if not set)
+    user_doc = users_collection.find_one({'_id': ObjectId(current_user['_id'])})
+    download_limit = user_doc.get('download_limit', 5)
+    
+    # 3. Enforce limit
+    if total_downloads_used >= download_limit:
+        return jsonify({
+            'message': 'Download limit reached!',
+            'limit': download_limit,
+            'used': total_downloads_used
+        }), 403
+        
+    # 4. Success - Increment
     resumes_collection.update_one(
         {'_id': ObjectId(resume_id), 'user_id': current_user['_id']},
         {'$inc': {'download_count': 1}}

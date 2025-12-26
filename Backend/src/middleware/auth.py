@@ -20,9 +20,19 @@ def token_required(f):
 
         try:
             data = jwt.decode(token, Config.JWT_SECRET, algorithms=["HS256"])
-            current_user = users_collection.find_one({'_id': ObjectId(data['user_id'])})
-            if not current_user:
-                return jsonify({'message': 'User not found!'}), 401
+            
+            # Handle hardcoded admin
+            if data.get('user_id') == 'admin_hardcoded':
+                current_user = {
+                    '_id': 'admin_hardcoded',
+                    'name': 'System Admin',
+                    'email': Config.ADMIN_EMAIL,
+                    'role': 'admin'
+                }
+            else:
+                current_user = users_collection.find_one({'_id': ObjectId(data['user_id'])})
+                if not current_user:
+                    return jsonify({'message': 'User not found!'}), 401
             
             # Remove password before attaching to request
             if 'password' in current_user:

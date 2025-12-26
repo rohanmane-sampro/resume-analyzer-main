@@ -26,10 +26,10 @@ const UserDashboard = () => {
         fetchStats();
     }, []);
 
-    if (loading) return <div className="min-h-screen bg-[#09090b] flex items-center justify-center text-white">Loading...</div>;
+    if (loading) return <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-100 to-pink-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center text-slate-900 dark:text-white">Loading...</div>;
 
     return (
-        <div className="min-h-screen bg-[#09090b] text-white p-8">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-100 to-pink-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 text-slate-900 dark:text-white transition-colors duration-300">
             <div className="max-w-7xl mx-auto pt-24">
                 <div className="flex justify-between items-center mb-12">
                     <div>

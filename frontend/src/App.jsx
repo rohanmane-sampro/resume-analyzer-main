@@ -1,6 +1,6 @@
 
 import React, { useContext, useEffect, useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import FrontPage from './components/FrontPage.jsx';
 import GetInfo from './components/GetInfo.jsx';
 import Result from './components/Result.jsx';
@@ -20,7 +20,6 @@ import Signup from './components/Signup.jsx';
 import UserDashboard from './components/UserDashboard.jsx';
 import AdminDashboard from './components/AdminDashboard.jsx';
 import { useAuth } from './AuthContext';
-import { Navigate } from 'react-router-dom';
 
 const App = () => {
   const { user, loading: authLoading } = useAuth();
@@ -66,34 +65,64 @@ const App = () => {
     return <Loader />;
   }
 
+  const isAdmin = user?.role === 'admin';
+
   return (
     <div>
       <Toaster />
       <Routes>
-        {/* Public Landing Page */}
-        <Route path="/" element={<FrontPage views={views} />} />
+        {/* Public & Role-Based Entry */}
+        <Route path="/" element={
+          isAdmin
+            ? <Navigate to="/admin" replace />
+            : <FrontPage views={views} />
+        } />
 
-        {/* Auth Routes - Redirect to Home if already authenticated */}
-        <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
-        <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" />} />
+        {/* Auth Routes */}
+        <Route path="/login" element={!user ? <Login /> : <Navigate to="/" replace />} />
+        <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" replace />} />
 
-        {/* User-Only Protected Routes */}
-        <Route path="/dashboard" element={user ? <UserDashboard /> : <Navigate to="/login" />} />
-        <Route path="/FileUploadPage" element={user ? <FileUploadPage /> : <Navigate to="/login" />} />
-        <Route path="/GetInfo" element={user ? <GetInfo /> : <Navigate to="/login" />} />
-        <Route path="/Preview" element={user ? <PreviewPage /> : <Navigate to="/login" />} />
-        <Route path="/Result" element={user ? <Result /> : <Navigate to="/login" />} />
-        <Route path="/ResumeAnalyze" element={user ? <ResumeAnalyze /> : <Navigate to="/login" />} />
+        {/* User Protected Routes - Redirect Admin to Admin Dashboard */}
+        <Route
+          path="/dashboard"
+          element={isAdmin ? <Navigate to="/admin" replace /> : (user ? <UserDashboard /> : <Navigate to="/login" />)}
+        />
+        <Route
+          path="/FileUploadPage"
+          element={isAdmin ? <Navigate to="/admin" replace /> : (user ? <FileUploadPage /> : <Navigate to="/login" />)}
+        />
+        <Route
+          path="/GetInfo"
+          element={isAdmin ? <Navigate to="/admin" replace /> : (user ? <GetInfo /> : <Navigate to="/login" />)}
+        />
+        <Route
+          path="/Preview"
+          element={isAdmin ? <Navigate to="/admin" replace /> : (user ? <PreviewPage /> : <Navigate to="/login" />)}
+        />
+        <Route
+          path="/Result"
+          element={isAdmin ? <Navigate to="/admin" replace /> : (user ? <Result /> : <Navigate to="/login" />)}
+        />
+        <Route
+          path="/ResumeAnalyze"
+          element={isAdmin ? <Navigate to="/admin" replace /> : (user ? <ResumeAnalyze /> : <Navigate to="/login" />)}
+        />
 
-        {/* Admin-Only Protected Routes */}
-        <Route path="/admin" element={user?.role === 'admin' ? <AdminDashboard /> : <Navigate to="/" />} />
+        {/* Admin Isolation: Admin can access ONLY /admin */}
+        <Route
+          path="/admin/*"
+          element={isAdmin ? <AdminDashboard /> : <Navigate to="/" replace />}
+        />
 
-        {/* Other Public Routes */}
-        <Route path="/AboutUs" element={<AboutUs />} />
+        {/* Other Routes */}
+        <Route path="/AboutUs" element={isAdmin ? <Navigate to="/admin" replace /> : <AboutUs />} />
         <Route path="/VarifyMail" element={<GoogleVarification />} />
-        <Route path="/HTML-PDF" element={<HtmlToPdfConverter />} />
-        <Route path="/ViewTemplates" element={<ViewTemplates />} />
-        <Route path="/Features" element={<Features />} />
+        <Route path="/HTML-PDF" element={isAdmin ? <Navigate to="/admin" replace /> : <HtmlToPdfConverter />} />
+        <Route path="/ViewTemplates" element={isAdmin ? <Navigate to="/admin" replace /> : <ViewTemplates />} />
+        <Route path="/Features" element={isAdmin ? <Navigate to="/admin" replace /> : <Features />} />
+
+        {/* Catch-all for Admin */}
+        {isAdmin && <Route path="*" element={<Navigate to="/admin" replace />} />}
       </Routes>
     </div>
   );
