@@ -55,47 +55,93 @@ body {
 .job-title {
   font-size: 12px;
   color: #666;
-  margin: 0 0 10px 0;
+  font-style: italic;
+  margin: 0 0 12px 0;
 }
 
 .contact-info {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  font-size: 8px;
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 8px 20px;
+  font-size: 9px;
   color: #555;
-  margin-bottom: 12px;
+  margin-bottom: 15px;
 }
 
 .contact-item {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
 }
 
 .contact-item i {
-  font-size: 8px;
+  font-size: 9px;
+  width: 12px;
 }
 
 .section {
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 .section-title {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: bold;
   text-transform: uppercase;
   color: #000;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   padding-bottom: 3px;
   border-bottom: 1px solid #000;
 }
 
 .profile-text {
-  font-size: 8px;
+  font-size: 9px;
   line-height: 1.5;
   color: #444;
   text-align: justify;
+}
+
+.experience-item {
+  margin-bottom: 14px;
+}
+
+.exp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 3px;
+}
+
+.exp-title {
+  font-size: 10px;
+  font-weight: bold;
+  color: #000;
+}
+
+.exp-date {
+  font-size: 9px;
+  color: #666;
+}
+
+.exp-company {
+  font-size: 9px;
+  color: #666;
+  font-style: italic;
+  margin-bottom: 5px;
+}
+
+.exp-description {
+  font-size: 9px;
+  line-height: 1.4;
+  color: #555;
+}
+
+.exp-description ul {
+  margin: 3px 0;
+  padding-left: 16px;
+}
+
+.exp-description li {
+  margin-bottom: 2px;
 }
 
 .skills-section {
@@ -114,64 +160,6 @@ body {
   line-height: 1.5;
   color: #555;
 }
-
-.experience-item {
-  margin-bottom: 12px;
-}
-
-.exp-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 2px;
-}
-
-.exp-title {
-  font-size: 9px;
-  font-weight: bold;
-  color: #000;
-}
-
-.exp-date {
-  font-size: 8px;
-  color: #666;
-}
-
-.exp-location {
-  font-size: 8px;
-  color: #666;
-  margin-bottom: 4px;
-}
-
-.exp-description {
-  font-size: 8px;
-  line-height: 1.4;
-  color: #555;
-}
-
-.exp-description ul {
-  margin: 2px 0;
-  padding-left: 14px;
-}
-
-.exp-description li {
-  margin-bottom: 2px;
-}
-
-.projects-list {
-  font-size: 8px;
-  line-height: 1.4;
-  color: #555;
-}
-
-.project-item {
-  margin-bottom: 8px;
-}
-
-.project-title {
-  font-weight: bold;
-  color: #000;
-}
 `;
 
 export const T17 = ({ jsonData }) => {
@@ -182,7 +170,7 @@ export const T17 = ({ jsonData }) => {
                     <div className="exp-title">{we.jobTitle || 'Position'}</div>
                     <div className="exp-date">{we.WorkDuration || 'Month Year - Month Year'}</div>
                 </div>
-                <div className="exp-location">{we.companyName || 'Company, Location'}</div>
+                <div className="exp-company">{we.companyName || 'Company, Location'}</div>
                 <div className="exp-description">
                     <ul>
                         <li dangerouslySetInnerHTML={{ __html: parseMarkdown(we.keyAchievements || 'Work responsibilities') }} />
@@ -199,7 +187,7 @@ export const T17 = ({ jsonData }) => {
                     <div className="exp-title">{edu.degreeName || 'Degree'}</div>
                     <div className="exp-date">{edu.graduationYear || 'Year'}</div>
                 </div>
-                <div className="exp-location">{edu.institutionName || 'University'}</div>
+                <div className="exp-company">{edu.institutionName || 'University'}</div>
             </div>
         ))
         : null;
@@ -274,9 +262,11 @@ export const T17 = ({ jsonData }) => {
                         <div className="section-title">Key Technical Projects</div>
                         <div className="projects-list">
                             {jsonData.projects.map((proj, idx) => (
-                                <div key={idx} className="project-item">
-                                    <div className="project-title">{proj.projectTitle || 'Project'}</div>
-                                    {proj.projectDescription || proj.toolsTechUsed}
+                                <div key={idx} className="experience-item">
+                                    <div className="exp-title">{proj.projectTitle || 'Project'}</div>
+                                    <div className="exp-description">
+                                        {proj.projectDescription || proj.toolsTechUsed}
+                                    </div>
                                 </div>
                             ))}
                         </div>

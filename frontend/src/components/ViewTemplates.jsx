@@ -20,7 +20,6 @@ export default function ViewTemplates() {
     "Tech-Focused Resume",
     "Bold & Visual Design",
     "Professional Developer",
-    "Creative Portfolio",
     "Clean Professional",
     "Minimalist Clean",
     "Photo Profile",
@@ -116,12 +115,7 @@ export default function ViewTemplates() {
       codeLink: "#/template/7",
       templateLink: "#/template/7",
     },
-    {
-      img: `${import.meta.env.BASE_URL}Temp/cv14.png`,
-      title: titles[14],
-      codeLink: "#/template/8",
-      templateLink: "#/template/8",
-    },
+
     {
       img: `${import.meta.env.BASE_URL}Temp/cv15.png`,
       title: titles[15],
