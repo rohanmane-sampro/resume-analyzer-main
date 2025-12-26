@@ -22,7 +22,7 @@ const Features = () => {
         {
             icon: <Sparkles className="w-8 h-8" />,
             title: "AI-Powered Resume Building",
-            description: "Create professional resumes in 8-10 minutes with intelligent AI assistance guiding you through every step.",
+            description: "Create professional resumes in 8-10 minutes with Sampro AI assistance guiding you through every step.",
             color: "from-purple-500 to-pink-500"
         },
         {
@@ -33,7 +33,7 @@ const Features = () => {
         },
         {
             icon: <Palette className="w-8 h-8" />,
-            title: "6 Professional Templates",
+            title: "Professional Templates",
             description: "Choose from high-performing, ATS-optimized templates designed by professionals to get you hired faster.",
             color: "from-green-500 to-emerald-500"
         },
@@ -64,7 +64,7 @@ const Features = () => {
         {
             icon: <Download className="w-8 h-8" />,
             title: "Multiple Export Formats",
-            description: "Download your resume in PDF, HTML/CSS, or JSON format. Perfect for different use cases and platforms.",
+            description: "Download your resume in PDF and  Word format. Perfect for different use cases and platforms.",
             color: "from-yellow-500 to-orange-500"
         },
         {
