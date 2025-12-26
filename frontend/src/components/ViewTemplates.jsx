@@ -195,10 +195,10 @@ export default function ViewTemplates() {
   ];
 
   const handleTemplateClick = (templateIndex) => {
-    // Navigate to GetInfo with the selected template
-    navigate('/GetInfo', {
+    // Navigate to FileUploadPage with the selected template
+    navigate('/FileUploadPage', {
       state: {
-        selectedTemplate: templateIndex + 1  // +1 because templates are 1-indexed (T1, T2, etc.)
+        selectedTemplate: templateIndex + 1
       }
     });
   };

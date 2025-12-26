@@ -2,80 +2,157 @@
 @tailwind components;
 @tailwind utilities;
 
-/* SAMPRO AI Custom Styles - Light Theme */
 @layer base {
+    :root {
+        --glass-border: rgba(255, 255, 255, 0.2);
+        --glass-bg: rgba(255, 255, 255, 0.1);
+        --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    /* Default (Light Mode) Body Styles */
     body {
-        @apply bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50;
-        min-height: 100vh;
+        @apply min-h-screen text-slate-900 antialiased selection:bg-teal-500 selection:text-white;
+        background-color: #f8fafc;
+        /* Slate 50 */
+        /* Professional Blue/Slate Light Gradient */
+        background-image:
+            radial-gradient(at 0% 0%, hsla(210, 100%, 96%, 1) 0, transparent 50%),
+            radial-gradient(at 50% 100%, hsla(200, 100%, 96%, 1) 0, transparent 50%),
+            radial-gradient(at 100% 0%, hsla(220, 100%, 96%, 1) 0, transparent 50%);
+        background-attachment: fixed;
+    }
+
+    /* Dark Mode overrides - applied when 'html' has 'dark' class */
+    .dark body {
+        @apply text-slate-100;
+        background-color: #0b1120;
+        /* Deep Navy/Slate */
+        /* Deep Cosmic Dark Gradient */
+        background-image:
+            radial-gradient(at 0% 0%, hsla(222, 47%, 11%, 1) 0, transparent 50%),
+            radial-gradient(at 50% 50%, hsla(222, 47%, 15%, 1) 0, transparent 50%),
+            radial-gradient(at 100% 100%, hsla(222, 47%, 11%, 1) 0, transparent 50%);
+    }
+
+    /* Modern Scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        @apply bg-transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        @apply bg-slate-300 dark:bg-slate-700 rounded-full hover:bg-slate-400 dark:hover:bg-slate-600 transition-colors;
     }
 }
 
 @layer components {
 
-    /* Navigation Styles */
-    .sampro-nav {
-        @apply bg-slate-800/95 backdrop-blur-lg border-b border-slate-700/50;
+    /* Glassmorphism Utilities */
+    .glass-nav {
+        @apply backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 transition-all duration-300 shadow-sm;
     }
 
-    .sampro-nav-link {
-        @apply text-gray-300 hover:text-white transition-colors duration-200 px-4 py-2 rounded-lg hover:bg-slate-700/50;
+    .glass-card {
+        @apply backdrop-blur-xl bg-white/70 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-xl rounded-2xl transition-all duration-300 hover:shadow-2xl;
     }
 
-    .sampro-nav-link.active {
-        @apply text-white bg-slate-700/50;
+    /* Navigation Pills */
+    .nav-pill {
+        @apply px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-transparent hover:border-slate-200 dark:hover:border-slate-700;
     }
 
-    /* Hero Section Styles */
-    .sampro-hero {
-        @apply text-slate-800;
+    .nav-pill.active {
+        @apply bg-teal-600/10 text-teal-700 dark:text-teal-400 border-teal-200 dark:border-teal-800;
     }
 
-    .sampro-gradient-text {
-        @apply bg-gradient-to-r from-teal-600 via-cyan-600 to-blue-600 bg-clip-text text-transparent;
+    /* Buttons */
+    .btn-glow-primary {
+        @apply relative inline-flex items-center justify-center px-6 py-3 font-bold text-white transition-all duration-300 bg-teal-600 rounded-lg shadow-lg hover:bg-teal-700 hover:shadow-teal-500/30 hover:-translate-y-0.5 active:translate-y-0;
     }
 
-    /* Button Styles */
-    .sampro-btn-primary {
-        @apply px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105;
+    .btn-outline-modern {
+        @apply inline-flex items-center justify-center px-6 py-3 font-bold text-slate-800 dark:text-white transition-all duration-300 bg-white/90 dark:bg-slate-800/90 border-2 border-slate-200 dark:border-slate-700 rounded-lg shadow-sm hover:border-teal-500 hover:text-teal-600 dark:hover:text-teal-400 hover:shadow-md hover:-translate-y-0.5;
     }
 
-    .sampro-btn-secondary {
-        @apply px-6 py-3 bg-white dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 text-slate-700 dark:text-white rounded-lg font-semibold transition-all duration-300 hover:bg-slate-50 dark:hover:bg-slate-600;
-    }
-
-    /* Card Styles */
-    .sampro-card {
-        @apply bg-white/80 dark:bg-slate-800/80 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700;
+    /* Text Gradients */
+    .text-gradient-primary {
+        @apply bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-blue-600 dark:from-teal-400 dark:to-blue-500;
     }
 }
 
-/* Custom Animations */
-@keyframes spin-slow {
-    from {
-        transform: rotate(0deg);
+/* Animations */
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px);
     }
 
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-@keyframes fade-in {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1);
+    50% {
+        transform: translateY(-10px);
     }
 }
 
-.animate-spin-slow {
-    animation: spin-slow 3s linear infinite;
+.animate-float {
+    animation: float 6s ease-in-out infinite;
 }
 
-.animate-fade-in {
-    animation: fade-in 0.3s ease-out;
+@keyframes title-glow {
+
+    0%,
+    100% {
+        text-shadow: 0 0 20px rgba(45, 212, 191, 0.1);
+    }
+
+    50% {
+        text-shadow: 0 0 40px rgba(45, 212, 191, 0.3);
+    }
+}
+
+.animate-title-glow {
+    animation: title-glow 3s ease-in-out infinite;
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.animate-marquee {
+    display: flex;
+    width: max-content;
+    animation: marquee 60s linear infinite;
+}
+
+.animate-marquee:hover {
+    animation-play-state: paused;
+}
+
+@keyframes marquee-reverse {
+    0% {
+        transform: translateX(-50%);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.animate-marquee-reverse {
+    display: flex;
+    width: max-content;
+    animation: marquee-reverse 60s linear infinite;
+}
+
+.animate-marquee-reverse:hover {
+    animation-play-state: paused;
 }

@@ -374,6 +374,74 @@ export async function parseResume(file) {
       // Continue to regex fallback
     }
 
+    /**
+     * Extract projects section
+     */
+    function extractProjects(text) {
+      const projectRegex = /(?:projects|personal projects|technical projects)[:\s]*\n+(.*?)(?=\n\n\n|experience|education|skills|certification|achievements|$)/gis;
+      const match = text.match(projectRegex);
+
+      if (match && match[1]) {
+        const projText = match[1];
+        const lines = projText.split('\n').map(l => l.trim()).filter(l => l);
+        const projects = [];
+        let currentProj = { projectTitle: '', toolsTechUsed: '' };
+
+        for (let line of lines) {
+          // New project usually starts with a bullet or bold-like line
+          if (line.match(/^[•\-\*]/) || line.length > 30) {
+            if (currentProj.projectTitle) {
+              projects.push({ ...currentProj });
+              currentProj = { projectTitle: '', toolsTechUsed: '' };
+            }
+
+            // Try to split title and tech
+            const techMatch = line.match(/^(.+?)(?:\s+[-–|:]\s+)(.+)$/);
+            if (techMatch) {
+              currentProj.projectTitle = techMatch[1].replace(/^[•\-\*]\s*/, '').trim();
+              currentProj.toolsTechUsed = techMatch[2].trim();
+            } else {
+              currentProj.projectTitle = line.replace(/^[•\-\*]\s*/, '').trim();
+            }
+          } else if (currentProj.projectTitle && !currentProj.toolsTechUsed) {
+            currentProj.toolsTechUsed = line;
+          }
+        }
+        if (currentProj.projectTitle) projects.push(currentProj);
+        return projects.length > 0 ? projects : [{ projectTitle: '', toolsTechUsed: '' }];
+      }
+      return [{ projectTitle: '', toolsTechUsed: '' }];
+    }
+
+    /**
+     * Extract certifications section
+     */
+    function extractCertifications(text) {
+      const certRegex = /(?:certifications?|licenses?|awards?)[:\s]*\n+(.*?)(?=\n\n\n|experience|education|skills|projects|achievements|$)/gis;
+      const match = text.match(certRegex);
+
+      if (match && match[1]) {
+        const certText = match[1];
+        const lines = certText.split('\n').map(l => l.trim()).filter(l => l);
+        const certs = [];
+
+        for (let line of lines) {
+          const cleanLine = line.replace(/^[•\-\*]\s*/, '').trim();
+          if (cleanLine.length > 5) {
+            // Try to split name and provider
+            const parts = cleanLine.split(/[-–|:]/);
+            certs.push({
+              certificateName: parts[0]?.trim() || cleanLine,
+              providerName: parts[1]?.trim() || '',
+              courseDuration: ''
+            });
+          }
+        }
+        return certs.length > 0 ? certs : [{ certificateName: '', courseDuration: '', providerName: '' }];
+      }
+      return [{ certificateName: '', courseDuration: '', providerName: '' }];
+    }
+
     // Fallback: Local Regex Parsing
     console.log('Using local regex parser');
     const structuredData = {
@@ -394,9 +462,9 @@ export async function parseResume(file) {
         softSkills: ''
       },
       workExperience: extractExperience(text),
-      projects: [{ projectTitle: '', toolsTechUsed: '' }],
+      projects: extractProjects(text),
       education: extractEducation(text),
-      certificates: [{ certificateName: '', courseDuration: '', providerName: '' }],
+      certificates: extractCertifications(text),
       Description: {
         UserDescription: ''
       }
