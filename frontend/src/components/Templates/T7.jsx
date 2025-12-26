@@ -396,9 +396,13 @@ export const T7 = ({ jsonData }) => {
           </div>
 
           <div className="header-right">
-            <div className="photo-placeholder">
-              <i className="fas fa-user"></i>
-            </div>
+            {jsonData.contactInfo?.profileImage ? (
+              <img src={jsonData.contactInfo.profileImage} alt="Profile" />
+            ) : (
+              <div className="photo-placeholder">
+                <i className="fas fa-user"></i>
+              </div>
+            )}
           </div>
         </div>
 

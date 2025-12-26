@@ -43,11 +43,13 @@ body {
 .resume {
   width: 210mm;
   max-width: 95%;
+  min-height: auto;
   background: white;
   margin: 20px auto;
   padding: 40px 50px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   line-height: 1.4;
+  overflow: visible;
 }
 
 .header {
@@ -271,7 +273,7 @@ export const T9 = ({ jsonData }) => {
           <div className="item-date">{we.WorkDuration || 'MMM YYYY - MMM YYYY'}</div>
         </div>
         <div className="item-subtitle">{we.companyName || 'Company'}</div>
-        <div className="item-location">somewhere, state</div>
+        {we.location && <div className="item-location">{we.location}</div>}
         <div className="item-description">
           <ul>
             <li dangerouslySetInnerHTML={{ __html: parseMarkdown(we.keyAchievements || 'Key achievements and responsibilities') }} />
@@ -314,7 +316,7 @@ export const T9 = ({ jsonData }) => {
               Portfolio: {jsonData.contactInfo?.portfolio?.replace('https://', '').replace('http://', '') || 'MatthisDana.com'}
             </a>
             <a href={`https://linkedin.com/in/${jsonData.contactInfo?.linkedin || ''}`} target="_blank" rel="noreferrer">
-              github.com/{jsonData.contactInfo?.linkedin || 'TimmyLu01'}
+              linkedin.com/in/{jsonData.contactInfo?.linkedin || 'TimmyLu01'}
             </a>
           </div>
         </div>
@@ -366,7 +368,6 @@ export const T9 = ({ jsonData }) => {
             {languages.map((lang, index) => (
               <div key={`activity-${index}`} className="activity-item">
                 <div className="activity-name">{lang}</div>
-                <div className="item-date">YYYY – YYYY</div>
               </div>
             ))}
           </div>
@@ -399,10 +400,10 @@ export const T9Css = `
   .resume {
     width: 100% !important;
     max-width: 100% !important;
-    min-height: 100vh !important;
     margin: 0 !important;
     border: none !important;
     box-shadow: none !important;
+    overflow: visible !important;
   }
 }
 
@@ -416,11 +417,13 @@ body {
 .resume {
   width: 210mm;
   max-width: 95%;
+  min-height: auto;
   background: white;
   margin: 20px auto;
   padding: 40px 50px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   line-height: 1.4;
+  overflow: visible;
 }
 
 .header {

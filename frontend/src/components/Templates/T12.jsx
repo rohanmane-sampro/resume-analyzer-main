@@ -76,6 +76,12 @@ body {
   overflow: hidden;
 }
 
+.profile-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .photo-placeholder {
   font-size: 48px;
   color: #7f8c8d;
@@ -256,9 +262,13 @@ export const T12 = ({ jsonData }) => {
         <div className="sidebar">
           <div className="profile-section">
             <div className="profile-photo">
-              <div className="photo-placeholder">
-                <i className="fas fa-user"></i>
-              </div>
+              {jsonData.contactInfo?.profileImage ? (
+                <img src={jsonData.contactInfo.profileImage} alt="Profile" />
+              ) : (
+                <div className="photo-placeholder">
+                  <i className="fas fa-user"></i>
+                </div>
+              )}
             </div>
             <div className="name">{jsonData.contactInfo?.fullName || 'Guillaume Ouancaux'}</div>
           </div>
@@ -403,6 +413,12 @@ body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+}
+
+.profile-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .photo-placeholder {
