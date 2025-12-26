@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { useLocation, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { ENDPOINTS } from '../apiConfig';
-import { T1, T2, T3, T4, T5, T6 } from './Templates';
+import { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21 } from './Templates';
 
 const PreviewPage = () => {
   const location = useLocation();
@@ -268,7 +268,7 @@ const PreviewPage = () => {
 
   const getTemplateComponent = () => {
     const templateIndex = resumeData.selectedTemplate;
-    const templateComponents = { T1, T2, T3, T4, T5, T6 };
+    const templateComponents = { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21 };
     return templateComponents[`T${templateIndex}`] || T1;
   };
 

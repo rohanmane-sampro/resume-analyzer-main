@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import toast from "react-hot-toast";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { html as html_beautify } from 'js-beautify';
-import { T1, T1Css, T2, T2Css, T3, T3Css, T4, T4Css, T5, T5Css, T6, T6Css } from './Templates';
+import { T1, T1Css, T2, T2Css, T3, T3Css, T4, T4Css, T5, T5Css, T6, T6Css, T7, T7Css, T9, T9Css, T10, T10Css, T11, T11Css, T12, T12Css, T13, T13Css, T14, T14Css, T15, T15Css, T16, T16Css, T17, T17Css, T18, T18Css, T19, T19Css, T20, T20Css, T21, T21Css } from './Templates';
 import DownloadModal from './DownloadModal.jsx';
 import { ENDPOINTS } from '../apiConfig';
 
@@ -54,7 +54,16 @@ const Result = () => {
 
       console.log("Template HTML captured successfully");
 
-      const Css = selectedTemplate === '1' ? T1Css : selectedTemplate == '2' ? T2Css : selectedTemplate == '3' ? T3Css : selectedTemplate == '4' ? T4Css : selectedTemplate == '5' ? T5Css : T6Css;
+      const getTemplateCss = () => {
+        const templateMap = {
+          '1': T1Css, '2': T2Css, '3': T3Css, '4': T4Css, '5': T5Css, '6': T6Css,
+          '7': T7Css, '9': T9Css, '10': T10Css, '11': T11Css, '12': T12Css,
+          '13': T13Css, '14': T14Css, '15': T15Css, '16': T16Css, '17': T17Css, '18': T18Css,
+          '19': T19Css, '20': T20Css, '21': T21Css
+        };
+        return templateMap[selectedTemplate] || T1Css;
+      };
+      const Css = getTemplateCss();
 
       const generatedCode = `
         <!DOCTYPE html>
@@ -164,22 +173,14 @@ const Result = () => {
   };
 
   const renderSelectedTemplate = () => {
-    switch (selectedTemplate) {
-      case "1":
-        return <T1 jsonData={jsonData} />;
-      case "2":
-        return <T2 jsonData={jsonData} />;
-      case "3":
-        return <T3 jsonData={jsonData} />;
-      case "4":
-        return <T4 jsonData={jsonData} />;
-      case "5":
-        return <T5 jsonData={jsonData} />;
-      case "6":
-        return <T6 jsonData={jsonData} />;
-      default:
-        return <T1 jsonData={jsonData} />;
-    }
+    const templateMap = {
+      1: T1, 2: T2, 3: T3, 4: T4, 5: T5, 6: T6,
+      7: T7, 9: T9, 10: T10, 11: T11, 12: T12,
+      13: T13, 14: T14, 15: T15, 16: T16, 17: T17, 18: T18,
+      19: T19, 20: T20, 21: T21
+    };
+    const TemplateComponent = templateMap[selectedTemplate] || T1;
+    return <TemplateComponent jsonData={jsonData} />;
   };
 
   const getStatusMessage = () => {
