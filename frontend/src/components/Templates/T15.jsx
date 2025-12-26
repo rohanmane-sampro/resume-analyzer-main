@@ -37,7 +37,7 @@ body {
   max-width: 95%;
   background: white;
   margin: 20px auto;
-  padding: 35px 45px;
+  padding: 35px 40px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
@@ -48,210 +48,153 @@ body {
 .name {
   font-size: 26px;
   font-weight: bold;
-  margin: 0 0 5px 0;
-  color: #000;
+  margin: 0 0 4px 0;
+  color: #2d5016;
 }
 
 .job-title {
-  font-size: 14px;
-  color: #27ae60;
-  margin: 0 0 15px 0;
-  font-style: italic;
+  font-size: 13px;
+  color: #666;
+  margin: 0 0 12px 0;
 }
 
 .contact-info {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  font-size: 10px;
-  color: #333;
-  margin-bottom: 20px;
-}
-
-.contact-item {
   display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.contact-item i {
-  font-size: 10px;
+  flex-wrap: wrap;
+  gap: 15px;
+  font-size: 9px;
   color: #555;
+  margin-bottom: 15px;
 }
 
 .section {
-  margin-bottom: 22px;
+  margin-bottom: 18px;
 }
 
 .section-title {
-  font-size: 13px;
+  font-size: 11px;
   font-weight: bold;
-  color: #27ae60;
+  text-transform: uppercase;
+  color: #2d5016;
   margin-bottom: 10px;
-  padding-bottom: 4px;
-  border-bottom: 2px solid #27ae60;
+  padding-bottom: 3px;
+  border-bottom: 2px solid #2d5016;
 }
 
-.experience-item, .education-item {
+.experience-item {
   margin-bottom: 14px;
 }
 
-.item-header {
+.exp-header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   margin-bottom: 3px;
 }
 
-.item-title {
-  font-size: 11px;
+.exp-title {
+  font-size: 10px;
   font-weight: bold;
   color: #000;
 }
 
-.item-date {
-  font-size: 10px;
+.exp-date {
+  font-size: 9px;
   color: #666;
 }
 
-.item-location {
-  font-size: 10px;
+.exp-company {
+  font-size: 9px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.exp-description {
+  font-size: 9px;
+  line-height: 1.4;
   color: #555;
-  margin-bottom: 6px;
 }
 
-.item-description {
-  font-size: 10px;
-  line-height: 1.5;
-  color: #444;
+.exp-description ul {
+  margin: 3px 0;
+  padding-left: 16px;
 }
 
-.item-description ul {
-  margin: 4px 0;
-  padding-left: 18px;
-}
-
-.item-description li {
-  margin-bottom: 3px;
-}
-
-.education-degree {
-  font-size: 11px;
-  font-weight: bold;
-  color: #000;
+.exp-description li {
   margin-bottom: 2px;
-}
-
-.education-institution {
-  font-size: 10px;
-  color: #555;
 }
 
 .skills-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
 }
 
-.skill-category {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
 .skill-item {
-  font-size: 10px;
-  color: #444;
-  padding-left: 12px;
-  position: relative;
-}
-
-.skill-item:before {
-  content: '•';
-  position: absolute;
-  left: 0;
-  color: #27ae60;
+  font-size: 9px;
+  padding: 6px 10px;
+  background: #f0f4ec;
+  border-radius: 4px;
+  text-align: center;
+  color: #2d5016;
+  font-weight: 500;
 }
 `;
 
 export const T15 = ({ jsonData }) => {
-    // Process work experience
     const workExpList = jsonData.workExperience && jsonData.workExperience.length > 0
         ? jsonData.workExperience.map((we, index) => (
             <div key={`work-${index}`} className="experience-item">
-                <div className="item-header">
-                    <div className="item-title">{we.jobTitle || 'Position'}</div>
-                    <div className="item-date">{we.WorkDuration || 'Dec 2021 - Feb 2022'}</div>
+                <div className="exp-header">
+                    <div className="exp-title">{we.jobTitle || 'Position'}</div>
+                    <div className="exp-date">{we.WorkDuration || 'Duration'}</div>
                 </div>
-                <div className="item-location">{we.companyName || 'Company'}</div>
-                <div className="item-description">
+                <div className="exp-company">{we.companyName || 'Company'}</div>
+                <div className="exp-description">
                     <ul>
-                        <li dangerouslySetInnerHTML={{ __html: parseMarkdown(we.keyAchievements || 'Job responsibilities') }} />
+                        <li dangerouslySetInnerHTML={{ __html: parseMarkdown(we.keyAchievements || 'Responsibilities') }} />
                     </ul>
                 </div>
             </div>
         ))
         : null;
 
-    // Process education
     const educationList = jsonData.education && jsonData.education.length > 0
         ? jsonData.education.map((edu, index) => (
-            <div key={`edu-${index}`} className="education-item">
-                <div className="item-header">
-                    <div className="education-degree">{edu.degreeName || 'Degree'}</div>
-                    <div className="item-date">{edu.graduationYear || '2021'}</div>
+            <div key={`edu-${index}`} className="experience-item">
+                <div className="exp-header">
+                    <div className="exp-title">{edu.degreeName || 'Degree'}</div>
+                    <div className="exp-date">{edu.graduationYear || 'Year'}</div>
                 </div>
-                <div className="education-institution">{edu.institutionName || 'University'}</div>
+                <div className="exp-company">{edu.institutionName || 'University'}</div>
             </div>
         ))
         : null;
 
-    // Skills
     const hardSkills = jsonData.skills?.hardSkills
-        ? jsonData.skills.hardSkills.split(',').map(s => s.trim()).filter(s => s !== '')
-        : ['C#', 'C++', 'Java', 'Python'];
-
-    const softSkills = jsonData.skills?.softSkills
-        ? jsonData.skills.softSkills.split(',').map(s => s.trim()).filter(s => s !== '')
-        : ['Unity', 'Unreal Engine 4/5'];
+        ? jsonData.skills.hardSkills.split(',').map(s => s.trim()).filter(s => s !== '').slice(0, 9)
+        : [];
 
     return (
         <StyledWrapper>
             <div className="resume" id="capture-content">
-                {/* Header */}
                 <div className="header">
-                    <div className="name">{jsonData.contactInfo?.fullName || 'Isabella Montoya'}</div>
+                    <div className="name">{jsonData.contactInfo?.fullName || 'Your Name'}</div>
                     <div className="job-title">{jsonData.contactInfo?.jobTitle || 'Game Designer'}</div>
-
                     <div className="contact-info">
-                        <div className="contact-item">
-                            <i className="fas fa-envelope"></i>
-                            <span>{jsonData.contactInfo?.emailAddress || 'isabella.montoya.dec@gmail.com'}</span>
-                        </div>
-                        <div className="contact-item">
-                            <i className="fas fa-phone"></i>
-                            <span>{jsonData.contactInfo?.phoneNumber || '+54 11 3192 1234'}</span>
-                        </div>
-                        <div className="contact-item">
-                            <i className="fas fa-map-marker-alt"></i>
-                            <span>{jsonData.contactInfo?.Location || 'Buenos Aires, Argentina'}</span>
-                        </div>
-                        <div className="contact-item">
-                            <i className="fab fa-linkedin"></i>
-                            <span>{jsonData.contactInfo?.linkedin || 'linkedin.com/in/isabellamontoya'}</span>
-                        </div>
+                        <span>📧 {jsonData.contactInfo?.emailAddress || 'email@example.com'}</span>
+                        <span>📞 {jsonData.contactInfo?.phoneNumber || '+00 000 000 0000'}</span>
+                        <span>📍 {jsonData.contactInfo?.Location || 'Location'}</span>
                     </div>
                 </div>
 
-                {/* Professional Experience */}
                 {workExpList && workExpList.length > 0 && (
                     <div className="section">
-                        <div className="section-title">Professional Experience</div>
+                        <div className="section-title">Experience</div>
                         {workExpList}
                     </div>
                 )}
 
-                {/* Education */}
                 {educationList && educationList.length > 0 && (
                     <div className="section">
                         <div className="section-title">Education</div>
@@ -259,25 +202,13 @@ export const T15 = ({ jsonData }) => {
                     </div>
                 )}
 
-                {/* Skills */}
-                {(hardSkills.length > 0 || softSkills.length > 0) && (
+                {hardSkills.length > 0 && (
                     <div className="section">
                         <div className="section-title">Skills</div>
                         <div className="skills-grid">
-                            {hardSkills.length > 0 && (
-                                <div className="skill-category">
-                                    {hardSkills.map((skill, idx) => (
-                                        <div key={idx} className="skill-item">{skill}</div>
-                                    ))}
-                                </div>
-                            )}
-                            {softSkills.length > 0 && (
-                                <div className="skill-category">
-                                    {softSkills.map((skill, idx) => (
-                                        <div key={idx} className="skill-item">{skill}</div>
-                                    ))}
-                                </div>
-                            )}
+                            {hardSkills.map((skill, idx) => (
+                                <div key={idx} className="skill-item">{skill}</div>
+                            ))}
                         </div>
                     </div>
                 )}

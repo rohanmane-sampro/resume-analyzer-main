@@ -16,6 +16,8 @@ const StyledWrapper = styled.div`
     margin: 0;
     padding: 0;
     background-color: white !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
   @page {
    size: A4;
@@ -28,7 +30,7 @@ const StyledWrapper = styled.div`
 }
 
 body {
-  font-family: 'Calibri', 'Arial', sans-serif;
+  font-family: 'Arial', sans-serif;
   background-color: #f5f5f5;
 }
 
@@ -39,227 +41,197 @@ body {
   margin: 20px auto;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   display: flex;
-  min-height: 297mm;
 }
 
 .left-column {
   width: 180px;
-  background: white;
-  padding: 30px 20px;
-  border-right: 1px solid #e0e0e0;
+  background: #f8f9fa;
+  padding: 25px 20px;
 }
 
 .profile-photo {
   width: 140px;
   height: 140px;
-  background: #f0f0f0;
-  margin-bottom: 20px;
+  border-radius: 50%;
+  background: #dee2e6;
+  margin: 0 auto 20px;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 
 .photo-placeholder {
   font-size: 60px;
-  color: #ccc;
+  color: #adb5bd;
 }
 
-.name {
-  font-size: 18px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 8px;
-}
-
-.subtitle {
-  font-size: 11px;
-  color: #e67e22;
-  margin-bottom: 15px;
-  line-height: 1.4;
-}
-
-.contact-date {
-  font-size: 9px;
-  color: #666;
-  margin-bottom: 4px;
-}
-
-.marital-status {
-  font-size: 9px;
-  color: #666;
-}
-
-.right-column {
-  flex: 1;
-  padding: 30px 35px;
-}
-
-.section {
-  margin-bottom: 25px;
-}
-
-.section-title {
-  font-size: 14px;
-  font-weight: bold;
-  color: #e67e22;
-  margin-bottom: 10px;
-  padding-bottom: 4px;
-  border-bottom: 2px solid #e67e22;
-}
-
-.bio-text {
-  font-size: 10px;
-  line-height: 1.6;
-  color: #555;
-  text-align: justify;
-}
-
-.bio-text strong {
-  color: #e67e22;
-}
-
-.work-item {
-  margin-bottom: 16px;
-}
-
-.work-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 4px;
-}
-
-.work-title {
-  font-size: 11px;
-  font-weight: bold;
-  color: #333;
-}
-
-.work-date {
-  font-size: 10px;
-  color: #fff;
-  background: #34495e;
-  padding: 2px 8px;
-  border-radius: 3px;
-}
-
-.work-company {
-  font-size: 10px;
-  color: #e67e22;
-  margin-bottom: 6px;
-}
-
-.work-description {
-  font-size: 10px;
-  line-height: 1.5;
-  color: #555;
-}
-
-.skills-section {
+.sidebar-section {
   margin-bottom: 20px;
 }
 
-.skills-category {
-  margin-bottom: 12px;
+.sidebar-title {
+  font-size: 11px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #495057;
 }
 
-.skills-category-title {
-  font-size: 10px;
-  font-weight: bold;
-  color: #333;
+.biography {
+  font-size: 8px;
+  line-height: 1.5;
+  color: #6c757d;
+  text-align: justify;
+}
+
+.skill-item {
+  margin-bottom: 10px;
+}
+
+.skill-name {
+  font-size: 9px;
+  color: #495057;
   margin-bottom: 4px;
 }
 
-.skills-bar-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-
-.skill-bar-item {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.skill-bar-label {
-  font-size: 9px;
-  color: #666;
-}
-
-.skill-bar-wrapper {
-  height: 8px;
-  background: #e0e0e0;
-  border-radius: 4px;
+.progress-bar {
+  height: 6px;
+  background: #e9ecef;
+  border-radius: 3px;
   overflow: hidden;
-  position: relative;
 }
 
-.skill-bar-fill {
+.progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #3498db, #2980b9);
+  background: #0d6efd;
 }
 
-.skill-bar-years {
-  position: absolute;
-  right: 4px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 7px;
-  color: #333;
+.main-content {
+  flex: 1;
+  padding: 25px 30px;
+}
+
+.header {
+  margin-bottom: 20px;
+}
+
+.name {
+  font-size: 24px;
   font-weight: bold;
+  margin: 0 0 4px 0;
+  color: #000;
 }
 
-.languages-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  font-size: 10px;
+.job-title {
+  font-size: 13px;
+  color: #6c757d;
+  margin: 0 0 15px 0;
 }
 
-.language-item {
+.contact-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  font-size: 9px;
+  color: #6c757d;
+  margin-bottom: 15px;
+}
+
+.section {
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #000;
+  margin-bottom: 12px;
+  padding-bottom: 4px;
+  border-bottom: 2px solid #0d6efd;
+}
+
+.experience-item {
+  margin-bottom: 14px;
+}
+
+.exp-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
+  margin-bottom: 3px;
 }
 
-.language-name {
-  font-weight: 600;
-  color: #333;
+.exp-title {
+  font-size: 10px;
+  font-weight: bold;
+  color: #000;
 }
 
-.language-level {
+.exp-date {
   font-size: 9px;
-  color: #666;
+  color: #6c757d;
+}
+
+.exp-company {
+  font-size: 9px;
+  color: #6c757d;
+  margin-bottom: 5px;
+}
+
+.exp-description {
+  font-size: 9px;
+  line-height: 1.4;
+  color: #495057;
+}
+
+.exp-description ul {
+  margin: 3px 0;
+  padding-left: 16px;
+}
+
+.exp-description li {
+  margin-bottom: 2px;
 }
 `;
 
 export const T13 = ({ jsonData }) => {
-    // Process work experience
     const workExpList = jsonData.workExperience && jsonData.workExperience.length > 0
         ? jsonData.workExperience.map((we, index) => (
-            <div key={`work-${index}`} className="work-item">
-                <div className="work-header">
-                    <div className="work-title">{we.jobTitle || 'Position'}</div>
-                    <div className="work-date">{we.WorkDuration || 'XX/XXXX - today'}</div>
+            <div key={`work-${index}`} className="experience-item">
+                <div className="exp-header">
+                    <div className="exp-title">{we.jobTitle || 'Position'}</div>
+                    <div className="exp-date">{we.WorkDuration || 'Duration'}</div>
                 </div>
-                <div className="work-company">{we.companyName || 'Company'}</div>
-                <div className="work-description">
-                    <span dangerouslySetInnerHTML={{ __html: parseMarkdown(we.keyAchievements || 'Work description') }} />
+                <div className="exp-company">{we.companyName || 'Company'}</div>
+                <div className="exp-description">
+                    <ul>
+                        <li dangerouslySetInnerHTML={{ __html: parseMarkdown(we.keyAchievements || 'Responsibilities') }} />
+                    </ul>
                 </div>
             </div>
         ))
         : null;
 
-    // Skills
+    const educationList = jsonData.education && jsonData.education.length > 0
+        ? jsonData.education.map((edu, index) => (
+            <div key={`edu-${index}`} className="experience-item">
+                <div className="exp-header">
+                    <div className="exp-title">{edu.degreeName || 'Degree'}</div>
+                    <div className="exp-date">{edu.graduationYear || 'Year'}</div>
+                </div>
+                <div className="exp-company">{edu.institutionName || 'University'}</div>
+            </div>
+        ))
+        : null;
+
     const hardSkills = jsonData.skills?.hardSkills
-        ? jsonData.skills.hardSkills.split(',').map(s => s.trim()).filter(s => s !== '').slice(0, 8)
-        : ['Software development', 'Cyber security', 'Internet business/E-commerce', 'Web development'];
+        ? jsonData.skills.hardSkills.split(',').map(s => s.trim()).filter(s => s !== '').slice(0, 6)
+        : [];
 
     return (
         <StyledWrapper>
             <div className="resume" id="capture-content">
-                {/* Left Column */}
                 <div className="left-column">
                     <div className="profile-photo">
                         <div className="photo-placeholder">
@@ -267,72 +239,51 @@ export const T13 = ({ jsonData }) => {
                         </div>
                     </div>
 
-                    <div className="name">{jsonData.contactInfo?.fullName || 'Philip Empl'}</div>
-                    <div className="subtitle">
-                        {jsonData.contactInfo?.jobTitle || 'Management Information Systems (M. Sc.)'}
-                    </div>
-
-                    <div className="contact-date">
-                        XX.XX.XXXX in Los Angeles
-                    </div>
-                    <div className="marital-status">unmarried</div>
-                </div>
-
-                {/* Right Column */}
-                <div className="right-column">
-                    {/* Biography */}
-                    <div className="section">
-                        <div className="section-title">Biography</div>
-                        <div className="bio-text">
+                    <div className="sidebar-section">
+                        <div className="sidebar-title">BIOGRAPHY</div>
+                        <div className="biography">
                             {jsonData.Description?.UserDescription ||
-                                'Hello, here is some text without a meaning. This text should show what a printed text will look like at this place. If you read this text, you will get no information. Really? Is there no information? Is there a difference between this text and some nonsense like "Huardest gefburn"? Kjift - not at all! A blind text like this gives you information about the selected font, how the letters are written and an impression of the look. This text should contain all letters of the alphabet and it should be written in of the original language. There is no need for special content, but the length of words should match the language.'}
+                                'Professional with extensive experience in delivering high-quality results and driving innovation.'}
                         </div>
                     </div>
 
-                    {/* Work Experience */}
+                    <div className="sidebar-section">
+                        <div className="sidebar-title">SKILLS</div>
+                        {hardSkills.map((skill, idx) => (
+                            <div key={idx} className="skill-item">
+                                <div className="skill-name">{skill}</div>
+                                <div className="progress-bar">
+                                    <div className="progress-fill" style={{ width: '85%' }}></div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="main-content">
+                    <div className="header">
+                        <div className="name">{jsonData.contactInfo?.fullName || 'Your Name'}</div>
+                        <div className="job-title">{jsonData.contactInfo?.jobTitle || 'Professional Title'}</div>
+                        <div className="contact-info">
+                            <span>📧 {jsonData.contactInfo?.emailAddress || 'email@example.com'}</span>
+                            <span>📞 {jsonData.contactInfo?.phoneNumber || '+00 000 000 0000'}</span>
+                            <span>📍 {jsonData.contactInfo?.Location || 'Location'}</span>
+                        </div>
+                    </div>
+
                     {workExpList && workExpList.length > 0 && (
                         <div className="section">
-                            <div className="section-title">Work experience</div>
+                            <div className="section-title">Work Experience</div>
                             {workExpList}
                         </div>
                     )}
 
-                    {/* Skills */}
-                    <div className="section">
-                        <div className="section-title">Skills</div>
-
-                        <div className="skills-section">
-                            <div className="skills-category">
-                                <div className="skills-category-title">Technical Skills</div>
-                                <div className="skills-bar-container">
-                                    {hardSkills.map((skill, index) => (
-                                        <div key={index} className="skill-bar-item">
-                                            <div className="skill-bar-label">{skill}</div>
-                                            <div className="skill-bar-wrapper">
-                                                <div className="skill-bar-fill" style={{ width: '70%' }}></div>
-                                                <div className="skill-bar-years">6+ Jahre</div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
+                    {educationList && educationList.length > 0 && (
+                        <div className="section">
+                            <div className="section-title">Education</div>
+                            {educationList}
                         </div>
-
-                        {/* Languages */}
-                        <div className="skills-category">
-                            <div className="skills-category-title">Languages</div>
-                            <div className="languages-grid">
-                                <div className="language-item">
-                                    <span className="language-name">German</span>
-                                    <span className="language-level">L1</span>
-                                </div>
-                                <div className="language-item">
-                                    <span className="language-name">English</span>
-                                    <span className="language-level">C1</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    )}
                 </div>
             </div>
         </StyledWrapper>

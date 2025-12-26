@@ -3,7 +3,7 @@ import { Download, FileText, Code, Database, X, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { html as html_beautify } from 'js-beautify';
-import { T1Css, T2Css, T3Css, T4Css, T5Css, T6Css } from './Templates';
+import { T1Css, T2Css, T3Css, T4Css, T5Css, T6Css, T7Css, T9Css, T10Css, T11Css, T12Css, T13Css, T14Css, T15Css, T16Css, T17Css, T18Css, T19Css, T20Css, T21Css } from './Templates';
 
 const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
   const [downloading, setDownloading] = useState({});
@@ -166,12 +166,10 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
     // Import the template CSS based on selected template
     const getTemplateCss = () => {
       const templateCssMap = {
-        '1': T1Css,
-        '2': T2Css,
-        '3': T3Css,
-        '4': T4Css,
-        '5': T5Css,
-        '6': T6Css
+        '1': T1Css, '2': T2Css, '3': T3Css, '4': T4Css, '5': T5Css, '6': T6Css,
+        '7': T7Css, '9': T9Css, '10': T10Css, '11': T11Css, '12': T12Css,
+        '13': T13Css, '14': T14Css, '15': T15Css, '16': T16Css, '17': T17Css, '18': T18Css,
+        '19': T19Css, '20': T20Css, '21': T21Css
       };
       return templateCssMap[selectedTemplate] || T1Css;
     };
@@ -448,8 +446,8 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
                   <motion.div
                     key={format.id}
                     className={`relative border-2 rounded-lg p-4 cursor-pointer transition-all ${format.recommended
-                        ? 'border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20'
-                        : 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600'
+                      ? 'border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20'
+                      : 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600'
                       } ${isDownloaded ? 'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800' : ''}`}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}

@@ -9,7 +9,6 @@ export { T4, T4Css } from './T4.jsx';
 export { T5, T5Css } from './T5.jsx';
 export { T6, T6Css } from './T6.jsx';
 export { T7, T7Css } from './T7.jsx';
-export { T8, T8Css } from './T8.jsx';
 export { T9, T9Css } from './T9.jsx';
 export { T10, T10Css } from './T10.jsx';
 export { T11, T11Css } from './T11.jsx';
@@ -33,7 +32,6 @@ export const TEMPLATE_CONFIG = {
     5: { name: 'Tech Starter', component: 'T5', cssName: 'T5Css' },
     6: { name: 'Simple Clean', component: 'T6', cssName: 'T6Css' },
     7: { name: 'Professional Developer', component: 'T7', cssName: 'T7Css' },
-    8: { name: 'Creative Portfolio', component: 'T8', cssName: 'T8Css' },
     9: { name: 'Clean Professional', component: 'T9', cssName: 'T9Css' },
     10: { name: 'Minimalist Clean', component: 'T10', cssName: 'T10Css' },
     11: { name: 'Photo Profile', component: 'T11', cssName: 'T11Css' },
@@ -50,4 +48,4 @@ export const TEMPLATE_CONFIG = {
 };
 
 // Template Count
-export const TOTAL_TEMPLATES = 21;
+export const TOTAL_TEMPLATES = 20;
