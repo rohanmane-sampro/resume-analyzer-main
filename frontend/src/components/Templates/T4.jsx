@@ -52,13 +52,12 @@ const StyledWrapper = styled.div`body {
 }
 
 .header .left {
-  width: 36.6%;
+  width: 35%;
   display: flex;
   justify-content: center;
-  padding: 10px 20px 10px 20px;
+  padding: 20px;
   background-color: #0363b1;
   border-top-left-radius: 15px;
-  border-right: 4px solid #0363b1;
 }
 
 .left img{
@@ -128,11 +127,9 @@ const StyledWrapper = styled.div`body {
 
 .content .left {
   width: 35%;
-  padding-right: 10px;
+  padding: 20px 10px;
   background-color: #0363b1;
   border-bottom-left-radius: 15px;
-  border-right: 4px solid #0363b1;
-  /* border-top: 4px solid #0363b1; */
 }
 
 .content .right {
@@ -434,8 +431,6 @@ export const T4Css = `
      padding: 0 !important;
      background-color: #ffffff !important;
      display: block !important;
-     height: auto !important;
-     width: 100% !important;
   }
   
   @page {
@@ -454,9 +449,23 @@ export const T4Css = `
      padding: 0 !important;
      box-shadow: none !important;
      overflow: visible !important;
+     display: flex;
+     flex-direction: column;
   }
-  
-  .header, .section, .item {
+
+  .header, .content {
+    display: flex !important;
+    width: 100% !important;
+    page-break-inside: auto !important;
+  }
+
+  .header .left, .content .left {
+    background-color: #0363b1 !important;
+    -webkit-print-color-adjust: exact !important;
+    min-height: 100%;
+  }
+
+  .section, .item, .Lsection, .Contact {
      page-break-inside: avoid !important;
   }
 }
@@ -605,8 +614,15 @@ body {
 
 .subcont,.SkillSubCon {
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 15px;
 }  
+
+.subcont ul {
+    min-width: 120px;
+    flex: 1;
+}
 
 .section,.SUsection {
    margin-bottom: 20px;

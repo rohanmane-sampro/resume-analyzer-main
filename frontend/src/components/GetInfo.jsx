@@ -8,7 +8,7 @@ import Suggestions from "./Suggestions";
 import { useLocation } from 'react-router-dom';
 import JsonFiles from "./JsonFiles.jsx"
 import { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21 } from './Templates';
-import ChatBot from './ChatBot.jsx';
+
 import AIAnalysis from './AIAnalysis.jsx';
 import AISuggestions from './AISuggestions.jsx';
 import DownloadModal from './DownloadModal.jsx';
@@ -104,7 +104,7 @@ const GetInfo = () => {
   const [showInput, setShowInput] = useState(false);
   const [pin, setPin] = useState("");
   const [error, setError] = useState(false);
-  const [selectTemp, setSelectTemp] = useState(false);
+  const [selectTemp, setSelectTemp] = useState(true);
   const AboutTemps = [
     "Simpler and Structured",
     "Linear and Classic",
@@ -156,26 +156,7 @@ const GetInfo = () => {
   ];
   const [i, setI] = useState(0);
 
-  useEffect(() => {
-    const Suggest = new Typed("#Suggestion-typing-text", {
-      strings: [Suggests[i]],
-      loop: false,
-      typeSpeed: 30,
-      showCursor: true,
-    });
 
-    if (i === 0) {
-      const timer = setTimeout(() => {
-        setI(1);
-        setSelectTemp(true)
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-
-    return () => {
-      Suggest.destroy();
-    };
-  }, [i]);
 
 
   // Use environment variable for Firebase URL
@@ -196,35 +177,31 @@ const GetInfo = () => {
     */
   }, []);
 
-  // Load data when coming back from Result or Preview page
+  // Load data when coming back from Result or Preview page or via FileUpload
   useEffect(() => {
-    // Check if coming from ViewTemplates with a selected template
-    if (location.state?.selectedTemplate && !hasLoadedDataRef.current) {
-      hasLoadedDataRef.current = true;
-      setFormData(prev => ({
-        ...prev,
-        selectedTemplate: String(location.state.selectedTemplate)
-      }));
-      setCurrentStep(0); // Stay on template selection to show the selected template
-      // Show toast to confirm template selection
-      setTimeout(() => {
-        toast.success(`Template ${location.state.selectedTemplate} selected! Fill in your details to continue.`);
-      }, 500);
-    }
-    // Load data when coming back from Result or Preview page
-    else if (UserjsonData && !hasLoadedDataRef.current) {
-      hasLoadedDataRef.current = true;
-      setFormData(UserjsonData);
-      setIsExampleProcessing(false);
+    if (hasLoadedDataRef.current) return;
 
-      // Set all steps as completed except template selection
-      if (UserjsonData.selectedTemplate) {
-        setCurrentStep(0); // Start at Template selection
-        setCompletedSteps(new Set([1, 2, 3, 4, 5, 6, 7])); // Mark other steps as completed
-      } else {
-        setCurrentStep(0); // Start at Template selection
-        setCompletedSteps(new Set([1, 2, 3, 4, 5, 6, 7])); // Mark data steps as completed
+    const stateSelectedTemplate = location.state?.selectedTemplate;
+
+    if (UserjsonData || stateSelectedTemplate) {
+      hasLoadedDataRef.current = true;
+
+      let newFormData = { ...formData };
+
+      if (UserjsonData) {
+        newFormData = { ...UserjsonData };
+        setIsExampleProcessing(false);
+        // Mark data steps as completed
+        setCompletedSteps(new Set([1, 2, 3, 4, 5, 6, 7]));
       }
+
+      if (stateSelectedTemplate) {
+        newFormData.selectedTemplate = String(stateSelectedTemplate);
+        toast.success(`Template #${stateSelectedTemplate} selected!`);
+      }
+
+      setFormData(newFormData);
+      setCurrentStep(0); // Always start at Template selection to confirm
     }
   }, [UserjsonData, location.state]);
 
@@ -1651,14 +1628,11 @@ const GetInfo = () => {
                   >
                     <div
                       onClick={() => {
-                        if (selectTemp) {
-                          setFormData((prev) => ({ ...prev, selectedTemplate: String(template) }));
-                          { i === 2 && setI(1) }
-                          const timer2 = setTimeout(() => {
-                            { (i === 1 || i === 2) && setI(2) };
-                          }, 50);
-                          return () => clearTimeout(timer2);
-                        }
+                        setFormData((prev) => ({ ...prev, selectedTemplate: String(template) }));
+                        if (i === 2) setI(1);
+                        const timer2 = setTimeout(() => {
+                          if (i === 1 || i === 2) setI(2);
+                        }, 50);
                       }}
                       className="cursor-pointer"
                     >
@@ -1873,7 +1847,10 @@ const GetInfo = () => {
                 const templateNum = isExampleProcessing ? ExampleJsonData.selectedTemplate : formData.selectedTemplate;
                 const data = isExampleProcessing ? ExampleJsonData : formData;
 
-                switch (String(templateNum)) {
+                // Fallback to template 1 if nothing is selected
+                const activeTemplate = templateNum || "1";
+
+                switch (String(activeTemplate)) {
                   case '1': return <T1 jsonData={data} />;
                   case '2': return <T2 jsonData={data} />;
                   case '3': return <T3 jsonData={data} />;
@@ -1894,23 +1871,12 @@ const GetInfo = () => {
                   case '19': return <T19 jsonData={data} />;
                   case '20': return <T20 jsonData={data} />;
                   case '21': return <T21 jsonData={data} />;
-                  default: return <div className="text-gray-500 p-4">Select a template to preview</div>;
+                  default: return <T1 jsonData={data} />;
                 }
               })()}
             </div>
           </div>
-          <div className={`whitespace-pre-line dark:text-slate-300 p-3 md:p-1 ${isExampleProcessing ? "hidden" : "block"}`}>
-            <div className="flex items-center mb-3">
-              <div className="w-10 h-10 bg-teal-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl">S</span>
-              </div>
-              <div className="ml-2">
-                <span className="font-semibold pb-[2px]">Assistant Bot</span>
-                <div className="w-[75%] h-[3px] bg-blue-800 mx-auto mt-1 rounded dark:bg-amber-500"></div>
-              </div>
-            </div>
-            <span id="Suggestion-typing-text" className="text-lime-700 dark:text-lime-400"></span>
-          </div>
+
         </div>
       </div>
 
