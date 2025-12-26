@@ -1,169 +1,167 @@
 
 
-const JsonFiles=[
+const JsonFiles = [
+  {
+    selectedTemplate: "5",
+    contactInfo: {
+      fullName: "John Doe",
+      phoneNumber: "+1 (555) 123-4567",
+      emailAddress: "john.doe@email.com",
+      linkedin: "linkedin.com/in/johndoe",
+      portfolio: "github.com/johndoe",
+      jobTitle: "Senior Software Engineer",
+      Languages: "English, Spanish",
+      Location: "San Francisco, CA"
+    },
+    skills: {
+      hardSkills: "JavaScript, TypeScript, React, Node.js, Python, AWS, Docker, Kubernetes, PostgreSQL, MongoDB, Redis, GraphQL, REST APIs, Git, CI/CD",
+      softSkills: "Leadership, Communication, Problem Solving, Team Collaboration, Agile/Scrum, Mentoring"
+
+    },
+    workExperience: [
       {
-       selectedTemplate: "5",
-       contactInfo: {
-         fullName: "Prashant Parshuramkar",
-         phoneNumber: "9623447749",
-         emailAddress: "prashantparshuramkar9146@gmail.com",
-         linkedin: "prashantparshuramkar9623",
-         portfolio: "prashantparshuramkar.host20.uk",
-         jobTitle: "Frontend Developer",
-         Languages: "English, Hindi, Marathi",
-         Location: "Nagpur (Maharashtra)"
-       },
-       skills: {
-         hardSkills: "HTML,CSS, JavaScript, Python, React.js, Node.js, MongoDB, Git, GitHub",
-         softSkills: "Collaboration, Analytical Thinking, Initiative, Adaptability, Effective Communication, Creative Problem-Solving, Leadership, Time Management, Critical Thinking"
-
-       },
-       workExperience: [
-         {
-           jobTitle: "Full Stack Developer Intern",
-           companyName: "Refine Media Pvt. Ltd.",
-           WorkDuration: "Dec-2024 to May-2025",
-           keyAchievements: "Collaborated on developing a full-stack application using React, Node.js, and MongoDB, streamlining business workflows and improving deployment efficiency through CI/CD integration."
-         },
-         {
-           jobTitle: "Cloud Intern",
-           companyName: "KasNet Technologies",
-           WorkDuration: "Apr-2023 to Jul-2023",
-           keyAchievements: "Deployed and managed Azure-based cloud solutions, optimizing resource usage and improving application performance by 25%."
-         }
-       ],
-       projects: [
-         {
-           projectTitle: "Automated Image Fetcher",
-           toolsTechUsed: "HTML, CSS, JavaScript, Python, Flask"
-
-         },
-         {
-           projectTitle: "AI-Powered Resume Builder",
-           toolsTechUsed: "HTML, CSS, JavaScript, React.js, Node.js, Python, Flask"
-         }
-         
-       ],
-       education: [
-         {
-           institutionName: "Priyadarshini Bhagwati College of Engineering Nagpur",
-           degreeName: "Bachelor of Technology in Computer Science",
-           graduationYear: "2021 - 2025",
-           currentCGPA: "8.53"
-         },
-         {
-           institutionName: "Martandrao Patil Kapgate Jr. College Jambhali Sadak",
-           degreeName: "HSC",
-           graduationYear: "2020 - 2021",
-           currentCGPA: "84.3"
-         }
-       ],
-       certificates: [
-         {
-           certificateName: "Azure Fundamentals",
-           courseDuration: "3 Month",
-           providerName: "Microsoft"
-         },
-         {
-           certificateName: "Web Development Course",
-           courseDuration: "12 Month",
-           providerName: "STP Computer Education"
-         },
-         {
-           certificateName: "Foundation of Cyber Security by Google",
-           courseDuration: "3 Month",
-           providerName: "Coursera"
-         },
-         
-       ],
-       Description:{
-         UserDescription: "MERN Stack Developer skilled in building fast, scalable, and responsive web apps. Proficient in MongoDB, Express.js, React, and Node.js with a focus on clean code, REST APIs, and user-friendly interfaces. Experienced in end-to-end development and delivering modern, production-ready solutions."
-       }
+        jobTitle: "Senior Software Engineer",
+        companyName: "Tech Innovations Inc.",
+        WorkDuration: "Jan 2020 - Present",
+        keyAchievements: "Led development of microservices architecture serving 2M+ active users. Improved application performance by 45% through code optimization and caching strategies. Mentored team of 6 junior developers and conducted technical interviews. Implemented CI/CD pipeline reducing deployment time by 60%."
       },
-
       {
-         selectedTemplate: "3",
-         contactInfo: {
-         fullName: "Nishant Sonar",
-         phoneNumber: "9970135444",
-         emailAddress: "nishantsonar047@gmail.com",
-         linkedin: "Nishant-Sonar",
-         portfolio: "nishanttech.host20.uk",
-         jobTitle: "Full Stack Developer",
-         Languages: "English, Hindi,Marathi",
-         Location: "Nagpur (Maharashtra)"
-       },
-       
-       skills: {
-        hardSkills: "HTML, CSS, JavaScript, React.js, Node.js, Express.js, MongoDB, RESTful APIs, Git, GitHub, Redux",
-        softSkills: "Teamwork, Problem-Solving, Leadership, Critical Thinking, Communication, Creativity"
-},
+        jobTitle: "Software Engineer",
+        companyName: "Digital Solutions Corp",
+        WorkDuration: "Jun 2017 - Dec 2019",
+        keyAchievements: "Developed RESTful APIs handling 100K+ daily requests with 99.9% uptime. Collaborated with cross-functional teams to deliver 15+ client projects. Optimized database queries improving response time by 35%."
+      }
+    ],
+    projects: [
+      {
+        projectTitle: "E-Commerce Platform",
+        projectDescription: "Built scalable platform handling 50K+ daily transactions with real-time inventory",
+        toolsTechUsed: "React, Node.js, PostgreSQL, Redis, AWS, Docker"
 
-       workExperience: [
-         {
-           jobTitle: "Full Stack Developer Intern",
-           companyName: "PugArch Technologies",
-           WorkDuration: "Jul-2024 to Jan-2025",
-           keyAchievements: "Developed and deployed a full-stack web application using React.js, Node.js, and MongoDB, enhancing user experience and improving performance by 40%."
-         },
-         {
-           jobTitle: "Cloud Intern",
-           companyName: "KasNet Technologies",
-           WorkDuration: "Apr-2023 to Jul-2023",
-           keyAchievements: "Deployed and managed Azure-based cloud solutions, optimizing resource usage and improving application performance by 25%."
-         }
-       ],
-       projects: [
-         {
-           projectTitle: "Automated Image Fetcher",
-          toolsTechUsed: "HTML, CSS, JavaScript, Python, Flask"
-         },
-         {
-           projectTitle: "Super-Cop Application",
-           toolsTechUsed: "React, Ionic,Javascript, Node.js, Express.js, MongoDB"
-         },
-         {
-           projectTitle: "AI-Powered Image Processing",
-           toolsTechUsed: "HTML,CSS, Javascript, React.js, Node.js, Python, Flask"
-         }
-       ],
-       education: [
-         {
-           institutionName: "Priyadarshini Bhagwati College of Engineering Nagpur",
-           degreeName: "Bachlore of Technology in Computer Science",
-           graduationYear: "2022 - 2025",
-           currentCGPA: "7.6"
-         },
-         {
-           institutionName: "Government Polytechnic College Nagpur",
-           degreeName: "Diploma",
-           graduationYear: "2018 - 2021",
-           currentCGPA: "8.9"
-         }
-       ],
-       certificates: [
-         {
-           certificateName: "Azure Fundamentals",
-           courseDuration: "3 Month",
-           providerName: "Microsoft"
-         },
-         {
-           certificateName: "SQL-Basics",
-           courseDuration: "1 Month",
-           providerName: "HackerRank"
-         },
-         {
-           certificateName: "PugArch Full Stack Developer Internship",
-           courseDuration: "6 Month",
-           providerName: "PugArch Technologies"
-         },
-       ],
-       Description:{
-         UserDescription: "Full Stack Developer experienced in building scalable web apps using JavaScript, React, Node.js, and SQL. Skilled in REST APIs, Azure deployment, and Git. Focused on delivering clean, user-centric, and maintainable solutions."
-       }
+      },
+      {
+        projectTitle: "Analytics Dashboard",
+        projectDescription: "Created real-time analytics dashboard with custom reporting and data visualization",
+        toolsTechUsed: "React, D3.js, GraphQL, MongoDB, WebSockets"
+      },
+      {
+        projectTitle: "Mobile Banking App",
+        projectDescription: "Developed secure mobile app with biometric authentication and real-time notifications",
+        toolsTechUsed: "React Native, Firebase, Node.js, MongoDB"
       }
 
+    ],
+    education: [
+      {
+        institutionName: "Stanford University",
+        degreeName: "Bachelor of Science in Computer Science",
+        graduationYear: "2013 - 2017",
+        currentCGPA: "3.85"
+      }
+    ],
+    certificates: [
+      {
+        certificateName: "AWS Certified Solutions Architect",
+        courseDuration: "3 Months",
+        providerName: "Amazon Web Services"
+      },
+      {
+        certificateName: "Certified Kubernetes Administrator",
+        courseDuration: "3 Months",
+        providerName: "Cloud Native Computing Foundation"
+      },
+      {
+        certificateName: "MongoDB Certified Developer",
+        courseDuration: "2 Months",
+        providerName: "MongoDB University"
+      }
 
-   ]
+    ],
+    Description: {
+      UserDescription: "Results-driven Full Stack Developer with 7+ years of experience building scalable web applications. Expertise in modern JavaScript frameworks, cloud architecture, and agile methodologies. Passionate about creating efficient, user-focused solutions that drive business growth."
+    }
+  },
+
+  {
+    selectedTemplate: "3",
+    contactInfo: {
+      fullName: "Jane Smith",
+      phoneNumber: "+1 (555) 987-6543",
+      emailAddress: "jane.smith@email.com",
+      linkedin: "linkedin.com/in/janesmith",
+      portfolio: "github.com/janesmith",
+      jobTitle: "Full Stack Developer",
+      Languages: "English, French",
+      Location: "New York, NY"
+    },
+
+    skills: {
+      hardSkills: "HTML, CSS, JavaScript, React, Vue.js, Node.js, Express, MongoDB, PostgreSQL, Git, Redux, TypeScript, Docker",
+      softSkills: "Teamwork, Problem-Solving, Leadership, Communication, Time Management, Adaptability"
+    },
+
+    workExperience: [
+      {
+        jobTitle: "Full Stack Developer",
+        companyName: "WebTech Solutions",
+        WorkDuration: "Mar 2019 - Present",
+        keyAchievements: "Developed 20+ full-stack web applications using React and Node.js, improving performance by 40%. Led migration of legacy systems to modern tech stack reducing maintenance costs by 30%. Implemented CI/CD pipelines increasing deployment efficiency."
+      },
+      {
+        jobTitle: "Frontend Developer",
+        companyName: "Creative Digital Agency",
+        WorkDuration: "Jan 2017 - Feb 2019",
+        keyAchievements: "Built responsive websites for 25+ clients using React and Vue.js. Implemented design systems improving development speed by 50%. Optimized web performance achieving 95+ Lighthouse scores."
+      }
+    ],
+    projects: [
+      {
+        projectTitle: "Task Management Platform",
+        projectDescription: "Built project management tool with real-time collaboration and task tracking",
+        toolsTechUsed: "React, Node.js, MongoDB, Socket.io, AWS"
+      },
+      {
+        projectTitle: "Real Estate Listing Site",
+        projectDescription: "Developed property listing platform with advanced search and map integration",
+        toolsTechUsed: "Vue.js, PostgreSQL, Google Maps API, AWS S3"
+      },
+      {
+        projectTitle: "Social Media Dashboard",
+        projectDescription: "Created analytics platform with custom reports and data visualization",
+        toolsTechUsed: "React, GraphQL, MongoDB, Redis, Docker"
+      }
+    ],
+    education: [
+      {
+        institutionName: "Massachusetts Institute of Technology",
+        degreeName: "Bachelor of Science in Computer Science",
+        graduationYear: "2013 - 2017",
+        currentCGPA: "3.8"
+      }
+    ],
+    certificates: [
+      {
+        certificateName: "AWS Certified Developer",
+        courseDuration: "3 Months",
+        providerName: "Amazon Web Services"
+      },
+      {
+        certificateName: "React Complete Guide",
+        courseDuration: "2 Months",
+        providerName: "Udemy"
+      },
+      {
+        certificateName: "Full Stack Development Certificate",
+        courseDuration: "6 Months",
+        providerName: "IBM via Coursera"
+      }
+    ],
+    Description: {
+      UserDescription: "Full Stack Developer with 6+ years of experience building modern web applications. Proficient in JavaScript, React, Node.js, and cloud technologies. Focused on creating scalable, user-centric solutions with clean code and performance optimization."
+    }
+  }
+
+
+]
 
 export default JsonFiles;

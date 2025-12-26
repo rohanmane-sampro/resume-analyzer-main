@@ -587,11 +587,11 @@ const GetInfo = () => {
               <div className="ml-4 w-0 h-1 rounded-full bg-blue-500 transition-all duration-300 peer-hover:w-[60%] peer-focus:w-[88%] sm:peer-focus:w-[94%]"></div>
             </div>
 
-            {/* Profile Image Upload - Only for Template 4 */}
-            {(isExampleProcessing ? ExampleJsonData.selectedTemplate === '4' : formData.selectedTemplate === '4') && (
+            {/* Profile Image Upload - For Templates with Photo Support */}
+            {(isExampleProcessing ? ['4', '7', '11', '12', '13', '19', '21'].includes(ExampleJsonData.selectedTemplate) : ['4', '7', '11', '12', '13', '19', '21'].includes(formData.selectedTemplate)) && (
               <div className="space-y-2 mt-4 p-4 border-2 border-blue-200 rounded-lg bg-blue-50 dark:bg-slate-700 dark:border-blue-600">
                 <label className="block text-sm font-medium dark:text-slate-300 flex items-center gap-2">
-                  <span>📸 Profile Picture (For Template 4)</span>
+                  <span>📸 Profile Picture (For Selected Template)</span>
                 </label>
                 <input
                   type="file"
