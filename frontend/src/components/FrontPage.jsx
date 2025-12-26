@@ -1,13 +1,11 @@
 
 
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import Typed from "typed.js";
 import { Eye } from 'lucide-react';
 import Examplepages from './Examplepage.jsx'
 import { useNavigate } from 'react-router-dom';
-import { ThemeContext } from "./ThemeContext.jsx";
-// import { MdDarkMode } from "react-icons/md";
-import Switch from "./Switch.jsx";
+import Navbar from "./Navbar.jsx";
 
 const features = [
   "AI-powered resume analysis with instant role-specific optimization suggestions.",
@@ -48,11 +46,7 @@ const FrontPage = ({ views }) => {
     navigate('/ResumeAnalyze');
   };
 
-  const { isDark, setIsDark } = useContext(ThemeContext);
-
-  const handleTheme = () => {
-    setIsDark((prev) => !prev);
-  };
+  // Removed local theme handling, now in Navbar
 
   useEffect(() => {
     const typedMobile = new Typed("#mobile-typing-text", {
@@ -80,48 +74,8 @@ const FrontPage = ({ views }) => {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 text-center px-4">
-      {/* Desktop Navigation */}
-      <nav className="hidden md:flex justify-between items-center w-full px-8 py-4 sampro-nav">
-        <div className="flex items-center gap-2">
-          <div className="w-10 h-10 bg-teal-500 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-xl">S</span>
-          </div>
-          <h1 className="text-2xl font-bold text-white">
-            SAMPRO <span className="text-teal-400">AI</span>
-          </h1>
-        </div>
-
-        <div className="flex items-center gap-1">
-          <button className="sampro-nav-link active" onClick={() => window.location.href = '/'}>
-            Home
-          </button>
-          <button className="sampro-nav-link" onClick={handleContinue}>
-            Create Resume
-          </button>
-          <button className="sampro-nav-link" onClick={handleAnalyze}>
-            Resume Analysis
-          </button>
-          {/* <button className="sampro-nav-link" onClick={handleFeatures}>
-            Features
-          </button> */}
-          <button className="sampro-nav-link" onClick={handleFeatures}>
-            Features
-          </button>
-          <button className="sampro-nav-link" onClick={handleAboutUs}>
-            About
-          </button>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button
-            className="transition-transform hover:scale-110"
-            title="Toggle dark/light mode"
-            onClick={handleTheme}>
-            <Switch />
-          </button>
-        </div>
-      </nav>
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50 via-blue-100 to-pink-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 text-center">
+      <Navbar />
 
       {/* Desktop Hero Section */}
       <div className="hidden md:flex flex-col items-center justify-center flex-1 mt-12 mb-8 sampro-hero">
@@ -155,29 +109,6 @@ const FrontPage = ({ views }) => {
         </div>
       </div>
 
-
-      {/* Mobile View */}
-      <nav className="flex md:hidden justify-between items-center w-full px-6 py-4 sampro-nav">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-teal-500 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-lg">S</span>
-          </div>
-          <h1 className="text-xl font-bold text-white">
-            SAMPRO <span className="text-teal-400">AI</span>
-          </h1>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button
-            className="transition-transform hover:scale-110"
-            onClick={handleTheme}>
-            <Switch />
-          </button>
-          <button className="px-4 py-2 bg-teal-600 text-white rounded-lg font-semibold" onClick={handleContinue}>
-            Start
-          </button>
-        </div>
-      </nav>
 
       {/* Mobile Hero Section */}
       <div className="md:hidden flex justify-center flex-col items-center flex-grow px-4 py-8 sampro-hero">

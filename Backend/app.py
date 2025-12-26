@@ -3,6 +3,9 @@ from flask_cors import CORS
 from src.config import Config
 from src.routes.ai_routes import ai_bp
 from src.routes.pdf_routes import pdf_bp
+from src.routes.auth_routes import auth_bp
+from src.routes.resume_routes import resume_bp
+from src.routes.admin_routes import admin_bp
 
 def create_app():
     app = Flask(__name__)
@@ -17,6 +20,9 @@ def create_app():
     # Register Blueprints
     app.register_blueprint(ai_bp)
     app.register_blueprint(pdf_bp)
+    app.register_blueprint(auth_bp, url_prefix='/api/auth')
+    app.register_blueprint(resume_bp, url_prefix='/api/resume')
+    app.register_blueprint(admin_bp, url_prefix='/api/admin')
     
     @app.route('/')
     def index():

@@ -16,7 +16,7 @@ const Result = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isBuilt, setIsBuilt] = useState(false);
-  const { jsonData, originalData, versionType } = location.state || {};
+  const { jsonData, originalData, versionType, resumeId } = location.state || {};
   const navigateToDiv = useRef(null);
   const selectedTemplate = jsonData?.selectedTemplate || "1";
   const MAX_RETRIES = 3;
@@ -315,6 +315,7 @@ const Result = () => {
             onClose={() => setShowDownloadModal(false)}
             resumeData={jsonData}
             selectedTemplate={selectedTemplate}
+            resumeId={resumeId}
           />
         )}
       </div>

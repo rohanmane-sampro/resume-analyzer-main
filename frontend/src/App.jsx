@@ -15,21 +15,20 @@ import FileUploadPage from './components/FileUploadPage.jsx';
 import Features from './components/Features.jsx';
 import Loader from './components/Loader.jsx'
 import ResumeAnalyze from './components/ResumeAnalyze.jsx';
-// import T5 from './components/T5.jsx'
-
-// Use environment variable for Firebase URL
-// Firebase usage enabled via VITE_FIREBASE_URL
+import Login from './components/Login.jsx';
+import Signup from './components/Signup.jsx';
+import UserDashboard from './components/UserDashboard.jsx';
+import AdminDashboard from './components/AdminDashboard.jsx';
+import { useAuth } from './AuthContext';
+import { Navigate } from 'react-router-dom';
 
 const App = () => {
-
+  const { user, loading: authLoading } = useAuth();
   const { isDark } = useContext(ThemeContext)
   const [loading, setLoading] = useState(true);
   const [views, setViews] = useState(0);
 
   useEffect(() => {
-    // Firebase URL should be set in environment variables
-    // Uncomment the following code after adding REACT_APP_FIREBASE_URL to your .env file
-    // Firebase URL should be set in environment variables
     const FIREBASE_URL = import.meta.env.VITE_FIREBASE_URL;
 
     if (FIREBASE_URL) {
@@ -63,28 +62,38 @@ const App = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  if (loading) {
+  if (loading || authLoading) {
     return <Loader />;
   }
 
   return (
-    // <>
-    //   <FileUploadPage/>
-    // </>
     <div>
       <Toaster />
       <Routes>
+        {/* Public Landing Page */}
         <Route path="/" element={<FrontPage views={views} />} />
+
+        {/* Auth Routes - Redirect to Home if already authenticated */}
+        <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
+        <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" />} />
+
+        {/* User-Only Protected Routes */}
+        <Route path="/dashboard" element={user ? <UserDashboard /> : <Navigate to="/login" />} />
+        <Route path="/FileUploadPage" element={user ? <FileUploadPage /> : <Navigate to="/login" />} />
+        <Route path="/GetInfo" element={user ? <GetInfo /> : <Navigate to="/login" />} />
+        <Route path="/Preview" element={user ? <PreviewPage /> : <Navigate to="/login" />} />
+        <Route path="/Result" element={user ? <Result /> : <Navigate to="/login" />} />
+        <Route path="/ResumeAnalyze" element={user ? <ResumeAnalyze /> : <Navigate to="/login" />} />
+
+        {/* Admin-Only Protected Routes */}
+        <Route path="/admin" element={user?.role === 'admin' ? <AdminDashboard /> : <Navigate to="/" />} />
+
+        {/* Other Public Routes */}
         <Route path="/AboutUs" element={<AboutUs />} />
         <Route path="/VarifyMail" element={<GoogleVarification />} />
-        <Route path="/FileUploadPage" element={<FileUploadPage />} />
         <Route path="/HTML-PDF" element={<HtmlToPdfConverter />} />
-        <Route path="/GetInfo" element={<GetInfo />} />
-        <Route path="/Preview" element={<PreviewPage />} />
-        <Route path="/Result" element={<Result />} />
         <Route path="/ViewTemplates" element={<ViewTemplates />} />
         <Route path="/Features" element={<Features />} />
-        <Route path="/ResumeAnalyze" element={<ResumeAnalyze />} />
       </Routes>
     </div>
   );

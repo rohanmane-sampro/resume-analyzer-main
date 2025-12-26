@@ -25,4 +25,26 @@ export const ENDPOINTS = {
     PROFILE_SUGGESTIONS: `${API_BASE_URL}/generate-profile-suggestions`,
     HEALTH: `${API_BASE_URL}/health`,
     GENERATE_PDF: `${API_BASE_URL}/generate-pdf`,
+    AUTH: {
+        LOGIN: `${API_BASE_URL}/api/auth/login`,
+        REGISTER: `${API_BASE_URL}/api/auth/register`,
+        ME: `${API_BASE_URL}/api/auth/me`,
+    },
+    RESUME: {
+        TRACK_CREATE: `${API_BASE_URL}/api/resume/track/create`,
+        TRACK_DOWNLOAD: (id) => `${API_BASE_URL}/api/resume/track/download/${id}`,
+        STATS: `${API_BASE_URL}/api/resume/stats`,
+    },
+    ADMIN: {
+        STATS: `${API_BASE_URL}/api/resume/admin/stats`,
+        TEMPLATES: `${API_BASE_URL}/api/admin/templates`,
+    }
+};
+
+export const getAuthHeaders = () => {
+    const token = localStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': token ? `Bearer ${token}` : ''
+    };
 };

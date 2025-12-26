@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
+import { getAuthHeaders, ENDPOINTS } from '../apiConfig';
 import { Download, FileText, X, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { html as html_beautify } from 'js-beautify';
 import { T1Css, T2Css, T3Css, T4Css, T5Css, T6Css, T7Css, T9Css, T10Css, T11Css, T12Css, T13Css, T14Css, T15Css, T16Css, T17Css, T18Css, T19Css, T20Css, T21Css } from './Templates';
 
-const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
+const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate, resumeId }) => {
   const [downloading, setDownloading] = useState({});
   const [downloadedFormats, setDownloadedFormats] = useState({});
 
@@ -43,6 +44,14 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
 
       setDownloadedFormats(prev => ({ ...prev, [format.id]: true }));
       toast.success(`${format.name} downloaded successfully!`);
+
+      // Track download if resumeId exists
+      if (resumeId) {
+        fetch(ENDPOINTS.RESUME.TRACK_DOWNLOAD(resumeId), {
+          method: 'POST',
+          headers: getAuthHeaders()
+        }).catch(err => console.error('Tracking failed:', err));
+      }
     } catch (error) {
       console.error(`Download error for ${format.id}:`, error);
       toast.error(`Failed to download ${format.name}`);

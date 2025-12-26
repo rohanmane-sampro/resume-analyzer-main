@@ -1,11 +1,13 @@
 from flask import Blueprint, request, jsonify
 from src.services.ai_service import AIService
 from src.config import Config
+from src.middleware.auth import token_required
 
 ai_bp = Blueprint('ai', __name__)
 
 @ai_bp.route('/enhance-content', methods=['POST'])
-def enhance_content():
+@token_required
+def enhance_content(current_user):
     """Enhance resume content using AI"""
     try:
         data = request.get_json()
@@ -34,7 +36,8 @@ def chatbot():
         return jsonify({'error': str(e)}), 500
 
 @ai_bp.route('/suggest-improvements', methods=['POST'])
-def suggest_improvements():
+@token_required
+def suggest_improvements(current_user):
     """Analyze entire resume and suggest improvements"""
     try:
         data = request.get_json()
@@ -59,7 +62,8 @@ def generate_keywords():
         return jsonify({'error': str(e)}), 500
 
 @ai_bp.route('/complete-resume', methods=['POST'])
-def complete_resume():
+@token_required
+def complete_resume(current_user):
     """Complete and enhance entire resume with AI"""
     try:
         data = request.get_json()
@@ -124,7 +128,8 @@ def test_ai():
         }), 500
 
 @ai_bp.route('/analyze-resume', methods=['POST'])
-def analyze_resume():
+@token_required
+def analyze_resume(current_user):
     """Analyze resume based on job role"""
     try:
         data = request.get_json()

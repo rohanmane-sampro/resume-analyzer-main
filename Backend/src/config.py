@@ -41,6 +41,9 @@ load_all_envs()
 
 class Config:
     GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+    MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017/resume_analyzer")
+    JWT_SECRET = os.getenv("JWT_SECRET", "super-secret-key")
+    JWT_EXPIRY = os.getenv("JWT_EXPIRY", "24h")
     
     # Fully automated CORS: 
     # 1. Use environment variable if set

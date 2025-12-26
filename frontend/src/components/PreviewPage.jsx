@@ -3,13 +3,15 @@ import { ArrowLeft, Brain, Download, Sparkles, RefreshCw } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLocation, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { ENDPOINTS } from '../apiConfig';
+import { ENDPOINTS, getAuthHeaders } from '../apiConfig';
+import { useAuth } from '../AuthContext';
 import { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21 } from './Templates';
 
 const PreviewPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { resumeData, originalData } = location.state || {};
+  const { user } = useAuth();
 
   const [aiEnhancedData, setAiEnhancedData] = useState(null);
   const [isEnhancing, setIsEnhancing] = useState(false);
@@ -302,12 +304,33 @@ const PreviewPage = () => {
     }
   };
 
-  const handleProceedToDownload = () => {
+  const handleProceedToDownload = async () => {
+    let resumeId = null;
+    if (user) {
+      try {
+        const response = await fetch(ENDPOINTS.RESUME.TRACK_CREATE, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({
+            template_id: resumeData.selectedTemplate,
+            metadata: { version: selectedVersion }
+          })
+        });
+        if (response.ok) {
+          const data = await response.json();
+          resumeId = data.resume_id;
+        }
+      } catch (error) {
+        console.error('Failed to track creation:', error);
+      }
+    }
+
     navigate('/Result', {
       state: {
         jsonData: getCurrentData(),
         originalData: resumeData,
-        versionType: selectedVersion
+        versionType: selectedVersion,
+        resumeId: resumeId
       }
     });
   };

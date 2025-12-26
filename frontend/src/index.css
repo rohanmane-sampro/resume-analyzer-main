@@ -5,8 +5,10 @@
 /* SAMPRO AI Custom Styles - Light Theme */
 @layer base {
     body {
-        @apply bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50;
+        @apply bg-gradient-to-br from-slate-50 via-blue-100 to-pink-100;
         min-height: 100vh;
+        margin: 0;
+        padding: 0;
     }
 }
 

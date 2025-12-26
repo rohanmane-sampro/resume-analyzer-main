@@ -1,11 +1,13 @@
 from flask import Blueprint, request, jsonify, send_file
 from src.services.pdf_service import PDFService
+from src.middleware.auth import token_required
 import io
 
 pdf_bp = Blueprint('pdf', __name__)
 
 @pdf_bp.route('/generate-pdf', methods=['POST'])
-def generate_pdf():
+@token_required
+def generate_pdf(current_user):
     data = request.get_json()
     html_content = data.get('html')
     

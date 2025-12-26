@@ -5,7 +5,6 @@ import toast, { Toaster } from "react-hot-toast";
 import { UploadCloud, Rocket, PenTool, X, Check, Loader2, FileText } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { parseResume } from './ResumeParser';
-
 const FileUploadPage = () => {
   const [docUploaded, setDocUploaded] = useState(false);
   const [jsonData, setJsonData] = useState(null);
