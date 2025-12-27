@@ -20,14 +20,16 @@ const StyledWrapper = styled.div`body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 1380px; /* (W/H) Ratio should be 0.7069 */
+  align-items: center;
+  min-height: 1380px; /* (W/H) Ratio should be 0.7069 */
 }
 
-.resume {
-  width: 900px; /* (W/H) Ratio should be 0.7069 */
-  /* height: 1225px; */
-  background: #ffffff;
-  border: 1px solid #ddd;
+  .resume {
+    width: 210mm;
+    min-height: 297mm;
+    max-height: 297mm;
+    background: #ffffff;
+    border: 1px solid #ddd;
   border-radius: 15px;
   margin-top: 100px;
   padding: 0 30px 0 0;
@@ -119,6 +121,7 @@ const StyledWrapper = styled.div`body {
 .content {
   display: flex;
   justify-content: center;
+  min-height: 100%;
 }
 
 .mtt-3 {
@@ -130,6 +133,7 @@ const StyledWrapper = styled.div`body {
   padding: 20px 10px;
   background-color: #0363b1;
   border-bottom-left-radius: 15px;
+  min-height: 100%;
 }
 
 .content .right {
@@ -154,8 +158,17 @@ const StyledWrapper = styled.div`body {
 
 .subcont,.SkillSubCon {
    display: flex;
-   justify-content: space-between;
+   justify-content: flex-start;
+   gap: 20px;
+   flex-wrap: wrap;
 }  
+
+.subcont ul {
+  flex: 1;
+  min-width: 120px;
+  margin: 0;
+  padding-left: 20px;
+}
 
 .section,.SUsection {
   margin-bottom: 20px;
@@ -281,7 +294,7 @@ export const T4 = ({ jsonData, desc }) => {
             <div className="Lsection">
               <div className="Lsection-title"><b>Education </b><i className="fas fa-graduation-cap"></i></div><br />
               <div className="Litem">
-                {jsonData.education.map((edu, index) => (
+                {jsonData.education.slice(0, 2).map((edu, index) => (
                   <React.Fragment key={index}>
                     {index > 0 && <React.Fragment><br /><br /></React.Fragment>}
                     <div className="SubSec-title"><b>{edu.graduationYear}<br />{edu.institutionName}</b></div>
@@ -296,7 +309,7 @@ export const T4 = ({ jsonData, desc }) => {
             <div className="Lsection">
               <div className="Lsection-title"><b>Soft Skills </b><i className="fa fa-book"></i></div><br />
               <ul>
-                {jsonData.skills.softSkills.split(',').map(skill => skill.trim()).filter(skill => skill !== '').map((skill, index) => (
+                {jsonData.skills.softSkills.split(',').map(skill => skill.trim()).filter(skill => skill !== '').slice(0, 4).map((skill, index) => (
                   <li key={index}>{removeSpace(skill)}</li>
                 ))}
               </ul>
@@ -305,7 +318,7 @@ export const T4 = ({ jsonData, desc }) => {
             <div className="Lsection">
               <div className="Lsection-title"><b>Languages </b><i className="fa fa-language"></i></div><br />
               <ul>
-                {(jsonData?.contactInfo?.Languages || '').split(',').map(lang => lang.trim()).filter(lang => lang !== '').map((lang, index) => (
+                {(jsonData?.contactInfo?.Languages || '').split(',').map(lang => lang.trim()).filter(lang => lang !== '').slice(0, 3).map((lang, index) => (
                   <li key={index}>{removeSpace(lang)}: Fluent</li>
                 ))}
               </ul>
@@ -321,8 +334,8 @@ export const T4 = ({ jsonData, desc }) => {
             <div className="SUsection">
               <div className="section-title"><b>Projects</b></div>
               <ul>
-                {jsonData.projects.map((proj, index) => (
-                  <div key={index} className="Ritem" style={{ marginBottom: index < jsonData.projects.length - 1 ? "15px" : "0px" }}>
+                {jsonData.projects.slice(0, 2).map((proj, index) => (
+                  <div key={index} className="Ritem" style={{ marginBottom: index < Math.min(jsonData.projects.length, 2) - 1 ? "15px" : "0px" }}>
                     <li>
                       <div className="item-title textGray">{proj.projectTitle} </div>
                       <div dangerouslySetInnerHTML={{ __html: parseMarkdown(proj.toolsTechUsed) }} />
@@ -338,7 +351,7 @@ export const T4 = ({ jsonData, desc }) => {
                 <div className="section-title"><b>Work Experience</b></div>
                 <div className="Ritem">
                   <ul>
-                    {jsonData.workExperience.map((we, index) => (
+                    {jsonData.workExperience.slice(0, 2).map((we, index) => (
                       <React.Fragment key={index}>
                         <li>
                           <div className="item-title textGray mtt-3">
@@ -359,7 +372,7 @@ export const T4 = ({ jsonData, desc }) => {
               <div className="section">
                 <div className="section-title"><b>Certificates</b></div>
                 <div className="Ritem">
-                  {jsonData.certificates.map((cert, index) => (
+                  {jsonData.certificates.slice(0, 2).map((cert, index) => (
                     <div key={index} style={{ marginBottom: '12px' }}>
                       <div style={{ fontWeight: 'bold', color: '#1a1a1a' }}>
                         {cert.certificateName}
@@ -441,14 +454,14 @@ export const T4Css = `
   .resume {
      width: 210mm !important;
      max-width: 210mm !important;
-     min-height: 297mm !important;
-     background: #ffffff !important;
-     border: none !important;
+     min-height: auto !important;
+     margin: 0 !important;
+     margin-top: 0 !important;
+     background: #fff !important;
      border-radius: 0 !important;
-     margin: 0 auto !important;
-     padding: 0 !important;
      box-shadow: none !important;
-     overflow: visible !important;
+     padding: 0 !important;
+     border: none !important;
      display: flex;
      flex-direction: column;
   }
@@ -478,18 +491,22 @@ body {
    display: flex;
    justify-content: center;
    align-items: center;
-   height: 1380px; /* (W/H) Ratio should be 0.7069 */
+   align-items: center;
+   min-height: 1380px; /* (W/H) Ratio should be 0.7069 */
 }
 
 .resume {
-   width: 900px; /* (W/H) Ratio should be 0.7069 */
-   background: #ffffff;
-   border: 1px solid #ddd;
-   border-radius: 15px;
-   margin-top: 100px;
-   padding: 0 30px 0 0;
-   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
-}
+    width: 210mm;
+    min-height: 297mm;
+    width: 210mm;
+    min-height: 297mm;
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    margin-top: 100px;
+    padding: 0 30px 0 0;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+ }
 
 .Underline{
    width: 75px;
@@ -577,6 +594,7 @@ body {
 .content {
    display: flex;
    justify-content: center;
+   min-height: 100%;
 }
 
 .mtt-3 {
@@ -589,6 +607,7 @@ body {
    background-color: #0363b1;
    border-bottom-left-radius: 15px;
    border-right: 4px solid #0363b1;
+   min-height: 100%;
    /* border-top: 4px solid #0363b1; */
 }
 
@@ -616,12 +635,14 @@ body {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
-    gap: 15px;
+    gap: 20px;
 }  
 
 .subcont ul {
     min-width: 120px;
     flex: 1;
+    margin: 0;
+    padding-left: 20px;
 }
 
 .section,.SUsection {

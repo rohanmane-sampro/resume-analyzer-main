@@ -22,7 +22,7 @@ const StyledWrapper = styled.div`
   }
   @page {
    size: A4;
-   margin: 0.5in;
+   margin: 0;
   }
   .resume {
     width: 100%;
@@ -38,7 +38,8 @@ body {
 
 .resume {
   width: 210mm;
-  max-width: 95%;
+  min-height: 297mm;
+  overflow: hidden;
   background: white;
   margin: 20px auto;
   padding: 40px 60px;
@@ -285,7 +286,7 @@ export const T10 = ({ jsonData }) => {
               {hardSkills.length > 0 && (
                 <>
                   <div className="skill-label">Languages:</div>
-                  <div className="skill-value">{hardSkills.slice(0, 8).join(', ')}</div>
+                  <div className="skill-value">{hardSkills.join(', ')}</div>
                 </>
               )}
               <div className="skill-label">Frameworks:</div>
@@ -344,12 +345,13 @@ export const T10Css = `
   }
   
   .resume {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-height: 100vh !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    min-height: 297mm !important;
     margin: 0 !important;
     border: none !important;
     box-shadow: none !important;
+    overflow: hidden !important;
   }
 }
 
@@ -360,7 +362,8 @@ body {
 
 .resume {
   width: 210mm;
-  max-width: 95%;
+  min-height: 297mm;
+  overflow: hidden;
   background: white;
   margin: 20px auto;
   padding: 40px 60px;

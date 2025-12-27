@@ -36,12 +36,12 @@ body {
 
 .resume {
   width: 210mm;
-  max-width: 95%;
+  min-height: 297mm;
+  overflow: hidden;
   background: white;
   margin: 20px auto;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   display: flex;
-  min-height: 297mm;
 }
 
 .sidebar {
@@ -277,8 +277,9 @@ export const T12 = ({ jsonData }) => {
           <div className="sidebar-section">
             <div className="sidebar-title">Profile</div>
             <div className="profile-text">
-              {jsonData.Description?.UserDescription ||
-                'Inventive and passionate data analyst with over 5 years of experience in the collection, analysis and interpretation of data. Skilled in using Python and SQL to leverage extensive background in data, MS, PySQL, flavor and statistics. Proven record in successfully developed and maintained multiple scalable apps. Demonstrated strong problem-solving skills by implementing optimised algorithms and data structures in Python. Significantly improving system performance.'}
+              {jsonData.Description?.UserDescription
+                ? jsonData.Description.UserDescription
+                : 'Inventive and passionate data analyst...'}
             </div>
           </div>
 
@@ -360,11 +361,12 @@ export const T12Css = `
    margin: 0;
   }
   .resume {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-height: 100vh !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    min-height: 297mm !important;
     margin: 0 !important;
     box-shadow: none !important;
+    overflow: hidden !important;
   }
 }
 
@@ -375,12 +377,12 @@ body {
 
 .resume {
   width: 210mm;
-  max-width: 95%;
+  min-height: 297mm;
+  overflow: hidden;
   background: white;
   margin: 20px auto;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   display: flex;
-  min-height: 297mm;
 }
 
 .sidebar {

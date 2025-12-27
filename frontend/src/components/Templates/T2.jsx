@@ -14,25 +14,52 @@ const parseMarkdown = (text) => {
 
 const StyledWrapper = styled.div`
 @media print {
-  body {
-    margin-top: 10px !important;
-    font-family: Arial, sans-serif;
-    background: #E5E7EB !important;
-    color: #333;
-    padding: 20px;
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
   }
+  
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-family: Arial, sans-serif;
+    background: #ffffff !important; 
+  }
+  
   @page {
-   size: 930px 1300px; 
+   size: A4 portrait;
    margin: 0;
   }
+  
   .resume-container {
-    width: 900px;
-    margin: 0 auto;
-    background: #E5E7EB;
-    border: 0px solid #ddd !important;
-    border-radius: 8px;
-    box-shadow: 0 0 0 rgba(0, 0, 0, 0.05) !important;
-    padding: 2rem;
+    width: 100% !important;
+    max-width: 210mm !important;
+    min-height: auto !important;
+    padding: 15mm !important;
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #fff !important;
+  }
+
+  .experience-item, 
+  .education-item, 
+  .Projects-items, 
+  .Certificats > div,
+  .header {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .Heading {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+  
+  p, li {
+    orphans: 2;
+    widows: 2;
   }
 }
 
@@ -57,13 +84,16 @@ body {
 }
 
 .resume-container {
-  width: 900px;
+  width: 210mm;
   margin: 0 auto;
   background: #E5E7EB;
   border: 2px solid #ddd;
   border-radius: 8px;
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.05);
   padding: 2rem;
+  min-height: 297mm;
+  padding: 2rem;
+  min-height: 297mm;
 }
 
 .header {
@@ -254,7 +284,7 @@ export const T2 = ({ jsonData }) => {
 
         <h3 className="Heading">Summary</h3>
         <div className="summary">
-          <p>{jsonData?.Description?.UserDescription || 'Professional summary will be displayed here'}</p>
+          <p>{(jsonData?.Description?.UserDescription || 'Professional summary will be displayed here')}</p>
           <br />
         </div>
 
@@ -264,7 +294,7 @@ export const T2 = ({ jsonData }) => {
             <div className="education-item" key={index}>
               <ul>
                 <li><h4 className="SpaceBetween">{ed?.degreeName || 'Degree'} <span style={{ marginRight: '6%' }}>( {ed?.graduationYear || 'Year'} )</span></h4></li>
-                <p>{ed?.institutionName || 'Institution'} || CGPA: {ed?.currentCGPA || 'N/A'}</p>
+                <p>{ed?.institutionName || 'Institution'} {ed?.location && `| ${ed?.location}`} || CGPA: {ed?.currentCGPA || 'N/A'}</p>
               </ul>
             </div>
           ))}
@@ -371,8 +401,7 @@ export const T2Css = `
           margin: 0 !important;
           padding: 0 !important;
           font-family: Arial, sans-serif;
-          background: #E5E7EB !important;
-          color: #333;
+          background: #ffffff !important; 
           display: block !important;
           height: auto !important;
           width: 100% !important;
@@ -380,24 +409,40 @@ export const T2Css = `
         
         @page {
          size: A4 portrait;
-         margin: 0;
+         margin: 0; /* Use native page margins to handle page breaks correctly */
         }
         
         .resume-container {
-          width: 210mm !important;
-          max-width: 210mm !important;
-          min-height: 297mm !important;
-          margin: 0 auto !important;
-          background: #E5E7EB !important;
+          width: 100% !important; /* Allow container to fill the print area defined by margin */
+          max-width: none !important;
+          min-height: 0 !important;
+          padding: 0 !important; /* Remove padding as margins are handled by @page */
+          margin: 0 !important;
           border: none !important;
-          border-radius: 0 !important;
           box-shadow: none !important;
-          padding: 15mm !important;
-          overflow: visible !important;
+          background: transparent !important;
         }
         
-        .header, .section, .experience-item, .education-item, .Projects-items {
+        /* Prevent items from splitting across pages */
+        .experience-item, 
+        .education-item, 
+        .Projects-items, 
+        .Certificats > div,
+        .header {
           page-break-inside: avoid !important;
+          break-inside: avoid !important;
+        }
+
+        /* Ensure headers stay with their content */
+        .Heading {
+          page-break-after: avoid !important;
+          break-after: avoid !important;
+        }
+        
+        /* General paragraph and list handling */
+        p, li {
+          orphans: 2;
+          widows: 2;
         }
       }
       
@@ -422,14 +467,15 @@ export const T2Css = `
        }
       
        .resume-container {
-         width: 900px;
+         width: 210mm;
          margin: 0 auto;
          background: #E5E7EB;
          border: 2px solid #ddd;
          border-radius: 8px;
          box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.05);
          padding: 2rem;
-       }
+         min-height: 297mm;
+        }
       
        .header {
          margin-bottom: 2rem;

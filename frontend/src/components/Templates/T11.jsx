@@ -37,7 +37,8 @@ body {
 
 .resume {
   width: 210mm;
-  max-width: 95%;
+  min-height: 297mm;
+  overflow: hidden;
   background: white;
   margin: 20px auto;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
@@ -365,8 +366,7 @@ export const T11 = ({ jsonData }) => {
           <div className="section">
             <div className="section-title">Profile</div>
             <div className="profile-text">
-              {jsonData.Description?.UserDescription ||
-                "I'm Brian Thomas Wayne, a business development consultant with a passion for helping companies achieve sustainable growth. Well versed MBA, having extensive experience in strategy and relationship building. I strive to provide innovative solutions that drive success for my clients."}
+              {jsonData.Description?.UserDescription}
             </div>
           </div>
 
@@ -394,7 +394,7 @@ export const T11 = ({ jsonData }) => {
                 {hardSkills.length > 0 && (
                   <div className="skill-category">
                     <div className="skill-category-title">Technical</div>
-                    {hardSkills.slice(0, 4).map((skill, idx) => (
+                    {hardSkills.map((skill, idx) => (
                       <div key={idx} className="skill-item">{skill}</div>
                     ))}
                   </div>
@@ -402,7 +402,7 @@ export const T11 = ({ jsonData }) => {
                 {softSkills.length > 0 && (
                   <div className="skill-category">
                     <div className="skill-category-title">Professional</div>
-                    {softSkills.slice(0, 4).map((skill, idx) => (
+                    {softSkills.map((skill, idx) => (
                       <div key={idx} className="skill-item">{skill}</div>
                     ))}
                   </div>
@@ -465,11 +465,12 @@ export const T11Css = `
   }
   
   .resume {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-height: 100vh !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    min-height: 297mm !important;
     margin: 0 !important;
     box-shadow: none !important;
+    overflow: hidden !important;
   }
 }
 
@@ -480,7 +481,8 @@ body {
 
 .resume {
   width: 210mm;
-  max-width: 95%;
+  min-height: 297mm;
+  overflow: hidden;
   background: white;
   margin: 20px auto;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);

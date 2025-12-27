@@ -19,7 +19,7 @@ const StyledWrapper = styled.div`
   }
   @page {
    size: A4;
-   margin: 0.5in;
+   margin: 0;
   }
   .resume {
     width: 100%;
@@ -34,7 +34,7 @@ body {
 
 .resume {
   width: 210mm;
-  max-width: 95%;
+  min-height: 297mm;
   background: white;
   margin: 20px auto;
   padding: 35px 45px;
@@ -229,7 +229,7 @@ export const T18 = ({ jsonData }) => {
     : null;
 
   const hardSkills = jsonData.skills?.hardSkills
-    ? jsonData.skills.hardSkills.split(',').map(s => s.trim()).filter(s => s !== '').slice(0, 6)
+    ? jsonData.skills.hardSkills.split(',').map(s => s.trim()).filter(s => s !== '')
     : ['Product development', 'Customer and client relations', 'Market research', 'Data analytics'];
 
   return (
@@ -261,8 +261,9 @@ export const T18 = ({ jsonData }) => {
         <div className="section">
           <div className="section-title">Profile</div>
           <div className="profile-text">
-            {jsonData.Description?.UserDescription ||
-              'Experienced Product Manager with a proven track record in the development and management of products throughout their lifecycle. Specializes in customer research, creative, and results metrics.'}
+            {jsonData.Description?.UserDescription
+              ? jsonData.Description.UserDescription
+              : 'Experienced Product Manager with a proven track record...'}
           </div>
         </div>
 
@@ -345,9 +346,9 @@ export const T18Css = `
    margin: 0;
   }
   .resume {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-height: 100vh !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    min-height: 297mm !important;
     margin: 0 !important;
     box-shadow: none !important;
   }
@@ -360,7 +361,7 @@ body {
 
 .resume {
   width: 210mm;
-  max-width: 95%;
+  min-height: 297mm;
   background: white;
   margin: 20px auto;
   padding: 35px 45px;

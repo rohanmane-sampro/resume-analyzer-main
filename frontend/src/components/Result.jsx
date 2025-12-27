@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import toast from "react-hot-toast";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { html as html_beautify } from 'js-beautify';
-import { T1, T1Css, T2, T2Css, T3, T3Css, T4, T4Css, T5, T5Css, T6, T6Css, T7, T7Css, T9, T9Css, T10, T10Css, T11, T11Css, T12, T12Css, T13, T13Css, T14, T14Css, T15, T15Css, T16, T16Css, T17, T17Css, T18, T18Css, T19, T19Css, T20, T20Css, T21, T21Css, T22, T22Css } from './Templates';
+import { T1, T1Css, T2, T2Css, T3, T3Css, T4, T4Css, T5, T5Css, T6, T6Css, T7, T7Css, T9, T9Css, T10, T10Css, T11, T11Css, T12, T12Css, T13, T13Css, T14, T14Css, T15, T15Css, T16, T16Css, T17, T17Css, T18, T18Css, T19, T19Css, T20, T20Css, T21, T21Css, T22, T22Css, T23, T23Css, T24, T24Css, T25, T25Css, T26, T26Css } from './Templates';
 import DownloadModal from './DownloadModal.jsx';
 import { ENDPOINTS } from '../apiConfig';
 
@@ -59,7 +59,8 @@ const Result = () => {
           '1': T1Css, '2': T2Css, '3': T3Css, '4': T4Css, '5': T5Css, '6': T6Css,
           '7': T7Css, '9': T9Css, '10': T10Css, '11': T11Css, '12': T12Css,
           '13': T13Css, '14': T14Css, '15': T15Css, '16': T16Css, '17': T17Css, '18': T18Css,
-          '19': T19Css, '20': T20Css, '21': T21Css, '22': T22Css
+          '19': T19Css, '20': T20Css, '21': T21Css, '22': T22Css, '23': T23Css, '24': T24Css,
+          '25': T25Css, '26': T26Css
         };
         return templateMap[selectedTemplate] || T1Css;
       };
@@ -177,7 +178,8 @@ const Result = () => {
       1: T1, 2: T2, 3: T3, 4: T4, 5: T5, 6: T6,
       7: T7, 9: T9, 10: T10, 11: T11, 12: T12,
       13: T13, 14: T14, 15: T15, 16: T16, 17: T17, 18: T18,
-      19: T19, 20: T20, 21: T21, 22: T22
+      19: T19, 20: T20, 21: T21, 22: T22, 23: T23, 24: T24,
+      25: T25, 26: T26
     };
     const TemplateComponent = templateMap[selectedTemplate] || T1;
     return <TemplateComponent jsonData={jsonData} />;

@@ -195,9 +195,33 @@ export default function ViewTemplates() {
     },
     {
       img: `${import.meta.env.BASE_URL}Temp/cv28.png`,
-      title: titles[28],
+      title: titles[22],
       codeLink: "#/template/22",
       templateLink: "#/template/22",
+    },
+    {
+      img: `${import.meta.env.BASE_URL}Temp/cv23.png`,
+      title: titles[23],
+      codeLink: "#/template/23",
+      templateLink: "#/template/23",
+    },
+    {
+      img: `${import.meta.env.BASE_URL}Temp/cv24.png`,
+      title: titles[24],
+      codeLink: "#/template/24",
+      templateLink: "#/template/24",
+    },
+    {
+      img: `${import.meta.env.BASE_URL}Temp/cv25.png`,
+      title: titles[25],
+      codeLink: "#/template/25",
+      templateLink: "#/template/25",
+    },
+    {
+      img: `${import.meta.env.BASE_URL}Temp/cv26.png`,
+      title: titles[26],
+      codeLink: "#/template/26",
+      templateLink: "#/template/26",
     },
   ];
 

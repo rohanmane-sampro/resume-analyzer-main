@@ -23,7 +23,7 @@ const StyledWrapper = styled.div`
   }
   @page {
    size: A4;
-   margin: 0.5in;
+   margin: 0;
   }
   .resume {
     width: 100%;
@@ -42,14 +42,13 @@ body {
 
 .resume {
   width: 210mm;
-  max-width: 95%;
-  min-height: auto;
+  min-height: 297mm;
+  overflow: hidden;
   background: white;
   margin: 20px auto;
   padding: 40px 50px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   line-height: 1.4;
-  overflow: visible;
 }
 
 .header {
@@ -323,8 +322,7 @@ export const T9 = ({ jsonData }) => {
 
         {/* Intro Text */}
         <div className="intro-text">
-          {jsonData.Description?.UserDescription ||
-            'Hello, here is some text without a meaning. This text should show what a printed text will look like at this place. If you read this text, you will get no information. Really? Is there no information? Is there a difference between this text and some nonsense like "Huardest gefburn"? Kjift – not at all! A blind text like this gives you information about the selected font, how the letters are written and an impression of the look. This text should contain all letters of the alphabet and it should be written in of the original language. There is no need for special content, but the length of words should match the language.'}
+          {jsonData.Description?.UserDescription || 'Hello, here is some text...'}
         </div>
 
         {/* Skills */}
@@ -398,12 +396,12 @@ export const T9Css = `
   }
   
   .resume {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    min-height: 297mm !important;
     border: none !important;
     box-shadow: none !important;
-    overflow: visible !important;
+    overflow: hidden !important;
   }
 }
 
@@ -416,14 +414,13 @@ body {
 
 .resume {
   width: 210mm;
-  max-width: 95%;
-  min-height: auto;
+  min-height: 297mm;
+  overflow: hidden;
   background: white;
   margin: 20px auto;
   padding: 40px 50px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   line-height: 1.4;
-  overflow: visible;
 }
 
 .header {

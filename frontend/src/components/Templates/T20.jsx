@@ -19,7 +19,7 @@ const StyledWrapper = styled.div`
   }
   @page {
    size: A4;
-   margin: 0.5in;
+   margin: 0;
   }
   .resume {
     width: 100%;
@@ -34,7 +34,7 @@ body {
 
 .resume {
   width: 210mm;
-  max-width: 95%;
+  min-height: 297mm;
   background: white;
   margin: 20px auto;
   padding: 35px 45px;
@@ -207,8 +207,7 @@ export const T20 = ({ jsonData }) => {
         <div className="section">
           <div className="section-title">Profile</div>
           <div className="profile-text">
-            {jsonData.Description?.UserDescription ||
-              'Experienced finance professional with a successful track record in M&A, valuation and financial modeling. Accomplished finance professional with a proven success record in mergers and acquisitions, valuations, and financial modeling. Dynamic finance professional with a proven track record in mergers and acquisitions, valuations.'}
+            {jsonData.Description?.UserDescription || 'Experienced finance professional...'}
           </div>
         </div>
 
@@ -284,9 +283,9 @@ export const T20Css = `
    margin: 0;
   }
   .resume {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-height: 100vh !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    min-height: 297mm !important;
     margin: 0 !important;
     box-shadow: none !important;
   }
@@ -299,7 +298,7 @@ body {
 
 .resume {
   width: 210mm;
-  max-width: 95%;
+  min-height: 297mm;
   background: white;
   margin: 20px auto;
   padding: 35px 45px;

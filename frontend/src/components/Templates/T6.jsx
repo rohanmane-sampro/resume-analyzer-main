@@ -22,8 +22,10 @@ const StyledWrapper = styled.div`body {
   height: auto;         /* (W/H) Ratio should be 0.7069 */
 }
 .resume {
-  width: 900px;           /* (W/H) Ratio should be 0.7069 */
+  width: 210mm;           /* (W/H) Ratio should be 0.7069 */
   /* height: 1131px; */
+  min-height: 297mm;
+  overflow: hidden;
   background: #F1F5F9;
   border: 1px solid #ddd;
   border-radius: 15px;
@@ -141,7 +143,7 @@ export const T6 = ({ jsonData }) => {
 
         <div className="Conts">
           <div className="title">Objectives:</div>
-          <div dangerouslySetInnerHTML={{ __html: parseMarkdown(jsonData.Description.UserDescription) }} />
+          <p>{jsonData.Description.UserDescription}</p>
         </div>
 
         <div className="Conts">
@@ -159,7 +161,7 @@ export const T6 = ({ jsonData }) => {
           <div className="subcont SpaceBetween">
             <div className="left"><strong style={{ color: "rgb(75, 77, 77)" }}>Tech Skills: </strong> <br /><strong style={{ color: "rgb(75, 77, 77)" }}>Soft Skills: </strong></div>
             <div className="mid">—<br />—<br /></div>
-            <div className="right">{jsonData.skills.hardSkills}<br />{jsonData.skills.softSkills} <br /></div>
+            <div className="right">{(jsonData.skills.hardSkills || '').split(',').join(', ')}<br />{(jsonData.skills.softSkills || '').split(',').join(', ')} <br /></div>
           </div>
         </div>
 
@@ -251,7 +253,6 @@ export const T6Css = `
   
   .resume {
      width: 210mm !important;
-     max-width: 210mm !important;
      min-height: 297mm !important;
      background: #F1F5F9 !important;
      border: none !important;
@@ -259,7 +260,6 @@ export const T6Css = `
      padding: 15mm !important;
      box-shadow: none !important;
      margin: 0 auto !important;
-     overflow: visible !important;
   }
   
   .header, .section, .Conts {
@@ -278,8 +278,10 @@ body {
    height: auto;         /* (W/H) Ratio should be 0.7069 */
 }
 .resume {
-   width: 900px;           /* (W/H) Ratio should be 0.7069 */
+   width: 210mm;           /* (W/H) Ratio should be 0.7069 */
    /* height: 1131px; */
+   min-height: 297mm;
+   overflow: hidden;
    background: #F1F5F9;
    border: 1px solid #ddd;
    border-radius: 15px;
