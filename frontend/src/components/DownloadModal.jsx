@@ -3,7 +3,7 @@ import { Download, FileText, X, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { html as html_beautify } from 'js-beautify';
-import { T1Css, T2Css, T3Css, T4Css, T5Css, T6Css, T7Css, T9Css, T10Css, T11Css, T12Css, T13Css, T14Css, T15Css, T16Css, T17Css, T18Css, T19Css, T20Css, T21Css } from './Templates';
+import { T1Css, T2Css, T3Css, T4Css, T5Css, T6Css, T7Css, T9Css, T10Css, T11Css, T12Css, T13Css, T14Css, T15Css, T16Css, T17Css, T18Css, T19Css, T20Css, T21Css, T22Css } from './Templates';
 
 const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
   const [downloading, setDownloading] = useState({});
@@ -173,7 +173,7 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
         '1': T1Css, '2': T2Css, '3': T3Css, '4': T4Css, '5': T5Css, '6': T6Css,
         '7': T7Css, '9': T9Css, '10': T10Css, '11': T11Css, '12': T12Css,
         '13': T13Css, '14': T14Css, '15': T15Css, '16': T16Css, '17': T17Css, '18': T18Css,
-        '19': T19Css, '20': T20Css, '21': T21Css
+        '19': T19Css, '20': T20Css, '21': T21Css, '22': T22Css
       };
       return templateCssMap[selectedTemplate] || T1Css;
     };
