@@ -33,7 +33,15 @@ export default function ViewTemplates() {
     "Supervisor Professional",
     "Finance Professional",
     "Master Student",
-    "AEM Developer Pro"
+    "AEM Developer Pro",
+    "Product Manager Classic",
+    "Compositing Artist",
+    "Marketing Assistant",
+    "Full-Stack Developer",
+    "ModernCV - Fresher",
+    "RPI Graduate CV - Fresher",
+    "Deedy Resume - Fresher",
+    "HowToTeX Minimal - Fresher"
   ];
 
   const items = [
@@ -222,6 +230,30 @@ export default function ViewTemplates() {
       title: titles[26],
       codeLink: "#/template/26",
       templateLink: "#/template/26",
+    },
+    {
+      img: `${import.meta.env.BASE_URL}Temp/cv27.png`,
+      title: titles[27],
+      codeLink: "#/template/27",
+      templateLink: "#/template/27",
+    },
+    {
+      img: `${import.meta.env.BASE_URL}Temp/cv28.png`,
+      title: titles[28],
+      codeLink: "#/template/28",
+      templateLink: "#/template/28",
+    },
+    {
+      img: `${import.meta.env.BASE_URL}Temp/cv29.png`,
+      title: titles[29],
+      codeLink: "#/template/29",
+      templateLink: "#/template/29",
+    },
+    {
+      img: `${import.meta.env.BASE_URL}Temp/cv30.png`,
+      title: titles[30],
+      codeLink: "#/template/30",
+      templateLink: "#/template/30",
     },
   ];
 

@@ -28,6 +28,10 @@ export { T23, T23Css } from './T23.jsx';
 export { T24, T24Css } from './T24.jsx';
 export { T25, T25Css } from './T25.jsx';
 export { T26, T26Css } from './T26.jsx';
+export { T27, T27Css } from './T27.jsx';
+export { T28, T28Css } from './T28.jsx';
+export { T29, T29Css } from './T29.jsx';
+export { T30, T30Css } from './T30.jsx';
 
 // Template Configuration
 export const TEMPLATE_CONFIG = {
@@ -57,7 +61,11 @@ export const TEMPLATE_CONFIG = {
     24: { name: 'Compositing Artist', component: 'T24', cssName: 'T24Css' },
     25: { name: 'Marketing Assistant', component: 'T25', cssName: 'T25Css' },
     26: { name: 'Full-Stack Developer', component: 'T26', cssName: 'T26Css' },
+    27: { name: 'ModernCV - Fresher', component: 'T27', cssName: 'T27Css' },
+    28: { name: 'RPI Graduate CV - Fresher', component: 'T28', cssName: 'T28Css' },
+    29: { name: 'Deedy Resume - Fresher', component: 'T29', cssName: 'T29Css' },
+    30: { name: 'HowToTeX Minimal - Fresher', component: 'T30', cssName: 'T30Css' },
 };
 
 // Template Count
-export const TOTAL_TEMPLATES = 26;
+export const TOTAL_TEMPLATES = 30;
