@@ -22,6 +22,7 @@ export { T18, T18Css } from './T18.jsx';
 export { T19, T19Css } from './T19.jsx';
 export { T20, T20Css } from './T20.jsx';
 export { T21, T21Css } from './T21.jsx';
+export { T22, T22Css } from './T22.jsx';
 
 // Template Configuration
 export const TEMPLATE_CONFIG = {
@@ -45,7 +46,8 @@ export const TEMPLATE_CONFIG = {
     19: { name: 'Supervisor Professional', component: 'T19', cssName: 'T19Css' },
     20: { name: 'Finance Professional', component: 'T20', cssName: 'T20Css' },
     21: { name: 'Master Student', component: 'T21', cssName: 'T21Css' },
+    22: { name: 'AEM Developer Pro', component: 'T22', cssName: 'T22Css' },
 };
 
 // Template Count
-export const TOTAL_TEMPLATES = 20;
+export const TOTAL_TEMPLATES = 21;

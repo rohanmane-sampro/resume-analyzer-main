@@ -32,7 +32,8 @@ export default function ViewTemplates() {
     "Product Manager Pro",
     "Supervisor Professional",
     "Finance Professional",
-    "Master Student"
+    "Master Student",
+    "AEM Developer Pro"
   ];
 
   const items = [
@@ -191,6 +192,12 @@ export default function ViewTemplates() {
       title: titles[27],
       codeLink: "#/template/21",
       templateLink: "#/template/21",
+    },
+    {
+      img: `${import.meta.env.BASE_URL}Temp/cv28.png`,
+      title: titles[28],
+      codeLink: "#/template/22",
+      templateLink: "#/template/22",
     },
   ];
 

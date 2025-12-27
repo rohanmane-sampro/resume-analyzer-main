@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import Suggestions from "./Suggestions";
 import { useLocation } from 'react-router-dom';
 import JsonFiles from "./JsonFiles.jsx"
-import { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21 } from './Templates';
+import { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22 } from './Templates';
 
 import AIAnalysis from './AIAnalysis.jsx';
 import AISuggestions from './AISuggestions.jsx';
@@ -126,7 +126,13 @@ const GetInfo = () => {
     "Modern CV",
     "Professional Clean",
     "Creative Designer",
-    "UX/UI Designer"
+    "UX/UI Designer",
+    "Cloud Engineer",
+    "Product Manager Pro",
+    "Supervisor Professional",
+    "Finance Professional",
+    "Master Student",
+    "AEM Developer Pro"
   ]
   const Suggests = [
     "Hi, I'm here to assist you. 🤝",
@@ -1620,7 +1626,7 @@ const GetInfo = () => {
               <h2 className="text-xl sm:text-2xl font-bold border-b-4 pb-1 border-blue-900 mb-4 text-blue-800 dark:border-blue-500 dark:text-blue-400">Choose Template</h2>
               <p className='font-semibold mb-6 text-gray-600 dark:text-gray-200'>We will frequently add more template designs to provide more robust options.</p>
               <div className="grid grid-cols-2 gap-5">
-                {[1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21].map((template) => (
+                {[1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22].map((template) => (
                   <div
                     key={template}
                     className={`relative p-4 border-2 rounded-lg transition-all duration-150 shadow-md hover:shadow-xl dark:shadow-gray-600 ${formData.selectedTemplate === String(template) ? 'border-blue-600 bg-blue-50 dark:bg-slate-800 ring-2 ring-blue-300' : 'dark:border-gray-700 hover:border-blue-400'
@@ -1665,7 +1671,7 @@ const GetInfo = () => {
               <h2 className="text-xl sm:text-2xl font-bold border-b-4 pb-1 border-blue-900 mb-4 text-blue-800 dark:border-blue-500 dark:text-blue-400">Choose Template</h2>
               <p className='font-semibold mb-6 text-gray-600 dark:text-gray-200'>We will frequently add more template designs to provide more resume options.</p>
               <div className="grid grid-cols-2 gap-5">
-                {[1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21].map((template) => (
+                {[1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22].map((template) => (
                   <div
                     key={template}
                     className={`relative p-4 border-2 rounded-lg transition-all duration-150 shadow-md hover:shadow-xl dark:shadow-gray-600 ${ExampleJsonData.selectedTemplate === String(template) ? 'border-blue-600 bg-blue-50 dark:bg-slate-800 ring-2 ring-blue-300' : 'dark:border-gray-700 hover:border-blue-400'
@@ -1871,6 +1877,7 @@ const GetInfo = () => {
                   case '19': return <T19 jsonData={data} />;
                   case '20': return <T20 jsonData={data} />;
                   case '21': return <T21 jsonData={data} />;
+                  case '22': return <T22 jsonData={data} />;
                   default: return <T1 jsonData={data} />;
                 }
               })()}
