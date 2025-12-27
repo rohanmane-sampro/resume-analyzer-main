@@ -122,12 +122,12 @@ const FileUploadPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 overflow-y-auto py-12 flex items-center justify-center px-4">
       <Toaster position="top-right" />
 
       {/* Parsing Animation Screen */}
       {showParsingAnimation && (
-        <div className="fixed inset-0 bg-white dark:bg-slate-900 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-white dark:bg-slate-900 flex flex-col items-center z-50 overflow-y-auto py-12 px-4">
           <div className="max-w-6xl w-full px-8">
             {/* Header */}
             <div className="text-center mb-12">
