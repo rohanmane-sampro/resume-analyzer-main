@@ -19,7 +19,7 @@ const StyledWrapper = styled.div`
   }
   @page {
    size: A4;
-   margin: 0.5in;
+   margin: 0;
   }
   .resume {
     width: 100%;
@@ -34,7 +34,7 @@ body {
 
 .resume {
   width: 210mm;
-  max-width: 95%;
+  min-height: 297mm;
   background: white;
   margin: 20px auto;
   padding: 30px 40px;
@@ -245,8 +245,7 @@ export const T21 = ({ jsonData }) => {
           <div className="section">
             <div className="section-title">Profile</div>
             <div className="profile-text">
-              {jsonData.Description?.UserDescription ||
-                "Currently pursuing a Master of Science in Renewable Energy Systems with a specialization in Chemical Engineering. Eager to secure a working student role or a master's thesis project in the sustainable energy sector. Keen to leverage academic knowledge and hands-on project experience to contribute to clean energy solutions."}
+              {jsonData.Description?.UserDescription || "Currently pursuing a Master..."}
             </div>
           </div>
 
@@ -297,9 +296,9 @@ export const T21Css = `
    margin: 0;
   }
   .resume {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-height: 100vh !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    min-height: 297mm !important;
     margin: 0 !important;
     box-shadow: none !important;
   }
@@ -312,7 +311,7 @@ body {
 
 .resume {
   width: 210mm;
-  max-width: 95%;
+  min-height: 297mm;
   background: white;
   margin: 20px auto;
   padding: 30px 40px;

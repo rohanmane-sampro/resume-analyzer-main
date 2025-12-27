@@ -19,7 +19,7 @@ const StyledWrapper = styled.div`
   }
   @page {
    size: A4;
-   margin: 0.5in;
+   margin: 0;
   }
   .resume {
     width: 100%;
@@ -34,7 +34,8 @@ body {
 
 .resume {
   width: 210mm;
-  max-width: 95%;
+  min-height: 297mm;
+  overflow: hidden;
   background: white;
   margin: 20px auto;
   padding: 35px 45px;
@@ -194,8 +195,7 @@ export const T14 = ({ jsonData }) => {
         {/* Profile */}
         <div className="profile-section">
           <div className="profile-text">
-            {jsonData.Description?.UserDescription ||
-              'Dedicated Certified Nursing Assistant with a strong background in providing high-quality patient care. Proficient in patient hygiene, mobility support, and nutrition needs. Possesses strong organizational skills and a commitment to achieving patient wellbeing and satisfaction.'}
+            {jsonData.Description?.UserDescription || 'Dedicated Certified Nursing Assistant...'}
           </div>
         </div>
 
@@ -227,11 +227,12 @@ export const T14Css = `
    margin: 0;
   }
   .resume {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-height: 100vh !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    min-height: 297mm !important;
     margin: 0 !important;
     box-shadow: none !important;
+    overflow: hidden !important;
   }
 }
 
@@ -242,7 +243,8 @@ body {
 
 .resume {
   width: 210mm;
-  max-width: 95%;
+  min-height: 297mm;
+  overflow: hidden;
   background: white;
   margin: 20px auto;
   padding: 35px 45px;

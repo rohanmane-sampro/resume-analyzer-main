@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import Suggestions from "./Suggestions";
 import { useLocation } from 'react-router-dom';
 import JsonFiles from "./JsonFiles.jsx"
-import { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22 } from './Templates';
+import { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26 } from './Templates';
 
 import AIAnalysis from './AIAnalysis.jsx';
 import AISuggestions from './AISuggestions.jsx';
@@ -60,6 +60,7 @@ const GetInfo = () => {
     }],
     education: [{
       institutionName: '',
+      location: '',
       degreeName: '',
       graduationYear: '',
       currentCGPA: ''
@@ -132,7 +133,11 @@ const GetInfo = () => {
     "Supervisor Professional",
     "Finance Professional",
     "Master Student",
-    "AEM Developer Pro"
+    "AEM Developer Pro",
+    "Product Manager Classic",
+    "Compositing Artist",
+    "Marketing Assistant",
+    "Full-Stack Developer"
   ]
   const Suggests = [
     "Hi, I'm here to assist you. 🤝",
@@ -341,6 +346,7 @@ const GetInfo = () => {
           toolsTechUsed: ''
         } : section === 'education' ? {
           institutionName: '',
+          location: '',
           degreeName: '',
           graduationYear: '',
           currentCGPA: ''
@@ -363,6 +369,7 @@ const GetInfo = () => {
           toolsTechUsed: ''
         } : section === 'education' ? {
           institutionName: '',
+          location: '',
           degreeName: '',
           graduationYear: '',
           currentCGPA: ''
@@ -409,7 +416,7 @@ const GetInfo = () => {
       ],
       3: formData.workExperience.length > 0 ? formData.workExperience.map(exp => [exp.jobTitle, exp.companyName, exp.WorkDuration, exp.keyAchievements]) : [[]],
       4: formData.projects.length > 0 ? formData.projects.map(proj => [proj.projectTitle, proj.toolsTechUsed]) : [[]],
-      5: formData.education.length > 0 ? formData.education.map(edu => [edu.institutionName, edu.degreeName, edu.graduationYear, edu.currentCGPA]) : [[]],
+      5: formData.education.length > 0 ? formData.education.map(edu => [edu.institutionName, edu.location, edu.degreeName, edu.graduationYear, edu.currentCGPA]) : [[]],
       6: formData.certificates.length > 0 ? formData.certificates.map(cert => [cert.certificateName, cert.courseDuration, cert.providerName]) : [[]],
       7: [formData.Description.UserDescription],
     };
@@ -1203,6 +1210,18 @@ const GetInfo = () => {
                   </div>
 
                   <div className="space-y-2">
+                    <label className="block text-sm font-medium dark:text-slate-300">Location</label>
+                    <input
+                      type="text"
+                      placeholder="Pune, India"
+                      className="w-full sm:px-6 sm:p-2 border rounded peer px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                      value={edu.location || ''}
+                      onChange={(e) => handleInputChange('education', 'location', e.target.value, index)}
+                    />
+                    <div className="ml-4 w-0 h-1 rounded-full bg-blue-500 transition-all duration-300 peer-hover:w-[60%] peer-focus:w-[88%] sm:peer-focus:w-[94%]"></div>
+                  </div>
+
+                  <div className="space-y-2">
                     <div className="peer">
                       <Suggestions
                         label="Degree Name"
@@ -1293,6 +1312,18 @@ const GetInfo = () => {
                         isMultiSuggestion={false}
                       />
                     </div>
+                    <div className="ml-4 w-0 h-1 rounded-full bg-blue-500 transition-all duration-300 peer-hover:w-[60%] peer-focus:w-[88%] sm:peer-focus:w-[94%]"></div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium dark:text-slate-300">Location</label>
+                    <input
+                      type="text"
+                      placeholder="Pune, India"
+                      className="w-full sm:px-6 sm:p-2 border rounded peer px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                      value={edu.location || ''}
+                      onChange={(e) => handleInputChange('education', 'location', e.target.value, index)}
+                    />
                     <div className="ml-4 w-0 h-1 rounded-full bg-blue-500 transition-all duration-300 peer-hover:w-[60%] peer-focus:w-[88%] sm:peer-focus:w-[94%]"></div>
                   </div>
 
@@ -1626,7 +1657,7 @@ const GetInfo = () => {
               <h2 className="text-xl sm:text-2xl font-bold border-b-4 pb-1 border-blue-900 mb-4 text-blue-800 dark:border-blue-500 dark:text-blue-400">Choose Template</h2>
               <p className='font-semibold mb-6 text-gray-600 dark:text-gray-200'>We will frequently add more template designs to provide more robust options.</p>
               <div className="grid grid-cols-2 gap-5">
-                {[1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22].map((template) => (
+                {[1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26].map((template) => (
                   <div
                     key={template}
                     className={`relative p-4 border-2 rounded-lg transition-all duration-150 shadow-md hover:shadow-xl dark:shadow-gray-600 ${formData.selectedTemplate === String(template) ? 'border-blue-600 bg-blue-50 dark:bg-slate-800 ring-2 ring-blue-300' : 'dark:border-gray-700 hover:border-blue-400'
@@ -1671,7 +1702,7 @@ const GetInfo = () => {
               <h2 className="text-xl sm:text-2xl font-bold border-b-4 pb-1 border-blue-900 mb-4 text-blue-800 dark:border-blue-500 dark:text-blue-400">Choose Template</h2>
               <p className='font-semibold mb-6 text-gray-600 dark:text-gray-200'>We will frequently add more template designs to provide more resume options.</p>
               <div className="grid grid-cols-2 gap-5">
-                {[1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22].map((template) => (
+                {[1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26].map((template) => (
                   <div
                     key={template}
                     className={`relative p-4 border-2 rounded-lg transition-all duration-150 shadow-md hover:shadow-xl dark:shadow-gray-600 ${ExampleJsonData.selectedTemplate === String(template) ? 'border-blue-600 bg-blue-50 dark:bg-slate-800 ring-2 ring-blue-300' : 'dark:border-gray-700 hover:border-blue-400'
@@ -1878,6 +1909,10 @@ const GetInfo = () => {
                   case '20': return <T20 jsonData={data} />;
                   case '21': return <T21 jsonData={data} />;
                   case '22': return <T22 jsonData={data} />;
+                  case '23': return <T23 jsonData={data} />;
+                  case '24': return <T24 jsonData={data} />;
+                  case '25': return <T25 jsonData={data} />;
+                  case '26': return <T26 jsonData={data} />;
                   default: return <T1 jsonData={data} />;
                 }
               })()}

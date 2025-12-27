@@ -32,12 +32,12 @@ const StyledWrapper = styled.div`
   }
   
   .resume {
-    width: 100% !important;
-    max-width: 100% !important;
+    width: 210mm !important;
+    min-height: 297mm !important;
     margin: 0 !important;
     border: none !important;
     box-shadow: none !important;
-    overflow: visible !important;
+    padding: 0 !important;
   }
 }
 
@@ -50,12 +50,10 @@ body {
 
 .resume {
   width: 210mm;
-  max-width: 95%;
-  min-height: auto;
+  min-height: 297mm; 
   background: white;
   margin: 20px auto;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-  overflow: visible;
 }
 
 .header {
@@ -393,8 +391,9 @@ export const T22 = ({ jsonData }) => {
             <div className="section">
               <div className="section-title">Profile</div>
               <div className="profile-text">
-                {jsonData.Description?.UserDescription ||
-                  'A dedicated and results-driven professional with expertise in delivering high-quality solutions and driving team success through effective collaboration and innovative problem-solving.'}
+                {jsonData.Description?.UserDescription
+                  ? jsonData.Description.UserDescription
+                  : 'A dedicated and results-driven professional with expertise in delivering high-quality solutions and driving team success through effective collaboration and innovative problem-solving.'}
               </div>
             </div>
 
@@ -495,12 +494,12 @@ export const T22Css = `
   }
   
   .resume {
-    width: 100% !important;
-    max-width: 100% !important;
+    width: 210mm !important;
+    min-height: 297mm !important;
     margin: 0 !important;
     border: none !important;
     box-shadow: none !important;
-    overflow: visible !important;
+    padding: 0 !important;
   }
 }
 
@@ -513,12 +512,11 @@ body {
 
 .resume {
   width: 210mm;
-  max-width: 95%;
-  min-height: auto;
+  min-height: 297mm;
   background: white;
   margin: 20px auto;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-  overflow: visible;
+  overflow: hidden; /* Hide overflow */
 }
 
 .header {

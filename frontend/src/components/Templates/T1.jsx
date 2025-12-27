@@ -29,13 +29,12 @@ const StyledWrapper = styled.div`
   }
   @page {
    size: A4; 
-   margin: 0.5in;
+   margin: 0;
   }
   .resume {
     margin-top: 10px;
-    width: 900px; 
-    max-width: 100%;
-    border-radius: 15px;
+    width: 210mm; 
+    min-height: 297mm;
     border: 0px solid #ddd !important;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -71,15 +70,13 @@ body {
 
 .resume {
   margin-top: 10px;
-  width: 900px; 
-  max-width: 95%;
+  width: 210mm; 
+  min-height: 297mm;
   background: #f1f1f1;
   border-radius: 15px;
   border: 1px solid #ddd;
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  min-height: auto;
-  max-height: none;
 }
 
 .header {
@@ -259,6 +256,7 @@ export const T1 = ({ jsonData }) => {
         <b>{edu.graduationYear}<br />{edu.institutionName}</b>
       </div>
       {edu.degreeName} <br />
+      {edu.location && <>{edu.location} <br /></>}
       CGPA: {edu.currentCGPA}
       <br /> <br />
     </div>
@@ -362,7 +360,7 @@ export const T1 = ({ jsonData }) => {
           <div className="Usection">
             <div className="section-title"><b>Profile Summary</b></div>
             <div className="Litem">
-              <p className="Ritem">{jsonData.Description.UserDescription}</p>
+              <p className="Ritem">{(jsonData.Description.UserDescription || '')}</p>
             </div>
           </div>
         </div>
@@ -469,13 +467,8 @@ export const T1Css = `
       .resume {
         width: 210mm !important;
         max-width: 210mm !important;
-        min-height: 297mm !important;
-        margin: 0 auto !important;
-        border-radius: 0 !important;
         border: none !important;
-        padding: 15mm !important;
         box-shadow: none !important;
-        overflow: visible !important;
       }
       
       .header, .section {
@@ -496,12 +489,14 @@ export const T1Css = `
        display: flex;
        justify-content: center;
        align-items: center;
-       height: 1280px;
+       align-items: center;
+       min-height: 1280px;
     }
     
     .resume {
        margin-top: 10px;
-       width: 900px; 
+       width: 210mm; 
+       min-height: 297mm;
        background: #f1f1f1;
        border-radius: 15px;
        border: 1px solid #ddd;

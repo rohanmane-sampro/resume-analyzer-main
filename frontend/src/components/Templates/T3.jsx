@@ -21,7 +21,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 1231px; /* (W/H) Ratio should be 0.7069 */
+  min-height: 1231px; /* (W/H) Ratio should be 0.7069 */
 }
 
 .resume {
@@ -32,6 +32,7 @@ body {
   padding: 20px;
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
   margin-top: 0; 
+  max-height: 297mm;
 }
 
 .NoDecorationBlue a{
@@ -53,7 +54,7 @@ body {
   text-align: center;
   width: 900px;
   background: #b6dbf0;
-  padding: 90px 0 90px 0; 
+  padding: 40px 0 40px 0; 
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   margin-bottom: 0; /* Remove bottom margin */
@@ -202,13 +203,13 @@ export const T3 = ({ jsonData }) => {
               <div className="section">
                 <div className="section-title"><b>Education </b><i className="fas fa-graduation-cap"></i></div><br />
                 <div className="Litem">
-                  {jsonData.education.map((edu, index) => (
+                  {jsonData.education.slice(0, 2).map((edu, index) => (
                     <React.Fragment key={index}>
                       <div className="mbb-3">
                         <div className="SubSec-title TextLight"><b>{edu.graduationYear}<br />{edu.institutionName}</b></div>
                         {edu.degreeName} <br />
                         CGPA: {edu.currentCGPA}
-                        {index < jsonData.education.length - 1 && <br />}
+                        {index < Math.min(jsonData.education.length, 2) - 1 && <br />}
                       </div>
                     </React.Fragment>
                   ))}
@@ -219,7 +220,7 @@ export const T3 = ({ jsonData }) => {
               <div className="section">
                 <div className="section-title"><b>Soft Skills </b><i className="fa fa-book"></i></div><br />
                 <ul>
-                  {jsonData.skills.softSkills.split(',').map(skill => skill.trim()).filter(skill => skill !== '').map((skill, index) => (
+                  {jsonData.skills.softSkills.split(',').map(skill => skill.trim()).filter(skill => skill !== '').slice(0, 4).map((skill, index) => (
                     <li key={index}>{removespace(skill)}</li>
                   ))}
                 </ul>
@@ -228,7 +229,7 @@ export const T3 = ({ jsonData }) => {
               <div className="section">
                 <div className="section-title"><b>Languages </b><i className="fa fa-language"></i></div><br />
                 <ul>
-                  {jsonData.contactInfo.Languages.split(',').map(lang => lang.trim()).filter(lang => lang !== '').map((lang, index) => (
+                  {jsonData.contactInfo.Languages.split(',').map(lang => lang.trim()).filter(lang => lang !== '').slice(0, 3).map((lang, index) => (
                     <li key={index}>{removespace(lang)}: Fluent</li>
                   ))}
                 </ul>
@@ -244,7 +245,7 @@ export const T3 = ({ jsonData }) => {
               <div className="SUsection">
                 <div className="section-title"><b>Projects</b></div>
                 <ul>
-                  {jsonData.projects.map((proj, index) => (
+                  {jsonData.projects.slice(0, 2).map((proj, index) => (
                     <div className="Ritem" key={index}>
                       <li>
                         <div className="item-title TextLight">{proj.projectTitle} </div>
@@ -260,12 +261,12 @@ export const T3 = ({ jsonData }) => {
                   <div className="section-title"><b>Work Experience</b></div>
                   <div className="Ritem">
                     <ul>
-                      {jsonData.workExperience.map((we, index) => (
+                      {jsonData.workExperience.slice(0, 2).map((we, index) => (
                         <li key={index} className='mbb-2'>
                           <div className="item-title TextLight">{we.companyName}<div>{we.WorkDuration}</div> </div>
                           {we.jobTitle}<br />
                           <span dangerouslySetInnerHTML={{ __html: parseMarkdown(we.keyAchievements) }} />
-                          {index < jsonData.workExperience.length - 1 && <br />}
+                          {index < Math.min(jsonData.workExperience.length, 2) - 1 && <br />}
                         </li>
                       ))}
                     </ul>
@@ -277,7 +278,7 @@ export const T3 = ({ jsonData }) => {
                 <div className="section">
                   <div className="section-title"><b>Certificates</b></div>
                   <div className="Ritem">
-                    {jsonData.certificates.map((cert, index) => (
+                    {jsonData.certificates.slice(0, 2).map((cert, index) => (
                       <div key={index} style={{ marginBottom: '12px' }}>
                         <div style={{ fontWeight: 'bold', color: '#1a1a1a' }}>
                           {cert.certificateName}
@@ -357,7 +358,7 @@ export const T3Css = `
   }
   
   .resume {
-    width: 210mm !important;
+     width: 210mm !important;
     max-width: 210mm !important;
     min-height: 297mm !important;
     background: #ffffff !important;
@@ -365,7 +366,6 @@ export const T3Css = `
     padding: 15mm !important;
     box-shadow: none !important;
     margin: 0 auto !important;
-    overflow: visible !important;
   }
   
   .header {
@@ -391,11 +391,12 @@ body {
    display: flex;
    flex-direction: column;
    align-items: center;
-   height: 1231px; /* (W/H) Ratio should be 0.7069 */
+   min-height: 1231px; /* (W/H) Ratio should be 0.7069 */
 }
 
-.resume {
-   width: 900px;
+ .resume {
+   width: 210mm;
+   min-height: 297mm;
    background: #ffffff;
    border-bottom-left-radius: 20px;
    border-bottom-right-radius: 20px;
@@ -422,7 +423,7 @@ body {
    text-align: center;
    width: 900px;
    background: #b6dbf0;
-   padding: 115px 20px 115px 20px; 
+   padding: 40px 20px 40px 20px; 
    border-top-left-radius: 20px;
    border-top-right-radius: 20px;
    margin-bottom: 0; /* Remove bottom margin */
