@@ -35,8 +35,8 @@ venv.bak/
 .env
 .env.local
 .env.*.local
+AIBackend/.env
 Backend/.env
-frontend/.env
 
 # Node.js
 node_modules/
@@ -46,7 +46,6 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 .pnpm-debug.log*
-package-lock.json
 
 # Frontend Build
 frontend/dist/
@@ -63,7 +62,18 @@ logs/
 
 # IDE and Editor
 .vscode/
+# Logs
+logs/
+*.log
+
+# IDE and Editor
+.vscode/
 !.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*.swn
+*~
 .idea/
 *.swp
 *.swo
@@ -129,12 +139,3 @@ coverage.xml
 *.exe
 *.o
 *.so
-
-# Development/Documentation (not needed in production)
-.agent/
-*.md
-!README.md
-
-# Git
-.git/
-.gitignore

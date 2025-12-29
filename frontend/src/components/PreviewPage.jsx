@@ -3,13 +3,15 @@ import { ArrowLeft, Brain, Download, Sparkles, RefreshCw } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLocation, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { ENDPOINTS } from '../apiConfig';
-import { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30 } from './Templates';
+import { ENDPOINTS, getAuthHeaders } from '../apiConfig';
+import { useAuth } from '../AuthContext';
+import { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21 } from './Templates';
 
 const PreviewPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { resumeData, originalData } = location.state || {};
+  const { user } = useAuth();
 
   const [aiEnhancedData, setAiEnhancedData] = useState(null);
   const [isEnhancing, setIsEnhancing] = useState(false);
@@ -268,7 +270,7 @@ const PreviewPage = () => {
 
   const getTemplateComponent = () => {
     const templateIndex = resumeData.selectedTemplate;
-    const templateComponents = { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30 };
+    const templateComponents = { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21 };
     return templateComponents[`T${templateIndex}`] || T1;
   };
 
@@ -302,12 +304,33 @@ const PreviewPage = () => {
     }
   };
 
-  const handleProceedToDownload = () => {
+  const handleProceedToDownload = async () => {
+    let resumeId = null;
+    if (user) {
+      try {
+        const response = await fetch(ENDPOINTS.RESUME.TRACK_CREATE, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({
+            template_id: resumeData.selectedTemplate,
+            metadata: { version: selectedVersion }
+          })
+        });
+        if (response.ok) {
+          const data = await response.json();
+          resumeId = data.resume_id;
+        }
+      } catch (error) {
+        console.error('Failed to track creation:', error);
+      }
+    }
+
     navigate('/Result', {
       state: {
         jsonData: getCurrentData(),
         originalData: resumeData,
-        versionType: selectedVersion
+        versionType: selectedVersion,
+        resumeId: resumeId
       }
     });
   };
@@ -448,8 +471,6 @@ const PreviewPage = () => {
               page-break-inside: avoid;
               max-height: none !important;
               height: auto !important;
-              max-width: none !important;
-              width: 100% !important;
             }
           }
           

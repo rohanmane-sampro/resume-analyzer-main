@@ -44,6 +44,17 @@ class Config:
     JWT_SECRET = os.getenv("JWT_SECRET", "your_super_secret_key_change_this")
     JWT_EXPIRY = os.getenv("JWT_EXPIRY", "24h")
     
+    # MongoDB Configuration
+    MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017/resume_analyzer")
+    
+    # JWT Configuration
+    JWT_SECRET = os.getenv("JWT_SECRET", "super-secret-key")
+    JWT_EXPIRY = os.getenv("JWT_EXPIRY", "24h")
+    
+    # Admin Configuration
+    ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "admin@sampro.ai")
+    ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
+    
     # Fully automated CORS: 
     # 1. Use environment variable if set
     # 2. Default to allow all (*) for maximum compatibility

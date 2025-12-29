@@ -8,8 +8,8 @@ const AutoSuggestInput = ({
   value,
   onChange,
   suggestions,
-  isPara=false,
-  isTextArea=false,
+  isPara = false,
+  isTextArea = false,
   isMultiSuggestion = true,
 }) => {
   const [inputValue, setInputValue] = useState(value || "");
@@ -91,7 +91,7 @@ const AutoSuggestInput = ({
       {isTextArea ? (
         <textarea
           placeholder={placeholder}
-          className="w-full h-56 sm:h-48 md:h-44 lg:h-[120px] px-3 py-2 border rounded resize-none peer focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+          className="w-full h-56 sm:h-48 md:h-44 lg:h-[120px] px-3 py-2 border rounded resize-none peer focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 dark:text-white dark:bg-gray-800 dark:border-gray-600"
           value={inputValue}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
@@ -109,7 +109,7 @@ const AutoSuggestInput = ({
         <input
           type="text"
           placeholder={placeholder}
-          className="w-full sm:p-2 sm:px-6 border rounded peer px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+          className="w-full sm:p-2 sm:px-6 border rounded peer px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 dark:text-white dark:bg-gray-800 dark:border-gray-600"
           value={inputValue}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
@@ -132,11 +132,10 @@ const AutoSuggestInput = ({
           {filteredSuggestions.map((suggestion, idx) => (
             <li
               key={idx}
-              className={`px-3 py-2 cursor-pointer text-sm ${
-                idx === activeIndex
+              className={`px-3 py-2 cursor-pointer text-sm ${idx === activeIndex
                   ? "bg-blue-500 text-white"
                   : "hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100"
-              }`}
+                }`}
               onMouseDown={() => handleSuggestionClick(suggestion)}
             >
               {suggestion}

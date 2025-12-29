@@ -1,69 +1,96 @@
-import React, { useState, useContext } from 'react';
-import { AuthContext } from './AuthContext';
-import { Link } from 'react-router-dom';
-import toast from 'react-hot-toast';
-import { API_BASE_URL } from '../apiConfig';
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
+import { Eye, EyeOff } from 'lucide-react';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { login } = useContext(AuthContext);
+    const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+    const { login } = useAuth();
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                login(data.token, { role: data.role, name: data.name });
+        setError('');
+        setLoading(true);
+        const result = await login(email, password);
+        setLoading(false);
+        if (result.success) {
+            // Check role and redirect accordingly
+            if (result.user?.role === 'admin') {
+                navigate('/admin');
             } else {
-                toast.error(data.message || 'Login failed');
+                navigate('/');
             }
-        } catch (error) {
-            toast.error('Something went wrong');
+        } else {
+            setError(result.message || 'Login failed');
         }
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 px-4">
-            <div className="max-w-md w-full bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8">
-                <h2 className="text-3xl font-bold text-center mb-6 text-slate-800 dark:text-white">Welcome Back</h2>
-                <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-100 to-pink-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 px-4 transition-colors duration-300">
+            <div className="max-w-md w-full glassmorphism p-8 rounded-2xl border border-white/10">
+                <div className="text-center mb-10">
+                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Welcome Back</h2>
+                    <p className="text-gray-600 dark:text-gray-400">Login to your account</p>
+                </div>
+
+                {error && (
+                    <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-sm">
+                        {error}
+                    </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Email</label>
+                        <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">Email Address</label>
                         <input
                             type="email"
-                            className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-teal-500 outline-none"
+                            required
+                            className="w-full bg-white/10 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all placeholder:text-gray-400"
+                            placeholder="name@example.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            required
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Password</label>
-                        <input
-                            type="password"
-                            className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-teal-500 outline-none"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
+                        <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">Password</label>
+                        <div className="relative">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                required
+                                className="w-full bg-white/10 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all placeholder:text-gray-400 pr-12"
+                                placeholder="••••••••"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-teal-500 transition-colors"
+                            >
+                                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                            </button>
+                        </div>
                     </div>
+
                     <button
                         type="submit"
-                        className="w-full py-3 bg-gradient-to-r from-teal-500 to-blue-600 text-white font-bold rounded-lg hover:opacity-90 transition-opacity"
+                        disabled={loading}
+                        className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-3 rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
                     >
-                        Login
+                        {loading ? 'Logging in...' : 'Sign In'}
                     </button>
                 </form>
-                <p className="mt-4 text-center text-slate-600 dark:text-slate-400">
-                    Don't have an account? <Link to="/signup" className="text-teal-500 hover:underline">Sign up</Link>
+
+                <p className="mt-8 text-center text-gray-600 dark:text-gray-400">
+                    Don't have an account?{' '}
+                    <Link to="/signup" className="text-teal-600 dark:text-teal-400 hover:text-teal-500 dark:hover:text-teal-300 font-semibold">
+                        Sign up
+                    </Link>
                 </p>
             </div>
         </div>

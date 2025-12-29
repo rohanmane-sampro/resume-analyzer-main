@@ -1,10 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Lock } from 'lucide-react';
+import { useAuth } from '../AuthContext';
 import Navbar from './Navbar.jsx';
 
 export default function ViewTemplates() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   // const titles=["","Simpler & Structured","Linear & Classic","Colourful & Attractive","Colourful & Highly Designed","Simpler & Linear","Highly Simpler & Classic"]
   const titles = ["",
     "Default Classic",
@@ -277,24 +279,45 @@ export default function ViewTemplates() {
 
       {/* Change grid-cols-1 to grid-cols-2 for mobile */}
       <div className="grid grid-cols-2 gap-14 sm:grid-cols-2 md:grid-cols-2 max-w-5xl mx-auto place-items-center">
-        {items.map((item, index) => (
-          <div
-            key={index}
-            onClick={() => handleTemplateClick(index)}
-            className="group relative mb-6 bg-white dark:bg-slate-700 hover:shadow-2xl hover:scale-105 transition-transform duration-[250ms] border-2 dark:shadow-[0_-4px_10px_rgba(0,0,0,0.1)] border-gray-300 dark:border-gray-700 dark:shadow-gray-800 dark:hover:shadow-gray-600/50 rounded-lg overflow-hidden w-40 sm:w-44 md:w-48 lg:w-64 xl:w-72 flex flex-col items-center cursor-pointer"
-          >
-            {/* Adjust image size */}
-            <img src={item.img} alt={item.title} className="w-full h-auto object-cover dark:opacity-80 dark:brightness-80 dark:contrast-90" />
-            <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 dark:bg-slate-700 p-4 rounded-md opacity-0 group-hover:opacity-100 transition-transform flex justify-center items-center">
-              <button
-                className="text-white text-sm md:text-base bg-green-600 hover:bg-green-700 px-6 py-2 rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg"
-              >
-                Use This Template
-              </button>
+        {items.map((item, index) => {
+          const isGuest = user?.type === 'guest';
+          const isLocked = isGuest && index >= 2;
+
+          return (
+            <div
+              key={index}
+              onClick={() => {
+                if (isLocked) {
+                  alert("Payment required to access this premium template.");
+                  return;
+                }
+                handleTemplateClick(index);
+              }}
+              className={`group relative mb-6 bg-white dark:bg-slate-700 hover:shadow-2xl hover:scale-105 transition-transform duration-[250ms] border-2 dark:shadow-[0_-4px_10px_rgba(0,0,0,0.1)] border-gray-300 dark:border-gray-700 dark:shadow-gray-800 dark:hover:shadow-gray-600/50 rounded-lg overflow-hidden w-40 sm:w-44 md:w-48 lg:w-64 xl:w-72 flex flex-col items-center cursor-pointer ${isLocked ? 'opacity-75' : ''}`}
+            >
+              {/* Adjust image size */}
+              <img src={item.img} alt={item.title} className="w-full h-auto object-cover dark:opacity-80 dark:brightness-80 dark:contrast-90" />
+
+              {isLocked && (
+                <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center z-10">
+                  <Lock className="text-white mb-2" size={32} />
+                  <span className="text-white font-bold text-sm bg-black/50 px-3 py-1 rounded-full">Premium</span>
+                </div>
+              )}
+
+              {!isLocked && (
+                <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 dark:bg-slate-700 p-4 rounded-md opacity-0 group-hover:opacity-100 transition-transform flex justify-center items-center">
+                  <button
+                    className="text-white text-sm md:text-base bg-green-600 hover:bg-green-700 px-6 py-2 rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg"
+                  >
+                    Use This Template
+                  </button>
+                </div>
+              )}
+              <div className="font-semibold text-gray-600 dark:text-gray-200 text-xs pb-2 pt-1 md:text-base"> {item.title} </div>
             </div>
-            <div className="font-semibold text-gray-600 dark:text-gray-200 text-xs pb-2 pt-1 md:text-base"> {item.title} </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
 

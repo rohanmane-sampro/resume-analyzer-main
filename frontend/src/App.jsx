@@ -16,29 +16,17 @@ import Loader from './components/Loader.jsx'
 import ResumeAnalyze from './components/ResumeAnalyze.jsx';
 import Login from './components/Login.jsx';
 import Signup from './components/Signup.jsx';
-import Navbar from './components/Navbar.jsx';
-import { AuthProvider, AuthContext } from './components/AuthContext.jsx';
+import UserDashboard from './components/UserDashboard.jsx';
+import AdminDashboard from './components/AdminDashboard.jsx';
+import { useAuth } from './AuthContext';
 
-// Protected Route Component
-const ProtectedRoute = ({ children }) => {
-  const { user, loading } = useContext(AuthContext);
-
-  if (loading) return <Loader />;
-
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return children;
-};
-
-const AppContent = () => {
+const App = () => {
+  const { user, loading: authLoading } = useAuth();
   const { isDark } = useContext(ThemeContext)
   const [loading, setLoading] = useState(true);
   const [views, setViews] = useState(0);
 
   useEffect(() => {
-    // Firebase URL should be set in environment variables
     const FIREBASE_URL = import.meta.env.VITE_FIREBASE_URL;
 
     if (FIREBASE_URL) {
@@ -72,31 +60,69 @@ const AppContent = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  if (loading) {
+  if (loading || authLoading) {
     return <Loader />;
   }
+
+  const isAdmin = user?.role === 'admin';
 
   return (
     <div>
       <Toaster />
       <Navbar />
       <Routes>
-        <Route path="/" element={<FrontPage views={views} />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/AboutUs" element={<AboutUs />} />
-        <Route path="/VarifyMail" element={<GoogleVarification />} />
-        <Route path="/HTML-PDF" element={<HtmlToPdfConverter />} />
-        <Route path="/ViewTemplates" element={<ViewTemplates />} />
-        <Route path="/Features" element={<Features />} />
+        {/* Public & Role-Based Entry */}
+        {/* Admin Isolation: Admin can access ONLY /admin. All other routes redirect to /admin */}
+        <Route
+          path="/admin/*"
+          element={isAdmin ? <AdminDashboard /> : <Navigate to="/login" replace />}
+        />
 
-        {/* Protected Routes */}
-        <Route path="/FileUploadPage" element={<ProtectedRoute><FileUploadPage /></ProtectedRoute>} />
-        <Route path="/GetInfo" element={<ProtectedRoute><GetInfo /></ProtectedRoute>} />
-        <Route path="/Preview" element={<ProtectedRoute><PreviewPage /></ProtectedRoute>} />
-        <Route path="/Result" element={<ProtectedRoute><Result /></ProtectedRoute>} />
-        <Route path="/ResumeAnalyze" element={<ProtectedRoute><ResumeAnalyze /></ProtectedRoute>} />
-        <Route path="/dashboard" element={<ProtectedRoute><div className="p-10 text-center text-2xl dark:text-white">User Dashboard (Coming Soon)</div></ProtectedRoute>} />
+        {/* User & Public Routes - Redirect Admin to Admin Dashboard */}
+        <Route path="/" element={
+          isAdmin
+            ? <Navigate to="/admin" replace />
+            : <FrontPage views={views} />
+        } />
+
+        <Route path="/login" element={!user ? <Login /> : (isAdmin ? <Navigate to="/admin" replace /> : <Navigate to="/" replace />)} />
+        <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" replace />} />
+
+        {/* User Protected Routes - Strictly Block Admin */}
+        <Route
+          path="/dashboard"
+          element={isAdmin ? <Navigate to="/admin" replace /> : (user ? <UserDashboard /> : <Navigate to="/login" />)}
+        />
+        <Route
+          path="/FileUploadPage"
+          element={isAdmin ? <Navigate to="/admin" replace /> : (user ? <FileUploadPage /> : <Navigate to="/login" />)}
+        />
+        <Route
+          path="/GetInfo"
+          element={isAdmin ? <Navigate to="/admin" replace /> : (user ? <GetInfo /> : <Navigate to="/login" />)}
+        />
+        <Route
+          path="/Preview"
+          element={isAdmin ? <Navigate to="/admin" replace /> : (user ? <PreviewPage /> : <Navigate to="/login" />)}
+        />
+        <Route
+          path="/Result"
+          element={isAdmin ? <Navigate to="/admin" replace /> : (user ? <Result /> : <Navigate to="/login" />)}
+        />
+        <Route
+          path="/ResumeAnalyze"
+          element={isAdmin ? <Navigate to="/admin" replace /> : (user ? <ResumeAnalyze /> : <Navigate to="/login" />)}
+        />
+
+        {/* Other Routes - Strictly Block Admin */}
+        <Route path="/AboutUs" element={isAdmin ? <Navigate to="/admin" replace /> : <AboutUs />} />
+        <Route path="/VarifyMail" element={isAdmin ? <Navigate to="/admin" replace /> : <GoogleVarification />} />
+        <Route path="/HTML-PDF" element={isAdmin ? <Navigate to="/admin" replace /> : <HtmlToPdfConverter />} />
+        <Route path="/ViewTemplates" element={isAdmin ? <Navigate to="/admin" replace /> : <ViewTemplates />} />
+        <Route path="/Features" element={isAdmin ? <Navigate to="/admin" replace /> : <Features />} />
+
+        {/* Catch-all: Redirect Admin to Admin Home, others to Home */}
+        <Route path="*" element={isAdmin ? <Navigate to="/admin" replace /> : <Navigate to="/" replace />} />
       </Routes>
     </div>
   );

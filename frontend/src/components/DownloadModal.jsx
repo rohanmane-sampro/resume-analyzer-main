@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
+import { getAuthHeaders, ENDPOINTS } from '../apiConfig';
 import { Download, FileText, X, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { html as html_beautify } from 'js-beautify';
-import { T1Css, T2Css, T3Css, T4Css, T5Css, T6Css, T7Css, T9Css, T10Css, T11Css, T12Css, T13Css, T14Css, T15Css, T16Css, T17Css, T18Css, T19Css, T20Css, T21Css, T22Css, T23Css, T24Css, T25Css, T26Css, T27Css, T28Css, T29Css, T30Css } from './Templates';
+import { T1Css, T2Css, T3Css, T4Css, T5Css, T6Css, T7Css, T9Css, T10Css, T11Css, T12Css, T13Css, T14Css, T15Css, T16Css, T17Css, T18Css, T19Css, T20Css, T21Css } from './Templates';
 
-const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
+const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate, resumeId }) => {
   const [downloading, setDownloading] = useState({});
   const [downloadedFormats, setDownloadedFormats] = useState({});
 
@@ -43,6 +44,14 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
 
       setDownloadedFormats(prev => ({ ...prev, [format.id]: true }));
       toast.success(`${format.name} downloaded successfully!`);
+
+      // Track download if resumeId exists
+      if (resumeId) {
+        fetch(ENDPOINTS.RESUME.TRACK_DOWNLOAD(resumeId), {
+          method: 'POST',
+          headers: getAuthHeaders()
+        }).catch(err => console.error('Tracking failed:', err));
+      }
     } catch (error) {
       console.error(`Download error for ${format.id}:`, error);
       toast.error(`Failed to download ${format.name}`);
@@ -55,7 +64,7 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
     try {
       const htmlContent = generateActualTemplateHTML();
       const userName = resumeData?.contactInfo?.fullName || 'Resume';
-      // const fileName = `${userName.replace(/[^a-zA-Z0-9]/g, '_')}_Resume`; // Unused
+      const fileName = `${userName.replace(/[^a-zA-Z0-9]/g, '_')}_Resume`;
 
       toast('Opening print dialog. Select "Save as PDF" to download.', {
         duration: 6000,
@@ -72,12 +81,12 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
 
       const iframeDoc = iframe.contentWindow.document;
       iframeDoc.open();
-      // Write the COMPLETE HTML with all styles
-      iframeDoc.write(htmlContent);
+      // Set the title so browsers suggest it as filename
+      iframeDoc.write(`<html><head><title>${fileName}</title></head><body>${htmlContent}</body></html>`);
       iframeDoc.close();
 
       let printTriggered = false;
-      const triggerPrint = () => {
+      iframe.contentWindow.onload = () => {
         if (!printTriggered) {
           printTriggered = true;
           setTimeout(() => {
@@ -90,12 +99,14 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
         }
       };
 
-      iframe.contentWindow.onload = triggerPrint;
-
-      // Fallback if onload doesn't fire
       setTimeout(() => {
         if (!printTriggered && iframe.parentNode) {
-          triggerPrint();
+          printTriggered = true;
+          iframe.contentWindow.focus();
+          iframe.contentWindow.print();
+          setTimeout(() => {
+            if (iframe.parentNode) document.body.removeChild(iframe);
+          }, 1000);
         }
       }, 2000);
 
@@ -171,7 +182,7 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
         '1': T1Css, '2': T2Css, '3': T3Css, '4': T4Css, '5': T5Css, '6': T6Css,
         '7': T7Css, '9': T9Css, '10': T10Css, '11': T11Css, '12': T12Css,
         '13': T13Css, '14': T14Css, '15': T15Css, '16': T16Css, '17': T17Css, '18': T18Css,
-        '19': T19Css, '20': T20Css, '21': T21Css, '22': T22Css, '23': T23Css, '24': T24Css, '25': T25Css, '26': T26Css, '27': T27Css, '28': T28Css, '29': T29Css, '30': T30Css
+        '19': T19Css, '20': T20Css, '21': T21Css
       };
       return templateCssMap[selectedTemplate] || T1Css;
     };
@@ -215,31 +226,7 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate }) => {
     <title>${userName}</title>
     <!-- RESUME_DATA: ${JSON.stringify(embeddedData).replace(/-->/g, '--&gt;')} -->
     <style>
-      /* Force print color adjustment for all browsers */
-      * {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-        color-adjust: exact !important;
-      }
-      
-      /* Template-specific CSS */
       ${templateCss}
-      
-      /* Print-specific rules to preserve formatting */
-      @media print {
-        * {
-          -webkit-print-color-adjust: exact !important;
-          print-color-adjust: exact !important;
-        }
-        body {
-          margin: 0;
-          padding: 0;
-        }
-        @page {
-          margin: 0;
-          size: A4;
-        }
-      }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="icon" href="https://prashantparshuramkar.host20.uk/cv-templates/resume-icon.png">

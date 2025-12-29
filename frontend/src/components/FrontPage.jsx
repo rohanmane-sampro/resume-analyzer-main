@@ -4,7 +4,7 @@ import Typed from "typed.js";
 import Examplepages from './Examplepage.jsx'
 import { useNavigate } from 'react-router-dom';
 import { ThemeContext } from "./ThemeContext.jsx";
-import Switch from "./Switch.jsx";
+import Navbar from "./Navbar.jsx";
 
 const features = [
   "AI-powered analysis",
@@ -21,10 +21,6 @@ const FrontPage = () => {
 
   const handleContinue = () => navigate('/FileUploadPage');
   const handleViewTemplates = () => navigate('/ViewTemplates');
-  const handleFeatures = () => navigate('/Features');
-  const handleAboutUs = () => navigate('/AboutUs');
-  const handleAnalyze = () => navigate('/ResumeAnalyze');
-  const handleTheme = () => setIsDark((prev) => !prev);
 
   useEffect(() => {
     const typed = new Typed("#hero-typing-text", {
@@ -50,7 +46,8 @@ const FrontPage = () => {
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-teal-200/30 dark:bg-teal-900/20 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
       </div>
 
-      {/* Navigation removed - using global Navbar */}
+      {/* Use Shared Navbar with Auth */}
+      <Navbar />
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col items-center justify-center px-4 pt-12 pb-8 relative z-10 w-full max-w-7xl mx-auto">
@@ -62,7 +59,7 @@ const FrontPage = () => {
           </div>
 
           <h1 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight leading-tight text-slate-900 dark:text-white">
-            Build Your Future <br className="hidden md:block" /> with <span className="text-gradient-primary animate-title-glow">Intelligent AI</span>
+            Build Your Future <br className="hidden md:block" />with <span className="text-gradient-primary animate-title-glow">Intelligent AI</span>
           </h1>
 
           <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 mb-8 max-w-2xl mx-auto leading-relaxed">
