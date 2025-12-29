@@ -28,8 +28,8 @@ const Signup = () => {
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-100 to-pink-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 px-4 transition-colors duration-300">
             <div className="max-w-md w-full glassmorphism p-8 rounded-2xl border border-white/10">
                 <div className="text-center mb-10">
-                    <h2 className="text-3xl font-bold text-white mb-2">Create Account</h2>
-                    <p className="text-gray-400">Join Sampro AI for better resumes</p>
+                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Create Account</h2>
+                    <p className="text-gray-600 dark:text-gray-400">Join Sampro AI for better resumes</p>
                 </div>
 
                 {error && (
@@ -40,33 +40,33 @@ const Signup = () => {
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
+                        <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">Full Name</label>
                         <input
                             type="text"
                             required
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all"
+                            className="w-full bg-white/10 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all placeholder:text-gray-400"
                             placeholder="John Doe"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
+                        <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">Email Address</label>
                         <input
                             type="email"
                             required
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all"
+                            className="w-full bg-white/10 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all placeholder:text-gray-400"
                             placeholder="name@example.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                        <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">Password</label>
                         <input
                             type="password"
                             required
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all"
+                            className="w-full bg-white/10 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all placeholder:text-gray-400"
                             placeholder="••••••••"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -82,9 +82,9 @@ const Signup = () => {
                     </button>
                 </form>
 
-                <p className="mt-8 text-center text-gray-400">
+                <p className="mt-8 text-center text-gray-600 dark:text-gray-400">
                     Already have an account?{' '}
-                    <Link to="/login" className="text-teal-400 hover:text-teal-300 font-semibold">
+                    <Link to="/login" className="text-teal-600 dark:text-teal-400 hover:text-teal-500 dark:hover:text-teal-300 font-semibold">
                         Sign in
                     </Link>
                 </p>

@@ -253,7 +253,7 @@ const AllUsersTab = ({ users }) => {
                         onChange={(e) => setFilter(e.target.value)}
                     >
                         <option>All Users</option>
-                        <option>Standard</option>
+                        {/* <option>Standard</option> */}
                         <option>Guest Users</option>
                         <option>Knowledge Hub Users</option>
                     </select>
