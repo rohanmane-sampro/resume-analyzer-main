@@ -15,6 +15,11 @@ def get_system_settings():
             'type': 'global_config',
             'default_download_limit': 5,
             'default_template_limit': 10,
+            'limits': {
+                'knowledge_hub': 10,
+                'guest': 10,
+                'standard': 5
+            },
             'downloads_enabled': True,
             'maintenance_mode': False,
             'updated_at': datetime.datetime.utcnow()
@@ -68,7 +73,8 @@ def get_all_users(current_user):
             'download_limit': user.get('download_limit', 5),
             'template_limit': user.get('template_limit', 10),
             'status': user.get('status', 'active'), # active or disabled
-            'type': user.get('type', 'standard') # standard, quest, knowledge_hub (placeholder)
+            'type': user.get('type', 'standard'), # standard, quest, knowledge_hub (placeholder)
+            'subscription_plan': user.get('subscription_plan', 'basic') # basic, standard, enterprise, premium
         })
         
     return jsonify({'users': user_list}), 200
@@ -96,6 +102,34 @@ def update_user_status(current_user, user_id):
         )
     
     return jsonify({'message': 'User updated successfully'}), 200
+
+@admin_bp.route('/users/bulk-update', methods=['POST'])
+@admin_required
+def bulk_update_users(current_user):
+    data = request.get_json()
+    user_type = data.get('user_type')
+    update_data = data.get('update_data')
+    
+    if not user_type or not update_data:
+        return jsonify({'message': 'Missing user_type or update_data'}), 400
+        
+    query = {}
+    if user_type != 'all':
+        query['type'] = user_type
+        
+    subscription_plan = data.get('subscription_plan')
+    if subscription_plan:
+        query['subscription_plan'] = subscription_plan
+        
+    result = users_collection.update_many(
+        query,
+        {'$set': update_data}
+    )
+    
+    return jsonify({
+        'message': f'Updated {result.modified_count} users',
+        'modified_count': result.modified_count
+    }), 200
 
 @admin_bp.route('/analytics/resume-trends', methods=['GET'])
 @admin_required

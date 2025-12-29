@@ -39,6 +39,7 @@ export const ENDPOINTS = {
         STATS: `${API_BASE_URL}/api/admin/stats`,
         USERS: `${API_BASE_URL}/api/admin/users`,
         UPDATE_USER: (id) => `${API_BASE_URL}/api/admin/users/${id}`,
+        BULK_UPDATE_USERS: `${API_BASE_URL}/api/admin/users/bulk-update`,
         RESUME_TRENDS: `${API_BASE_URL}/api/admin/analytics/resume-trends`,
         TEMPLATE_ANALYTICS: `${API_BASE_URL}/api/admin/analytics/templates`,
         SETTINGS: `${API_BASE_URL}/api/admin/settings`,

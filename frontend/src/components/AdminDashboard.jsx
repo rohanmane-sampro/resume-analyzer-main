@@ -13,6 +13,7 @@ import {
 } from 'recharts';
 import StatsCard from './StatsCard';
 import UserTable from './UserTable';
+import ManageUsers from './ManageUsers';
 
 const AdminDashboard = () => {
     const { user, logout } = useAuth();
@@ -73,7 +74,7 @@ const AdminDashboard = () => {
         switch (activeTab) {
             case 'overview': return <OverviewTab metrics={metrics} trends={trends} templateAnalytics={templateAnalytics} />;
             case 'all-users': return <UserTable users={usersList} />;
-            case 'manage-users': return <ManageUsersTab users={usersList} setUsers={setUsersList} />;
+            case 'manage-users': return <ManageUsers users={usersList} setUsers={setUsersList} />;
             case 'resume-analytics': return <ResumeAnalyticsTab trends={trends} templateAnalytics={templateAnalytics} metrics={metrics} />;
             case 'limits': return <LimitsSettingsTab settings={systemSettings} setSettings={setSystemSettings} />;
             case 'settings': return <SystemSettingsTab settings={systemSettings} setSettings={setSystemSettings} />;
@@ -162,9 +163,9 @@ const OverviewTab = ({ metrics, trends, templateAnalytics }) => {
     return (
         <div className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <StatsCard title="Total Users" value={metrics?.total_users} icon={<Users className="text-blue-500" />} trend="+12% this month" />
-                <StatsCard title="Resumes Generated" value={metrics?.total_resumes} icon={<FileText className="text-purple-500" />} trend="+8% vs last week" />
-                <StatsCard title="Total Downloads" value={metrics?.total_downloads} icon={<Download className="text-green-500" />} trend="+24% conversion" />
+                <StatsCard title="Total Users" value={metrics?.total_users} icon={<Users className="text-blue-500" />} />
+                <StatsCard title="Resumes Generated" value={metrics?.total_resumes} icon={<FileText className="text-purple-500" />} />
+                <StatsCard title="Total Downloads" value={metrics?.total_downloads} icon={<Download className="text-green-500" />} />
                 <StatsCard title="Download Velocity" value={metrics?.avg_downloads_per_user} icon={<Activity className="text-orange-500" />} subtitle="Avg. downloads/user" />
             </div>
 
@@ -226,132 +227,7 @@ const OverviewTab = ({ metrics, trends, templateAnalytics }) => {
 
 
 
-const ManageUsersTab = ({ users, setUsers }) => {
-    const [selectedUser, setSelectedUser] = useState(null);
-    const [editMode, setEditMode] = useState(false);
-    const [formData, setFormData] = useState({ download_limit: 0, template_limit: 0, status: 'active' });
 
-    const handleEdit = (u) => {
-        setSelectedUser(u);
-        setFormData({ download_limit: u.download_limit, template_limit: u.template_limit, status: u.status });
-        setEditMode(true);
-    };
-
-    const handleSave = async () => {
-        try {
-            const response = await fetch(ENDPOINTS.ADMIN.UPDATE_USER(selectedUser.id), {
-                method: 'POST',
-                headers: getAuthHeaders(),
-                body: JSON.stringify(formData)
-            });
-
-            if (response.ok) {
-                setUsers(users.map(u => u.id === selectedUser.id ? { ...u, ...formData } : u));
-                setEditMode(false);
-                toast.success('User privileges updated');
-            } else {
-                toast.error('Privilege escalation failed');
-            }
-        } catch (error) {
-            toast.error('Network security error');
-        }
-    };
-
-    return (
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-            <div className="xl:col-span-2 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm h-fit">
-                <div className="p-6 border-b border-slate-200 dark:border-slate-800">
-                    <h3 className="font-bold flex items-center gap-2">
-                        <Shield className="text-teal-500" size={18} />
-                        Select User for Administrative Override
-                    </h3>
-                </div>
-                <div className="max-h-[600px] overflow-y-auto">
-                    {users.map(u => (
-                        <div
-                            key={u.id}
-                            onClick={() => handleEdit(u)}
-                            className={`p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-all ${selectedUser?.id === u.id ? 'bg-teal-50 dark:bg-teal-500/10 border-l-4 border-l-teal-500' : ''}`}
-                        >
-                            <div>
-                                <div className="font-bold">{u.name}</div>
-                                <div className="text-xs text-slate-500">{u.email}</div>
-                            </div>
-                            <div className="text-right">
-                                <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{u.status}</div>
-                                <div className="text-sm font-bold text-teal-600 dark:text-teal-400">Limit: {u.download_limit}</div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8 shadow-xl h-fit sticky top-8">
-                {editMode && selectedUser ? (
-                    <div className="space-y-6">
-                        <div className="flex items-center gap-4 pb-6 border-b border-slate-100 dark:border-slate-800">
-                            <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-black text-teal-500 text-xl">
-                                {selectedUser.name.charAt(0)}
-                            </div>
-                            <div>
-                                <h3 className="font-black text-lg leading-tight">{selectedUser.name}</h3>
-                                <p className="text-xs text-slate-500">ID: {selectedUser.id}</p>
-                            </div>
-                        </div>
-
-                        <div className="space-y-4">
-                            <div>
-                                <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Maximum Download Priority</label>
-                                <input
-                                    type="number"
-                                    className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-3 focus:ring-2 focus:ring-teal-500 outline-none"
-                                    value={formData.download_limit}
-                                    onChange={(e) => setFormData({ ...formData, download_limit: parseInt(e.target.value) })}
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Template Access Capacity</label>
-                                <input
-                                    type="number"
-                                    className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-3 focus:ring-2 focus:ring-teal-500 outline-none"
-                                    value={formData.template_limit}
-                                    onChange={(e) => setFormData({ ...formData, template_limit: parseInt(e.target.value) })}
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Account Authorization</label>
-                                <select
-                                    className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-3 focus:ring-2 focus:ring-teal-500 outline-none"
-                                    value={formData.status}
-                                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                                >
-                                    <option value="active">Active (Access Granted)</option>
-                                    <option value="disabled">Disabled (Access Revoked)</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div className="flex gap-4 pt-4">
-                            <button onClick={handleSave} className="flex-1 bg-teal-500 text-white p-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-teal-600 transition-all shadow-lg shadow-teal-500/30">
-                                <Save size={18} />
-                                Commit
-                            </button>
-                            <button onClick={() => setEditMode(false)} className="px-4 py-3 bg-slate-100 dark:bg-slate-800 rounded-xl font-bold bg-slate-400/10 text-slate-500 hover:bg-slate-200 transition-all">
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
-                ) : (
-                    <div className="text-center py-12">
-                        <Shield className="mx-auto text-slate-200 dark:text-slate-800 mb-6" size={80} strokeWidth={1} />
-                        <h4 className="font-bold text-slate-500">No User Target Selected</h4>
-                        <p className="text-sm text-slate-400 mt-2">Pick a user from the list to modify their system privileges.</p>
-                    </div>
-                )}
-            </div>
-        </div>
-    );
-};
 
 const ResumeAnalyticsTab = ({ trends, templateAnalytics, metrics }) => {
     return (
