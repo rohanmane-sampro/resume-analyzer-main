@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useAuth } from '../AuthContext';
+import { ThemeContext } from './ThemeContext';
+import Switch from './Switch';
 import { ENDPOINTS, getAuthHeaders } from '../apiConfig';
 import {
     Users, FileText, Download, Activity, Shield,
@@ -17,6 +19,7 @@ import ManageUsers from './ManageUsers';
 
 const AdminDashboard = () => {
     const { user, logout } = useAuth();
+    const { isDark, setIsDark } = useContext(ThemeContext);
     const [activeTab, setActiveTab] = useState('overview');
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -127,9 +130,18 @@ const AdminDashboard = () => {
                         <h1 className="text-3xl font-bold tracking-tight capitalize">{activeTab.replace('-', ' ')}</h1>
                         <p className="text-slate-500 dark:text-slate-400 mt-1">Admin Session: {user?.name}</p>
                     </div>
-                    <div className="flex items-center gap-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-2 rounded-2xl shadow-sm">
-                        <div className="w-10 h-10 rounded-xl bg-teal-500 flex items-center justify-center text-white font-bold">
-                            {user?.name?.charAt(0) || 'A'}
+                    <div className="flex items-center gap-4">
+                        <button
+                            className="transition-transform hover:scale-110 active:scale-95 p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm"
+                            title="Toggle theme"
+                            onClick={() => setIsDark(!isDark)}
+                        >
+                            <Switch />
+                        </button>
+                        <div className="flex items-center gap-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-2 rounded-2xl shadow-sm">
+                            <div className="w-10 h-10 rounded-xl bg-teal-500 flex items-center justify-center text-white font-bold">
+                                {user?.name?.charAt(0) || 'A'}
+                            </div>
                         </div>
                     </div>
                 </header>
