@@ -36,7 +36,7 @@ export const ENDPOINTS = {
         STATS: `${API_BASE_URL}/api/resume/stats`,
     },
     ADMIN: {
-        METRICS: `${API_BASE_URL}/api/admin/metrics`,
+        STATS: `${API_BASE_URL}/api/admin/stats`,
         USERS: `${API_BASE_URL}/api/admin/users`,
         UPDATE_USER: (id) => `${API_BASE_URL}/api/admin/users/${id}`,
         RESUME_TRENDS: `${API_BASE_URL}/api/admin/analytics/resume-trends`,

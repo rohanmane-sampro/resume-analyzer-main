@@ -11,6 +11,8 @@ import toast from 'react-hot-toast';
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell
 } from 'recharts';
+import StatsCard from './StatsCard';
+import UserTable from './UserTable';
 
 const AdminDashboard = () => {
     const { user, logout } = useAuth();
@@ -31,7 +33,7 @@ const AdminDashboard = () => {
             try {
                 const headers = getAuthHeaders();
                 const [metricsRes, usersRes, templatesRes, trendsRes, settingsRes] = await Promise.all([
-                    fetch(ENDPOINTS.ADMIN.METRICS, { headers }),
+                    fetch(ENDPOINTS.ADMIN.STATS, { headers }),
                     fetch(ENDPOINTS.ADMIN.USERS, { headers }),
                     fetch(ENDPOINTS.ADMIN.TEMPLATE_ANALYTICS, { headers }),
                     fetch(ENDPOINTS.ADMIN.RESUME_TRENDS, { headers }),
@@ -70,7 +72,7 @@ const AdminDashboard = () => {
     const renderContent = () => {
         switch (activeTab) {
             case 'overview': return <OverviewTab metrics={metrics} trends={trends} templateAnalytics={templateAnalytics} />;
-            case 'all-users': return <AllUsersTab users={usersList} setUsers={setUsersList} />;
+            case 'all-users': return <UserTable users={usersList} />;
             case 'manage-users': return <ManageUsersTab users={usersList} setUsers={setUsersList} />;
             case 'resume-analytics': return <ResumeAnalyticsTab trends={trends} templateAnalytics={templateAnalytics} metrics={metrics} />;
             case 'limits': return <LimitsSettingsTab settings={systemSettings} setSettings={setSystemSettings} />;
@@ -160,10 +162,10 @@ const OverviewTab = ({ metrics, trends, templateAnalytics }) => {
     return (
         <div className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <MetricCard title="Total Users" value={metrics?.total_users} icon={<Users className="text-blue-500" />} trend="+12% this month" />
-                <MetricCard title="Resumes Generated" value={metrics?.total_resumes} icon={<FileText className="text-purple-500" />} trend="+8% vs last week" />
-                <MetricCard title="Total Downloads" value={metrics?.total_downloads} icon={<Download className="text-green-500" />} trend="+24% conversion" />
-                <MetricCard title="Download Velocity" value={metrics?.avg_downloads_per_user} icon={<Activity className="text-orange-500" />} subtitle="Avg. downloads/user" />
+                <StatsCard title="Total Users" value={metrics?.total_users} icon={<Users className="text-blue-500" />} trend="+12% this month" />
+                <StatsCard title="Resumes Generated" value={metrics?.total_resumes} icon={<FileText className="text-purple-500" />} trend="+8% vs last week" />
+                <StatsCard title="Total Downloads" value={metrics?.total_downloads} icon={<Download className="text-green-500" />} trend="+24% conversion" />
+                <StatsCard title="Download Velocity" value={metrics?.avg_downloads_per_user} icon={<Activity className="text-orange-500" />} subtitle="Avg. downloads/user" />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -222,104 +224,7 @@ const OverviewTab = ({ metrics, trends, templateAnalytics }) => {
     );
 };
 
-const AllUsersTab = ({ users }) => {
-    const [filter, setFilter] = useState('All Users');
-    const [search, setSearch] = useState('');
 
-    const filteredUsers = users.filter(u => {
-        const matchesSearch = u.name?.toLowerCase().includes(search.toLowerCase()) || u.email?.toLowerCase().includes(search.toLowerCase());
-        const matchesFilter = filter === 'All Users' || u.type === filter.toLowerCase().replace(' ', '_');
-        return matchesSearch && matchesFilter;
-    });
-
-    return (
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
-            <div className="p-6 border-b border-slate-200 dark:border-slate-800 flex flex-wrap gap-4 justify-between items-center">
-                <div className="relative w-full max-w-md">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                    <input
-                        type="text"
-                        placeholder="Search users by name or email..."
-                        className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-teal-500 outline-none"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
-                </div>
-                <div className="flex items-center gap-4">
-                    <Filter className="text-slate-400" size={18} />
-                    <select
-                        className="bg-slate-50 dark:bg-slate-800 border-none rounded-xl py-2 px-4 focus:ring-2 focus:ring-teal-500 outline-none cursor-pointer"
-                        value={filter}
-                        onChange={(e) => setFilter(e.target.value)}
-                    >
-                        <option>All Users</option>
-                        {/* <option>Standard</option> */}
-                        <option>Guest Users</option>
-                        <option>Knowledge Hub Users</option>
-                    </select>
-                </div>
-            </div>
-
-            <div className="overflow-x-auto">
-                <table className="w-full text-left">
-                    <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider font-bold">
-                        <tr>
-                            <th className="px-6 py-4">User Identity</th>
-                            <th className="px-6 py-4">Role & Status</th>
-                            <th className="px-6 py-4 text-center">Resumes</th>
-                            <th className="px-6 py-4 text-center">Downloads (Used/Limit)</th>
-                            <th className="px-6 py-4">Joined At</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                        {filteredUsers.map(u => (
-                            <tr key={u.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-                                <td className="px-6 py-4">
-                                    <div className="font-bold text-slate-900 dark:text-white">{u.name}</div>
-                                    <div className="text-xs text-slate-500 dark:text-slate-400">{u.email}</div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <div className="flex gap-2">
-                                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${u.role === 'admin' ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-400' : 'bg-teal-100 text-teal-700 dark:bg-teal-500/20 dark:text-teal-400'}`}>
-                                            {u.role}
-                                        </span>
-                                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${u.status === 'active' ? 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'}`}>
-                                            {u.status}
-                                        </span>
-                                    </div>
-                                    <div className="text-[10px] text-slate-400 mt-1 uppercase font-bold tracking-tighter">{u.type.replace('_', ' ')}</div>
-                                </td>
-                                <td className="px-6 py-4 text-center">
-                                    <span className="font-black text-lg">{u.resumes_created}</span>
-                                </td>
-                                <td className="px-6 py-4 text-center">
-                                    <div className="flex flex-col items-center">
-                                        <span className="font-bold text-slate-700 dark:text-slate-300">{u.downloads_used} / {u.download_limit}</span>
-                                        <div className="w-16 bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full mt-1 overflow-hidden">
-                                            <div
-                                                className="h-full bg-teal-500 rounded-full"
-                                                style={{ width: `${Math.min((u.downloads_used / u.download_limit) * 100, 100)}%` }}
-                                            ></div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4 text-slate-500 dark:text-slate-400 text-xs">
-                                    {new Date(u.created_at).toLocaleDateString()}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-            {filteredUsers.length === 0 && (
-                <div className="p-12 text-center text-slate-500">
-                    <Database size={48} className="mx-auto mb-4 opacity-20" />
-                    <p>No user records found matching your criteria</p>
-                </div>
-            )}
-        </div>
-    );
-};
 
 const ManageUsersTab = ({ users, setUsers }) => {
     const [selectedUser, setSelectedUser] = useState(null);
@@ -648,24 +553,7 @@ const FutureIntegrationsTab = () => {
 
 // --- UTILS ---
 
-const MetricCard = ({ title, value, icon, trend, subtitle }) => (
-    <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group hover:shadow-xl transition-all duration-500">
-        <div className="flex items-center gap-4 mb-4">
-            <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-800 group-hover:bg-teal-500/10 transition-colors">
-                {icon}
-            </div>
-            <div>
-                <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest">{title}</h4>
-                {subtitle && <p className="text-[10px] text-slate-500">{subtitle}</p>}
-            </div>
-        </div>
-        <div className="text-3xl font-black">{value !== undefined ? value : '...'}</div>
-        {trend && <div className="mt-2 text-[10px] font-bold text-teal-500 bg-teal-500/10 w-fit px-2 py-0.5 rounded uppercase tracking-tighter">{trend}</div>}
-        <div className="absolute -bottom-4 -right-4 opacity-10 group-hover:scale-110 transition-transform">
-            {React.cloneElement(icon, { size: 100 })}
-        </div>
-    </div>
-);
+
 
 const IntegrationCard = ({ title, subtitle, description, icon, tag }) => (
     <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm group hover:border-teal-500 transition-all cursor-not-allowed">

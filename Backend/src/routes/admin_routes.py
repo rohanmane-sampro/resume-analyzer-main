@@ -22,9 +22,9 @@ def get_system_settings():
         settings_collection.insert_one(settings)
     return settings
 
-@admin_bp.route('/metrics', methods=['GET'])
+@admin_bp.route('/stats', methods=['GET'])
 @admin_required
-def get_metrics(current_user):
+def get_stats(current_user):
     total_users = users_collection.count_documents({})
     total_resumes = resumes_collection.count_documents({})
     
