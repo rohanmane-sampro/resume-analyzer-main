@@ -41,6 +41,8 @@ load_all_envs()
 
 class Config:
     GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+    JWT_SECRET = os.getenv("JWT_SECRET", "your_super_secret_key_change_this")
+    JWT_EXPIRY = os.getenv("JWT_EXPIRY", "24h")
     
     # Fully automated CORS: 
     # 1. Use environment variable if set

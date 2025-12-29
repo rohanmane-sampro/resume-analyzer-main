@@ -1,0 +1,138 @@
+# Project Functionality & Architecture Documentation
+
+This document details the functionality, routing, authentication flow, and backend integration of the Resume Analyzer project. Use this as a guide to replicate the system in another repository.
+
+## 1. Authentication & User Flow
+
+### **Authentication Logic**
+The system uses **JWT (JSON Web Token)** for stateless authentication.
+1.  **Registration**:
+    *   User signs up with Name, Email, Password.
+    *   Password is hashed using `bcrypt` before storage.
+    *   **Role Assignment**: If the email matches the `ADMIN_EMAIL` in `.env`, the user is automatically assigned the `admin` role. Otherwise, they are a `user`.
+2.  **Login**:
+    *   System first checks if credentials match the hardcoded Admin in `.env`.
+    *   If not, it checks the MongoDB `users` collection.
+    *   On success, a **JWT Token** is returned.
+3.  **Session Management**:
+    *   The JWT token is stored in the browser's `localStorage`.
+    *   The `AuthContext` (Frontend) reads this token to determine if a user is logged in.
+    *   The token is sent in the `Authorization: Bearer <token>` header for every API request.
+
+### **Login/Signup Visibility**
+*   **Navbar**:
+    *   **Not Logged In**: Shows "Login" and "Sign Up" buttons.
+    *   **Logged In**: Shows a User Dropdown (Avatar) with options: Dashboard, Admin Panel (if admin), Logout.
+*   **Redirects**:
+    *   Accessing a protected route (e.g., `/dashboard`) without login -> Redirects to `/login`.
+    *   Accessing `/login` or `/signup` while already logged in -> Redirects to `/` (Home) or `/admin` (if Admin).
+
+---
+
+## 2. Frontend Routing & Page Functionality
+
+### **Public Routes (Accessible by Everyone)**
+| Route | Component | Functionality |
+|-------|-----------|---------------|
+| `/` | `FrontPage` | Landing page with hero section, features summary, and "Create Resume" CTA. |
+| `/login` | `Login` | User login form. Redirects to Dashboard/Home on success. |
+| `/signup` | `Signup` | User registration form. Redirects to Home on success. |
+| `/AboutUs` | `AboutUs` | Information about the project and team. |
+| `/Features` | `Features` | Detailed list of application features. |
+| `/ViewTemplates` | `ViewTemplates` | Gallery of available resume templates. |
+
+### **Protected User Routes (Requires Login)**
+*If an unauthenticated user tries to access these, they are redirected to `/login`.*
+
+| Route | Component | Functionality |
+|-------|-----------|---------------|
+| `/dashboard` | `UserDashboard` | User's main hub. Shows recent resumes, stats, and profile settings. |
+| `/FileUploadPage` | `FileUploadPage` | Step 1 of Resume Creation. Upload existing resume or start fresh. |
+| `/GetInfo` | `GetInfo` | Step 2. Form to enter personal details, experience, education, etc. |
+| `/Preview` | `PreviewPage` | Step 3. Real-time preview of the generated resume. |
+| `/Result` | `Result` | Final page to download the resume (PDF). |
+| `/ResumeAnalyze` | `ResumeAnalyze` | AI-powered analysis of an uploaded resume against a job description. |
+
+### **Protected Admin Routes (Requires 'admin' Role)**
+*If a normal user tries to access these, they are redirected to `/`.*
+
+| Route | Component | Functionality |
+|-------|-----------|---------------|
+| `/admin/*` | `AdminDashboard` | Admin panel to view system metrics, manage users, and configure settings. |
+
+---
+
+## 3. Backend Architecture
+
+### **Environment Variables (.env)**
+```env
+MONGODB_URI=mongodb://localhost:27017/resume_analyzer
+JWT_SECRET=your_super_secret_key_change_this
+JWT_EXPIRY=24h
+ADMIN_EMAIL=admin@sampro.ai
+ADMIN_PASSWORD=admin123
+```
+
+### **Database Schema (MongoDB)**
+
+#### **Collection: `users`**
+```json
+{
+  "_id": ObjectId("..."),
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "hashed_bcrypt_string",
+  "role": "user",  // or "admin"
+  "created_at": ISODate("2023-10-27T10:00:00Z")
+}
+```
+
+#### **Collection: `resumes` (Tracking)**
+```json
+{
+  "_id": ObjectId("..."),
+  "user_id": ObjectId("..."),
+  "template_id": "template_1",
+  "created_at": ISODate("..."),
+  "download_count": 1
+}
+```
+
+### **API Endpoints**
+
+#### **Authentication (`/api/auth`)**
+*   `POST /register`: Create new user.
+*   `POST /login`: Authenticate user/admin.
+*   `GET /me`: Get current user details (Protected).
+
+#### **Resume Operations (`/api/resume`)**
+*   `POST /track/create`: Log a new resume creation (Protected).
+*   `POST /track/download/<id>`: Increment download count (Protected).
+
+#### **Admin Operations (`/api/admin`)**
+*   `GET /metrics`: Get system stats (users count, resumes count) (Admin Only).
+*   `GET /users`: List all registered users (Admin Only).
+
+---
+
+## 4. Implementation Steps for Replication
+
+1.  **Setup Backend**:
+    *   Install dependencies: `flask`, `pymongo`, `pyjwt`, `bcrypt`, `flask-cors`.
+    *   Create `config.py` to load `.env`.
+    *   Setup `database.py` to connect to MongoDB.
+    *   Create `middleware/auth.py` for the `@token_required` decorator.
+
+2.  **Setup Frontend**:
+    *   Install dependencies: `react-router-dom`, `jwt-decode` (optional), `axios` or `fetch`.
+    *   Create `AuthContext.jsx` to manage user state and localStorage.
+    *   Create `apiConfig.js` to centralize API URLs and headers.
+    *   Implement `Navbar.jsx` with conditional rendering based on `user` state.
+
+3.  **Secure Routes**:
+    *   Wrap protected components in `App.jsx` with checks: `user ? <Component /> : <Navigate to="/login" />`.
+    *   Wrap admin components with: `user?.role === 'admin' ? <AdminComponent /> : <Navigate to="/" />`.
+
+4.  **Connect API**:
+    *   Ensure every request to protected endpoints includes the header:
+        `Authorization: Bearer <token_from_local_storage>`

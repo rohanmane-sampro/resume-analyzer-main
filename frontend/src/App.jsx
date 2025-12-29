@@ -1,6 +1,5 @@
-
 import React, { useContext, useEffect, useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import FrontPage from './components/FrontPage.jsx';
 import GetInfo from './components/GetInfo.jsx';
 import Result from './components/Result.jsx';
@@ -15,20 +14,30 @@ import FileUploadPage from './components/FileUploadPage.jsx';
 import Features from './components/Features.jsx';
 import Loader from './components/Loader.jsx'
 import ResumeAnalyze from './components/ResumeAnalyze.jsx';
-// import T5 from './components/T5.jsx'
+import Login from './components/Login.jsx';
+import Signup from './components/Signup.jsx';
+import Navbar from './components/Navbar.jsx';
+import { AuthProvider, AuthContext } from './components/AuthContext.jsx';
 
-// Use environment variable for Firebase URL
-// Firebase usage enabled via VITE_FIREBASE_URL
+// Protected Route Component
+const ProtectedRoute = ({ children }) => {
+  const { user, loading } = useContext(AuthContext);
 
-const App = () => {
+  if (loading) return <Loader />;
 
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+};
+
+const AppContent = () => {
   const { isDark } = useContext(ThemeContext)
   const [loading, setLoading] = useState(true);
   const [views, setViews] = useState(0);
 
   useEffect(() => {
-    // Firebase URL should be set in environment variables
-    // Uncomment the following code after adding REACT_APP_FIREBASE_URL to your .env file
     // Firebase URL should be set in environment variables
     const FIREBASE_URL = import.meta.env.VITE_FIREBASE_URL;
 
@@ -68,26 +77,37 @@ const App = () => {
   }
 
   return (
-    // <>
-    //   <FileUploadPage/>
-    // </>
     <div>
       <Toaster />
+      <Navbar />
       <Routes>
         <Route path="/" element={<FrontPage views={views} />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/AboutUs" element={<AboutUs />} />
         <Route path="/VarifyMail" element={<GoogleVarification />} />
-        <Route path="/FileUploadPage" element={<FileUploadPage />} />
         <Route path="/HTML-PDF" element={<HtmlToPdfConverter />} />
-        <Route path="/GetInfo" element={<GetInfo />} />
-        <Route path="/Preview" element={<PreviewPage />} />
-        <Route path="/Result" element={<Result />} />
         <Route path="/ViewTemplates" element={<ViewTemplates />} />
         <Route path="/Features" element={<Features />} />
-        <Route path="/ResumeAnalyze" element={<ResumeAnalyze />} />
+
+        {/* Protected Routes */}
+        <Route path="/FileUploadPage" element={<ProtectedRoute><FileUploadPage /></ProtectedRoute>} />
+        <Route path="/GetInfo" element={<ProtectedRoute><GetInfo /></ProtectedRoute>} />
+        <Route path="/Preview" element={<ProtectedRoute><PreviewPage /></ProtectedRoute>} />
+        <Route path="/Result" element={<ProtectedRoute><Result /></ProtectedRoute>} />
+        <Route path="/ResumeAnalyze" element={<ProtectedRoute><ResumeAnalyze /></ProtectedRoute>} />
+        <Route path="/dashboard" element={<ProtectedRoute><div className="p-10 text-center text-2xl dark:text-white">User Dashboard (Coming Soon)</div></ProtectedRoute>} />
       </Routes>
     </div>
   );
 }
+
+const App = () => {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  );
+};
 
 export default App;

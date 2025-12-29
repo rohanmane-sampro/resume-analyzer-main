@@ -15,8 +15,15 @@ def create_app():
     }})
     
     # Register Blueprints
+    # Register Blueprints
+    from src.routes.auth_routes import auth_bp
     app.register_blueprint(ai_bp)
     app.register_blueprint(pdf_bp)
+    app.register_blueprint(auth_bp, url_prefix='/api/auth')
+
+    # Initialize Database
+    from src.database import Database
+    Database.initialize()
     
     @app.route('/')
     def index():
