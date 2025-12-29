@@ -40,24 +40,24 @@ const UserDashboard = () => {
 
                 {/* Stats Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                    <div className="glassmorphism p-8 rounded-2xl border border-white/10 hover:border-teal-500/50 transition-all">
-                        <p className="text-gray-400 text-sm mb-2 uppercase tracking-wider">Total Created</p>
-                        <h3 className="text-4xl font-bold text-white">{stats?.total_created || 0}</h3>
+                    <div className="glass-card p-8 rounded-2xl border border-slate-200 dark:border-white/10 hover:border-teal-500/50 transition-all">
+                        <p className="text-slate-500 dark:text-gray-400 text-sm mb-2 uppercase tracking-wider">Total Created</p>
+                        <h3 className="text-4xl font-bold text-slate-900 dark:text-white">{stats?.total_created || 0}</h3>
                     </div>
-                    <div className="glassmorphism p-8 rounded-2xl border border-white/10 hover:border-teal-500/50 transition-all">
-                        <p className="text-gray-400 text-sm mb-2 uppercase tracking-wider">Total Downloads</p>
-                        <h3 className="text-4xl font-bold text-teal-400">{stats?.total_downloads || 0}</h3>
+                    <div className="glass-card p-8 rounded-2xl border border-slate-200 dark:border-white/10 hover:border-teal-500/50 transition-all">
+                        <p className="text-slate-500 dark:text-gray-400 text-sm mb-2 uppercase tracking-wider">Total Downloads</p>
+                        <h3 className="text-4xl font-bold text-teal-600 dark:text-teal-400">{stats?.total_downloads || 0}</h3>
                     </div>
                 </div>
 
                 {/* Recent Resumes */}
-                <div className="glassmorphism rounded-2xl border border-white/10 overflow-hidden">
-                    <div className="p-6 border-b border-white/10 flex justify-between items-center">
-                        <h2 className="text-xl font-bold">Your Resumes</h2>
+                <div className="glass-card rounded-2xl border border-slate-200 dark:border-white/10 overflow-hidden">
+                    <div className="p-6 border-b border-slate-200 dark:border-white/10 flex justify-between items-center">
+                        <h2 className="text-xl font-bold text-slate-900 dark:text-white">Your Resumes</h2>
                     </div>
                     <div className="overflow-x-auto">
                         <table className="w-full text-left">
-                            <thead className="bg-white/5 text-gray-400 uppercase text-xs">
+                            <thead className="bg-slate-50 dark:bg-white/5 text-slate-500 dark:text-gray-400 uppercase text-xs">
                                 <tr>
                                     <th className="px-6 py-4">Template ID</th>
                                     <th className="px-6 py-4">Created Date</th>
@@ -65,26 +65,26 @@ const UserDashboard = () => {
                                     <th className="px-6 py-4 text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-white/10">
+                            <tbody className="divide-y divide-slate-200 dark:divide-white/10">
                                 {stats?.resumes?.map((resume) => (
-                                    <tr key={resume.id} className="hover:bg-white/5 transition-colors">
-                                        <td className="px-6 py-4 font-medium text-white">{resume.template_id}</td>
-                                        <td className="px-6 py-4 text-gray-400">
+                                    <tr key={resume.id} className="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+                                        <td className="px-6 py-4 font-medium text-slate-900 dark:text-white">{resume.template_id}</td>
+                                        <td className="px-6 py-4 text-slate-500 dark:text-gray-400">
                                             {new Date(resume.created_at).toLocaleDateString()}
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className="px-3 py-1 bg-teal-500/20 text-teal-400 rounded-full text-xs">
+                                            <span className="px-3 py-1 bg-teal-100 dark:bg-teal-500/20 text-teal-700 dark:text-teal-400 rounded-full text-xs">
                                                 {resume.download_count} downloads
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-right">
-                                            <button className="text-teal-400 hover:text-teal-300 font-medium">View Result</button>
+                                            <button className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium">View Result</button>
                                         </td>
                                     </tr>
                                 ))}
                                 {(!stats?.resumes || stats.resumes.length === 0) && (
                                     <tr>
-                                        <td colSpan="4" className="px-6 py-12 text-center text-gray-500">
+                                        <td colSpan="4" className="px-6 py-12 text-center text-slate-500 dark:text-gray-500">
                                             No resumes created yet. Start building one!
                                         </td>
                                     </tr>
