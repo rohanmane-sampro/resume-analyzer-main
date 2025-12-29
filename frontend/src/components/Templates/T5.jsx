@@ -11,7 +11,54 @@ const parseMarkdown = (text) => {
     .replace(/\n/g, ' '); // Convert line breaks to spaces for continuous text
 };
 
-const StyledWrapper = styled.div`* {
+const StyledWrapper = styled.div`
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    background: #fff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #333;
+  }
+  
+  @page {
+   size: A4 portrait;
+   margin: 0;
+  }
+  
+ .resume-container {
+   width: 210mm !important;
+   max-width: 210mm !important;
+   min-height: auto !important;
+   margin: 0 !important;
+   background: #fff !important;
+   border-radius: 0 !important;
+   box-shadow: none !important;
+   padding: 15mm !important;
+   border: none !important;
+ }
+ 
+ .experience-item, 
+ .education-item, 
+ .project-item,
+ .Certificate-item > div {
+   page-break-inside: avoid !important;
+   break-inside: avoid !important;
+ }
+
+ h3 {
+   page-break-after: avoid !important;
+   break-after: avoid !important;
+ }
+}
+
+* {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -26,12 +73,13 @@ body {
 }
 
 .resume-container {
-  width: 900px;
+  width: 210mm;
   margin: 0 auto;
   background: #fff;
   border-radius: 15px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
   padding: 2rem;
+  min-height: 297mm;
 }
 
 .header {
@@ -258,11 +306,11 @@ export const T5 = ({ jsonData, desc }) => {
           <h3><b>Skills</b></h3>
           <p className="skills-item">
             <strong style={{ color: "rgb(75, 77, 77)" }}>Soft Skills: </strong>
-            {jsonData.skills.softSkills}
+            {(jsonData.skills.softSkills || '').split(',').join(', ')}
           </p>
           <p className="skills-item">
             <strong style={{ color: "rgb(75, 77, 77)" }}>Tech Skills: </strong>
-            <span>{jsonData.skills.hardSkills}</span>
+            <span>{(jsonData.skills.hardSkills || '').split(',').join(', ')}</span>
           </p>
         </div>
       </div>
@@ -284,9 +332,6 @@ export const T5Css = `
     margin: 0 !important;
     padding: 0 !important;
     color: #333;
-    display: block !important;
-    height: auto !important;
-    width: 100% !important;
   }
   
   @page {
@@ -297,17 +342,26 @@ export const T5Css = `
  .resume-container {
    width: 210mm !important;
    max-width: 210mm !important;
-   min-height: 297mm !important;
-   margin: 0 auto !important;
+   min-height: auto !important;
+   margin: 0 !important;
    background: #fff !important;
    border-radius: 0 !important;
    box-shadow: none !important;
    padding: 15mm !important;
-   overflow: visible !important;
+   border: none !important;
  }
  
- .header, .section, .experience-item, .education-item, .project-item {
+ .experience-item, 
+ .education-item, 
+ .project-item,
+ .Certificate-item > div {
    page-break-inside: avoid !important;
+   break-inside: avoid !important;
+ }
+
+ h3 {
+   page-break-after: avoid !important;
+   break-after: avoid !important;
  }
 }
 
@@ -325,13 +379,15 @@ export const T5Css = `
    padding: 20px;
  }
 
- .resume-container {
-   width: 900px;
+  .resume-container {
+   width: 210mm;
    margin: 0 auto;
    background: #fff;
    border-radius: 15px;
    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.05);
    padding: 2rem;
+   min-height: 297mm;
+   overflow: visible;
  }
 
  .header {

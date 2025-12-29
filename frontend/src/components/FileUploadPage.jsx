@@ -3,8 +3,9 @@
 import React, { useState, useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { UploadCloud, Rocket, PenTool, X, Check, Loader2, FileText } from "lucide-react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { parseResume } from './ResumeParser';
+
 const FileUploadPage = () => {
   const [docUploaded, setDocUploaded] = useState(false);
   const [jsonData, setJsonData] = useState(null);
@@ -15,6 +16,8 @@ const FileUploadPage = () => {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [filePreviewUrl, setFilePreviewUrl] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const selectedTemplate = location.state?.selectedTemplate;
 
   // Cleanup file preview URL on unmount
   useEffect(() => {
@@ -90,7 +93,13 @@ const FileUploadPage = () => {
                 duration: 2000,
                 position: "top-right"
               });
-              navigate("/GetInfo", { state: { jsonData: result.data } });
+              // Pass both jsonData and selectedTemplate
+              navigate("/GetInfo", {
+                state: {
+                  jsonData: result.data,
+                  selectedTemplate: selectedTemplate
+                }
+              });
             }, 1000);
           } else {
             setShowParsingAnimation(false);
@@ -118,16 +127,16 @@ const FileUploadPage = () => {
 
   const handleStartFromBlank = () => {
     setShowModal(false);
-    navigate("/GetInfo");
+    navigate("/GetInfo", { state: { selectedTemplate: selectedTemplate } });
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 overflow-y-auto py-12 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center px-4">
       <Toaster position="top-right" />
 
       {/* Parsing Animation Screen */}
       {showParsingAnimation && (
-        <div className="fixed inset-0 bg-white dark:bg-slate-900 flex flex-col items-center z-50 overflow-y-auto py-12 px-4">
+        <div className="fixed inset-0 bg-white dark:bg-slate-900 flex items-center justify-center z-50">
           <div className="max-w-6xl w-full px-8">
             {/* Header */}
             <div className="text-center mb-12">

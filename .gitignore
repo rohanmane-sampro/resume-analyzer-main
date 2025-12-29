@@ -62,7 +62,18 @@ logs/
 
 # IDE and Editor
 .vscode/
+# Logs
+logs/
+*.log
+
+# IDE and Editor
+.vscode/
 !.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*.swn
+*~
 .idea/
 *.swp
 *.swo

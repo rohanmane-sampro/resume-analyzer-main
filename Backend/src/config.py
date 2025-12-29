@@ -41,9 +41,15 @@ load_all_envs()
 
 class Config:
     GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+    
+    # MongoDB Configuration
     MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017/resume_analyzer")
+    
+    # JWT Configuration
     JWT_SECRET = os.getenv("JWT_SECRET", "super-secret-key")
     JWT_EXPIRY = os.getenv("JWT_EXPIRY", "24h")
+    
+    # Admin Configuration
     ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "admin@sampro.ai")
     ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
     

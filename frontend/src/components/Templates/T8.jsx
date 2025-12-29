@@ -4,11 +4,11 @@ import styled from "styled-components";
 
 // Helper function to convert markdown to HTML
 const parseMarkdown = (text) => {
-  if (!text || typeof text !== 'string') return '';
-  return text
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>') // Bold
-    .replace(/\*(.+?)\*/g, '<em>$1</em>') // Italic
-    .replace(/\n/g, '<br/>'); // Convert line breaks to HTML breaks
+    if (!text || typeof text !== 'string') return '';
+    return text
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>') // Bold
+        .replace(/\*(.+?)\*/g, '<em>$1</em>') // Italic
+        .replace(/\n/g, '<br/>'); // Convert line breaks to HTML breaks
 };
 
 const removespace = (str) => str.trim();
@@ -287,198 +287,198 @@ body {
 `;
 
 const isValidUrl = (url) => {
-  try {
-    new URL(url);
-    return true;
-  } catch {
-    return false;
-  }
+    try {
+        new URL(url);
+        return true;
+    } catch {
+        return false;
+    }
 };
 
-export const T7 = ({ jsonData }) => {
-  // Process work experience
-  const workExpList = jsonData.workExperience && jsonData.workExperience.length > 0
-    ? jsonData.workExperience.map((we, index) => (
-      <div key={`work-${index}`} className="experience-item">
-        <div className="item-header">
-          <div className="item-title">{we.companyName || 'Company Name'}</div>
-          <div className="item-date">{we.WorkDuration || 'Duration'}</div>
-        </div>
-        <div className="item-subtitle">{we.jobTitle || 'Job Title'}</div>
-        <div className="item-description">
-          <span dangerouslySetInnerHTML={{ __html: parseMarkdown(we.keyAchievements || '') }} />
-        </div>
-      </div>
-    ))
-    : null;
-
-  // Process education
-  const educationList = jsonData.education && jsonData.education.length > 0
-    ? jsonData.education.map((edu, index) => (
-      <div key={`edu-${index}`} className="education-item">
-        <div className="item-header">
-          <div className="item-title">{edu.degreeName || 'Degree'}</div>
-          <div className="item-date">{edu.graduationYear || 'Year'}</div>
-        </div>
-        <div className="item-subtitle">{edu.institutionName || 'Institution'}</div>
-        {edu.currentCGPA && (
-          <div className="cgpa-info">CGPA: {edu.currentCGPA}</div>
-        )}
-      </div>
-    ))
-    : null;
-
-  // Process skills
-  const hardSkills = jsonData.skills?.hardSkills
-    ? jsonData.skills.hardSkills.split(',').map(skill => skill.trim()).filter(skill => skill !== '')
-    : [];
-
-  const hardSkillsList = hardSkills.map((skill, index) => (
-    <div key={`skill-${index}`} className="skill-item">{skill}</div>
-  ));
-
-  // Process soft skills
-  const softSkills = jsonData.skills?.softSkills
-    ? jsonData.skills.softSkills.split(',').map(skill => skill.trim()).filter(skill => skill !== '')
-    : [];
-
-  const softSkillsList = softSkills.map((skill, index) => (
-    <div key={`soft-${index}`} className="skill-item">{skill}</div>
-  ));
-
-  // Process languages as activities
-  const languages = jsonData.contactInfo?.Languages
-    ? jsonData.contactInfo.Languages.split(',').map(lang => lang.trim()).filter(lang => lang !== '')
-    : [];
-
-  const activitiesList = languages.map((lang, index) => (
-    <div key={`activity-${index}`} className="activity-item">{lang}</div>
-  ));
-
-  return (
-    <StyledWrapper>
-      <div className="resume" id="capture-content">
-        {/* Header Section */}
-        <div className="header">
-          <div className="header-left">
-            <div className="resume-title">Resume</div>
-            <h1 className="name">{jsonData.contactInfo?.fullName || 'John Doe'}</h1>
-            <h2 className="job-title">{jsonData.contactInfo?.jobTitle || 'Software Developer'}</h2>
-
-            <div className="contact-info">
-              <div className="contact-item">
-                <i className="fa fa-phone"></i>
-                <span>{jsonData.contactInfo?.phoneNumber || '+90 123 456 7890'}</span>
-              </div>
-              <div className="contact-item">
-                <i className="fas fa-envelope"></i>
-                <a href={`mailto:${jsonData.contactInfo?.emailAddress || 'john.doe@gmail.com'}`}>
-                  {jsonData.contactInfo?.emailAddress || 'john.doe@gmail.com'}
-                </a>
-              </div>
-              <div className="contact-item">
-                <i className="fas fa-globe"></i>
-                <a href={isValidUrl(jsonData.contactInfo?.portfolio || '')
-                  ? jsonData.contactInfo.portfolio
-                  : `https://github.com/${jsonData.contactInfo?.portfolio || 'johndoe'}`}
-                  target="_blank"
-                  rel="noreferrer">
-                  {jsonData.contactInfo?.portfolio
-                    ? jsonData.contactInfo.portfolio.replace(/^https?:\/\//, '')
-                    : 'github.com/johndoe'}
-                </a>
-              </div>
-              <div className="contact-item">
-                <i className="fa fa-map-marker"></i>
-                <span>{jsonData.contactInfo?.Location || 'City, Country'}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="header-right">
-            {jsonData.contactInfo?.profileImage ? (
-              <img src={jsonData.contactInfo.profileImage} alt="Profile" />
-            ) : (
-              <div className="photo-placeholder">
-                <i className="fas fa-user"></i>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Content Section */}
-        <div className="content">
-          {/* Profile Summary */}
-          {jsonData.Description?.UserDescription && (
-            <div className="section">
-              <h3 className="section-title">Profile Summary</h3>
-              <div className="summary-content">
-                {jsonData.Description.UserDescription}
-              </div>
-
-              {jsonData.skills?.hardSkills && (
-                <div className="subsection">
-                  <div className="subsection-title">Skills:</div>
-                  <div className="subsection-content">
-                    {jsonData.skills.hardSkills.split(',').join(', ')}
-                  </div>
+export const T8 = ({ jsonData }) => {
+    // Process work experience
+    const workExpList = jsonData.workExperience && jsonData.workExperience.length > 0
+        ? jsonData.workExperience.map((we, index) => (
+            <div key={`work-${index}`} className="experience-item">
+                <div className="item-header">
+                    <div className="item-title">{we.companyName || 'Company Name'}</div>
+                    <div className="item-date">{we.WorkDuration || 'Duration'}</div>
                 </div>
-              )}
+                <div className="item-subtitle">{we.jobTitle || 'Job Title'}</div>
+                <div className="item-description">
+                    <span dangerouslySetInnerHTML={{ __html: parseMarkdown(we.keyAchievements || '') }} />
+                </div>
             </div>
-          )}
+        ))
+        : null;
 
-          {/* Work Experience */}
-          {workExpList && workExpList.length > 0 && (
-            <div className="section">
-              <h3 className="section-title">Experience</h3>
-              {workExpList}
+    // Process education
+    const educationList = jsonData.education && jsonData.education.length > 0
+        ? jsonData.education.map((edu, index) => (
+            <div key={`edu-${index}`} className="education-item">
+                <div className="item-header">
+                    <div className="item-title">{edu.degreeName || 'Degree'}</div>
+                    <div className="item-date">{edu.graduationYear || 'Year'}</div>
+                </div>
+                <div className="item-subtitle">{edu.institutionName || 'Institution'}</div>
+                {edu.currentCGPA && (
+                    <div className="cgpa-info">CGPA: {edu.currentCGPA}</div>
+                )}
             </div>
-          )}
+        ))
+        : null;
 
-          {/* Education */}
-          {educationList && educationList.length > 0 && (
-            <div className="section">
-              <h3 className="section-title">Education</h3>
-              {educationList}
-            </div>
-          )}
+    // Process skills
+    const hardSkills = jsonData.skills?.hardSkills
+        ? jsonData.skills.hardSkills.split(',').map(skill => skill.trim()).filter(skill => skill !== '')
+        : [];
 
-          {/* Technical Skills */}
-          {hardSkillsList.length > 0 && (
-            <div className="section">
-              <h3 className="section-title">Technical Skills</h3>
-              <div className="skills-grid">
-                {hardSkillsList}
-              </div>
-            </div>
-          )}
+    const hardSkillsList = hardSkills.map((skill, index) => (
+        <div key={`skill-${index}`} className="skill-item">{skill}</div>
+    ));
 
-          {/* Soft Skills */}
-          {softSkillsList.length > 0 && (
-            <div className="section">
-              <h3 className="section-title">Soft Skills</h3>
-              <div className="skills-grid">
-                {softSkillsList}
-              </div>
-            </div>
-          )}
+    // Process soft skills
+    const softSkills = jsonData.skills?.softSkills
+        ? jsonData.skills.softSkills.split(',').map(skill => skill.trim()).filter(skill => skill !== '')
+        : [];
 
-          {/* Activities/Languages */}
-          {activitiesList.length > 0 && (
-            <div className="section">
-              <h3 className="section-title">Languages</h3>
-              <div className="activities-list">
-                {activitiesList}
-              </div>
+    const softSkillsList = softSkills.map((skill, index) => (
+        <div key={`soft-${index}`} className="skill-item">{skill}</div>
+    ));
+
+    // Process languages as activities
+    const languages = jsonData.contactInfo?.Languages
+        ? jsonData.contactInfo.Languages.split(',').map(lang => lang.trim()).filter(lang => lang !== '')
+        : [];
+
+    const activitiesList = languages.map((lang, index) => (
+        <div key={`activity-${index}`} className="activity-item">{lang}</div>
+    ));
+
+    return (
+        <StyledWrapper>
+            <div className="resume" id="capture-content">
+                {/* Header Section */}
+                <div className="header">
+                    <div className="header-left">
+                        <div className="resume-title">Resume</div>
+                        <h1 className="name">{jsonData.contactInfo?.fullName || 'John Doe'}</h1>
+                        <h2 className="job-title">{jsonData.contactInfo?.jobTitle || 'Software Developer'}</h2>
+
+                        <div className="contact-info">
+                            <div className="contact-item">
+                                <i className="fa fa-phone"></i>
+                                <span>{jsonData.contactInfo?.phoneNumber || '+90 123 456 7890'}</span>
+                            </div>
+                            <div className="contact-item">
+                                <i className="fas fa-envelope"></i>
+                                <a href={`mailto:${jsonData.contactInfo?.emailAddress || 'john.doe@gmail.com'}`}>
+                                    {jsonData.contactInfo?.emailAddress || 'john.doe@gmail.com'}
+                                </a>
+                            </div>
+                            <div className="contact-item">
+                                <i className="fas fa-globe"></i>
+                                <a href={isValidUrl(jsonData.contactInfo?.portfolio || '')
+                                    ? jsonData.contactInfo.portfolio
+                                    : `https://github.com/${jsonData.contactInfo?.portfolio || 'johndoe'}`}
+                                    target="_blank"
+                                    rel="noreferrer">
+                                    {jsonData.contactInfo?.portfolio
+                                        ? jsonData.contactInfo.portfolio.replace(/^https?:\/\//, '')
+                                        : 'github.com/johndoe'}
+                                </a>
+                            </div>
+                            <div className="contact-item">
+                                <i className="fa fa-map-marker"></i>
+                                <span>{jsonData.contactInfo?.Location || 'City, Country'}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="header-right">
+                        {jsonData.contactInfo?.profileImage ? (
+                            <img src={jsonData.contactInfo.profileImage} alt="Profile" />
+                        ) : (
+                            <div className="photo-placeholder">
+                                <i className="fas fa-user"></i>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Content Section */}
+                <div className="content">
+                    {/* Profile Summary */}
+                    {jsonData.Description?.UserDescription && (
+                        <div className="section">
+                            <h3 className="section-title">Profile Summary</h3>
+                            <div className="summary-content">
+                                {jsonData.Description.UserDescription}
+                            </div>
+
+                            {jsonData.skills?.hardSkills && (
+                                <div className="subsection">
+                                    <div className="subsection-title">Skills:</div>
+                                    <div className="subsection-content">
+                                        {jsonData.skills.hardSkills.split(',').join(', ')}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Work Experience */}
+                    {workExpList && workExpList.length > 0 && (
+                        <div className="section">
+                            <h3 className="section-title">Experience</h3>
+                            {workExpList}
+                        </div>
+                    )}
+
+                    {/* Education */}
+                    {educationList && educationList.length > 0 && (
+                        <div className="section">
+                            <h3 className="section-title">Education</h3>
+                            {educationList}
+                        </div>
+                    )}
+
+                    {/* Technical Skills */}
+                    {hardSkillsList.length > 0 && (
+                        <div className="section">
+                            <h3 className="section-title">Technical Skills</h3>
+                            <div className="skills-grid">
+                                {hardSkillsList}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Soft Skills */}
+                    {softSkillsList.length > 0 && (
+                        <div className="section">
+                            <h3 className="section-title">Soft Skills</h3>
+                            <div className="skills-grid">
+                                {softSkillsList}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Activities/Languages */}
+                    {activitiesList.length > 0 && (
+                        <div className="section">
+                            <h3 className="section-title">Languages</h3>
+                            <div className="activities-list">
+                                {activitiesList}
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
-          )}
-        </div>
-      </div>
-    </StyledWrapper>
-  );
+        </StyledWrapper>
+    );
 };
 
-export const T7Css = `
+export const T8Css = `
 @media print {
   * {
     -webkit-print-color-adjust: exact !important;

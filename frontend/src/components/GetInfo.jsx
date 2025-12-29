@@ -7,8 +7,8 @@ import toast from "react-hot-toast";
 import Suggestions from "./Suggestions";
 import { useLocation } from 'react-router-dom';
 import JsonFiles from "./JsonFiles.jsx"
-import { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21 } from './Templates';
-import ChatBot from './ChatBot.jsx';
+import { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30 } from './Templates';
+
 import AIAnalysis from './AIAnalysis.jsx';
 import AISuggestions from './AISuggestions.jsx';
 import DownloadModal from './DownloadModal.jsx';
@@ -60,6 +60,7 @@ const GetInfo = () => {
     }],
     education: [{
       institutionName: '',
+      location: '',
       degreeName: '',
       graduationYear: '',
       currentCGPA: ''
@@ -104,8 +105,44 @@ const GetInfo = () => {
   const [showInput, setShowInput] = useState(false);
   const [pin, setPin] = useState("");
   const [error, setError] = useState(false);
-  const [selectTemp, setSelectTemp] = useState(false);
-  const AboutTemps = ["Simpler and Structured", "Linear and Classic", "Colourfull and Attractive", "Colourful and Highly Designed", "Simpler and Linear", "Highly Simpler and Classic"]
+  const [selectTemp, setSelectTemp] = useState(true);
+  const AboutTemps = [
+    "Simpler and Structured",
+    "Linear and Classic",
+    "Colourful and Attractive",
+    "Colourful and Highly Designed",
+    "Simpler and Linear",
+    "Highly Simpler and Classic",
+    "Elegant Modern Touch",
+    "", // T8 doesn't exist
+    "Creative Blocks",
+    "Minimalist Professional",
+    "Tech-Focused Resume",
+    "Bold & Visual Design",
+    "Professional Developer",
+    "Clean Professional",
+    "Minimalist Clean",
+    "Photo Profile",
+    "Dark Sidebar Professional",
+    "Modern CV",
+    "Professional Clean",
+    "Creative Designer",
+    "UX/UI Designer",
+    "Cloud Engineer",
+    "Product Manager Pro",
+    "Supervisor Professional",
+    "Finance Professional",
+    "Master Student",
+    "AEM Developer Pro",
+    "Product Manager Classic",
+    "Compositing Artist",
+    "Marketing Assistant",
+    "Full-Stack Developer",
+    "ModernCV - Fresher",
+    "RPI Graduate CV - Fresher",
+    "Deedy Resume - Fresher",
+    "HowToTeX Minimal - Fresher"
+  ]
   const Suggests = [
     "Hi, I'm here to assist you. 🤝",
     "First, start by choosing a template that best fits your style and profession.",
@@ -134,26 +171,7 @@ const GetInfo = () => {
   ];
   const [i, setI] = useState(0);
 
-  useEffect(() => {
-    const Suggest = new Typed("#Suggestion-typing-text", {
-      strings: [Suggests[i]],
-      loop: false,
-      typeSpeed: 30,
-      showCursor: true,
-    });
 
-    if (i === 0) {
-      const timer = setTimeout(() => {
-        setI(1);
-        setSelectTemp(true)
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-
-    return () => {
-      Suggest.destroy();
-    };
-  }, [i]);
 
 
   // Use environment variable for Firebase URL
@@ -174,21 +192,31 @@ const GetInfo = () => {
     */
   }, []);
 
-  // Load data when coming back from Result or Preview page
+  // Load data when coming back from Result or Preview page or via FileUpload
   useEffect(() => {
-    if (UserjsonData && !hasLoadedDataRef.current) {
-      hasLoadedDataRef.current = true;
-      setFormData(UserjsonData);
-      setIsExampleProcessing(false);
+    if (hasLoadedDataRef.current) return;
 
-      // Set all steps as completed except template selection
-      if (UserjsonData.selectedTemplate) {
-        setCurrentStep(0); // Start at Template selection
-        setCompletedSteps(new Set([1, 2, 3, 4, 5, 6, 7])); // Mark other steps as completed
-      } else {
-        setCurrentStep(0); // Start at Template selection
-        setCompletedSteps(new Set([1, 2, 3, 4, 5, 6, 7])); // Mark data steps as completed
+    const stateSelectedTemplate = location.state?.selectedTemplate;
+
+    if (UserjsonData || stateSelectedTemplate) {
+      hasLoadedDataRef.current = true;
+
+      let newFormData = { ...formData };
+
+      if (UserjsonData) {
+        newFormData = { ...UserjsonData };
+        setIsExampleProcessing(false);
+        // Mark data steps as completed
+        setCompletedSteps(new Set([1, 2, 3, 4, 5, 6, 7]));
       }
+
+      if (stateSelectedTemplate) {
+        newFormData.selectedTemplate = String(stateSelectedTemplate);
+        toast.success(`Template #${stateSelectedTemplate} selected!`);
+      }
+
+      setFormData(newFormData);
+      setCurrentStep(0); // Always start at Template selection to confirm
     }
   }, [UserjsonData, location.state]);
 
@@ -322,6 +350,7 @@ const GetInfo = () => {
           toolsTechUsed: ''
         } : section === 'education' ? {
           institutionName: '',
+          location: '',
           degreeName: '',
           graduationYear: '',
           currentCGPA: ''
@@ -344,6 +373,7 @@ const GetInfo = () => {
           toolsTechUsed: ''
         } : section === 'education' ? {
           institutionName: '',
+          location: '',
           degreeName: '',
           graduationYear: '',
           currentCGPA: ''
@@ -390,7 +420,7 @@ const GetInfo = () => {
       ],
       3: formData.workExperience.length > 0 ? formData.workExperience.map(exp => [exp.jobTitle, exp.companyName, exp.WorkDuration, exp.keyAchievements]) : [[]],
       4: formData.projects.length > 0 ? formData.projects.map(proj => [proj.projectTitle, proj.toolsTechUsed]) : [[]],
-      5: formData.education.length > 0 ? formData.education.map(edu => [edu.institutionName, edu.degreeName, edu.graduationYear, edu.currentCGPA]) : [[]],
+      5: formData.education.length > 0 ? formData.education.map(edu => [edu.institutionName, edu.location, edu.degreeName, edu.graduationYear, edu.currentCGPA]) : [[]],
       6: formData.certificates.length > 0 ? formData.certificates.map(cert => [cert.certificateName, cert.courseDuration, cert.providerName]) : [[]],
       7: [formData.Description.UserDescription],
     };
@@ -574,11 +604,11 @@ const GetInfo = () => {
               <div className="ml-4 w-0 h-1 rounded-full bg-blue-500 transition-all duration-300 peer-hover:w-[60%] peer-focus:w-[88%] sm:peer-focus:w-[94%]"></div>
             </div>
 
-            {/* Profile Image Upload - Only for Template 4 */}
-            {(isExampleProcessing ? ExampleJsonData.selectedTemplate === '4' : formData.selectedTemplate === '4') && (
+            {/* Profile Image Upload - For Templates with Photo Support */}
+            {(isExampleProcessing ? ['4', '7', '11', '12', '13', '19', '21', '27'].includes(ExampleJsonData.selectedTemplate) : ['4', '7', '11', '12', '13', '19', '21', '27'].includes(formData.selectedTemplate)) && (
               <div className="space-y-2 mt-4 p-4 border-2 border-blue-200 rounded-lg bg-blue-50 dark:bg-slate-700 dark:border-blue-600">
                 <label className="block text-sm font-medium dark:text-slate-300 flex items-center gap-2">
-                  <span>📸 Profile Picture (For Template 4)</span>
+                  <span>📸 Profile Picture (For Selected Template)</span>
                 </label>
                 <input
                   type="file"
@@ -1184,6 +1214,18 @@ const GetInfo = () => {
                   </div>
 
                   <div className="space-y-2">
+                    <label className="block text-sm font-medium dark:text-slate-300">Location</label>
+                    <input
+                      type="text"
+                      placeholder="Pune, India"
+                      className="w-full sm:px-6 sm:p-2 border rounded peer px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                      value={edu.location || ''}
+                      onChange={(e) => handleInputChange('education', 'location', e.target.value, index)}
+                    />
+                    <div className="ml-4 w-0 h-1 rounded-full bg-blue-500 transition-all duration-300 peer-hover:w-[60%] peer-focus:w-[88%] sm:peer-focus:w-[94%]"></div>
+                  </div>
+
+                  <div className="space-y-2">
                     <div className="peer">
                       <Suggestions
                         label="Degree Name"
@@ -1274,6 +1316,18 @@ const GetInfo = () => {
                         isMultiSuggestion={false}
                       />
                     </div>
+                    <div className="ml-4 w-0 h-1 rounded-full bg-blue-500 transition-all duration-300 peer-hover:w-[60%] peer-focus:w-[88%] sm:peer-focus:w-[94%]"></div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium dark:text-slate-300">Location</label>
+                    <input
+                      type="text"
+                      placeholder="Pune, India"
+                      className="w-full sm:px-6 sm:p-2 border rounded peer px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                      value={edu.location || ''}
+                      onChange={(e) => handleInputChange('education', 'location', e.target.value, index)}
+                    />
                     <div className="ml-4 w-0 h-1 rounded-full bg-blue-500 transition-all duration-300 peer-hover:w-[60%] peer-focus:w-[88%] sm:peer-focus:w-[94%]"></div>
                   </div>
 
@@ -1607,7 +1661,7 @@ const GetInfo = () => {
               <h2 className="text-xl sm:text-2xl font-bold border-b-4 pb-1 border-blue-900 mb-4 text-blue-800 dark:border-blue-500 dark:text-blue-400">Choose Template</h2>
               <p className='font-semibold mb-6 text-gray-600 dark:text-gray-200'>We will frequently add more template designs to provide more robust options.</p>
               <div className="grid grid-cols-2 gap-5">
-                {[1, 2, 3, 4, 5, 6].map((template) => (
+                {[1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].map((template) => (
                   <div
                     key={template}
                     className={`relative p-4 border-2 rounded-lg transition-all duration-150 shadow-md hover:shadow-xl dark:shadow-gray-600 ${formData.selectedTemplate === String(template) ? 'border-blue-600 bg-blue-50 dark:bg-slate-800 ring-2 ring-blue-300' : 'dark:border-gray-700 hover:border-blue-400'
@@ -1615,14 +1669,11 @@ const GetInfo = () => {
                   >
                     <div
                       onClick={() => {
-                        if (selectTemp) {
-                          setFormData((prev) => ({ ...prev, selectedTemplate: String(template) }));
-                          { i === 2 && setI(1) }
-                          const timer2 = setTimeout(() => {
-                            { (i === 1 || i === 2) && setI(2) };
-                          }, 50);
-                          return () => clearTimeout(timer2);
-                        }
+                        setFormData((prev) => ({ ...prev, selectedTemplate: String(template) }));
+                        if (i === 2) setI(1);
+                        const timer2 = setTimeout(() => {
+                          if (i === 1 || i === 2) setI(2);
+                        }, 50);
                       }}
                       className="cursor-pointer"
                     >
@@ -1655,7 +1706,7 @@ const GetInfo = () => {
               <h2 className="text-xl sm:text-2xl font-bold border-b-4 pb-1 border-blue-900 mb-4 text-blue-800 dark:border-blue-500 dark:text-blue-400">Choose Template</h2>
               <p className='font-semibold mb-6 text-gray-600 dark:text-gray-200'>We will frequently add more template designs to provide more resume options.</p>
               <div className="grid grid-cols-2 gap-5">
-                {[1, 2, 3, 4, 5, 6].map((template) => (
+                {[1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].map((template) => (
                   <div
                     key={template}
                     className={`relative p-4 border-2 rounded-lg transition-all duration-150 shadow-md hover:shadow-xl dark:shadow-gray-600 ${ExampleJsonData.selectedTemplate === String(template) ? 'border-blue-600 bg-blue-50 dark:bg-slate-800 ring-2 ring-blue-300' : 'dark:border-gray-700 hover:border-blue-400'
@@ -1833,21 +1884,49 @@ const GetInfo = () => {
           <div className="w-[25%] h-1 bg-blue-900 mb-4 mx-auto mt-1 rounded dark:bg-amber-400"></div>
           <div className="px-2 w-[340px] ml-3 h-[calc(100vh-180px)] overflow-y-auto overflow-x-hidden bg-white dark:bg-slate-800">
             <div className="scale-[0.35] origin-top-left flex">
-              {(isExampleProcessing ? ExampleJsonData.selectedTemplate == 1 : formData.selectedTemplate == 1) ? <T1 jsonData={isExampleProcessing ? ExampleJsonData : formData} /> : (isExampleProcessing ? ExampleJsonData.selectedTemplate == 2 : formData.selectedTemplate == 2) ? <T2 jsonData={isExampleProcessing ? ExampleJsonData : formData} /> : (isExampleProcessing ? ExampleJsonData.selectedTemplate == 3 : formData.selectedTemplate == 3) ? <T3 jsonData={isExampleProcessing ? ExampleJsonData : formData} /> : (isExampleProcessing ? ExampleJsonData.selectedTemplate == 4 : formData.selectedTemplate == 4) ? <T4 jsonData={isExampleProcessing ? ExampleJsonData : formData} /> : (isExampleProcessing ? ExampleJsonData.selectedTemplate == 5 : formData.selectedTemplate == 5) ? <T5 jsonData={isExampleProcessing ? ExampleJsonData : formData} /> : (isExampleProcessing ? ExampleJsonData.selectedTemplate == 6 : formData.selectedTemplate == 6) ? <T6 jsonData={isExampleProcessing ? ExampleJsonData : formData} /> : <div></div>}
+              {(() => {
+                const templateNum = isExampleProcessing ? ExampleJsonData.selectedTemplate : formData.selectedTemplate;
+                const data = isExampleProcessing ? ExampleJsonData : formData;
+
+                // Fallback to template 1 if nothing is selected
+                const activeTemplate = templateNum || "1";
+
+                switch (String(activeTemplate)) {
+                  case '1': return <T1 jsonData={data} />;
+                  case '2': return <T2 jsonData={data} />;
+                  case '3': return <T3 jsonData={data} />;
+                  case '4': return <T4 jsonData={data} />;
+                  case '5': return <T5 jsonData={data} />;
+                  case '6': return <T6 jsonData={data} />;
+                  case '7': return <T7 jsonData={data} />;
+                  case '9': return <T9 jsonData={data} />;
+                  case '10': return <T10 jsonData={data} />;
+                  case '11': return <T11 jsonData={data} />;
+                  case '12': return <T12 jsonData={data} />;
+                  case '13': return <T13 jsonData={data} />;
+                  case '14': return <T14 jsonData={data} />;
+                  case '15': return <T15 jsonData={data} />;
+                  case '16': return <T16 jsonData={data} />;
+                  case '17': return <T17 jsonData={data} />;
+                  case '18': return <T18 jsonData={data} />;
+                  case '19': return <T19 jsonData={data} />;
+                  case '20': return <T20 jsonData={data} />;
+                  case '21': return <T21 jsonData={data} />;
+                  case '22': return <T22 jsonData={data} />;
+                  case '23': return <T23 jsonData={data} />;
+                  case '24': return <T24 jsonData={data} />;
+                  case '25': return <T25 jsonData={data} />;
+                  case '26': return <T26 jsonData={data} />;
+                  case '27': return <T27 jsonData={data} />;
+                  case '28': return <T28 jsonData={data} />;
+                  case '29': return <T29 jsonData={data} />;
+                  case '30': return <T30 jsonData={data} />;
+                  default: return <T1 jsonData={data} />;
+                }
+              })()}
             </div>
           </div>
-          <div className={`whitespace-pre-line dark:text-slate-300 p-3 md:p-1 ${isExampleProcessing ? "hidden" : "block"}`}>
-            <div className="flex items-center mb-3">
-              <div className="w-10 h-10 bg-teal-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl">S</span>
-              </div>
-              <div className="ml-2">
-                <span className="font-semibold pb-[2px]">Assistant Bot</span>
-                <div className="w-[75%] h-[3px] bg-blue-800 mx-auto mt-1 rounded dark:bg-amber-500"></div>
-              </div>
-            </div>
-            <span id="Suggestion-typing-text" className="text-lime-700 dark:text-lime-400"></span>
-          </div>
+
         </div>
       </div>
 

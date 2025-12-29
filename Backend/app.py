@@ -31,7 +31,10 @@ def create_app():
             "message": "Unified Backend is Active",
             "endpoints": {
                 "ai": "/health",
-                "pdf": "/generate-pdf"
+                "pdf": "/generate-pdf",
+                "auth": "/api/auth",
+                "resume": "/api/resume",
+                "admin": "/api/admin"
             }
         })
     
@@ -40,6 +43,6 @@ def create_app():
 app = create_app()
 
 if __name__ == '__main__':
-    print("Starting Unified Backend (AI + PDF) on 0.0.0.0:5000...")
+    print("Starting Unified Backend (AI + PDF + Auth) on 0.0.0.0:5000...")
     # Host 0.0.0.0 makes it accessible from any local address and avoids resolution issues
     app.run(debug=True, port=5000, host='0.0.0.0')
