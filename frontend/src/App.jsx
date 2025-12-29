@@ -72,17 +72,23 @@ const App = () => {
       <Toaster />
       <Routes>
         {/* Public & Role-Based Entry */}
+        {/* Admin Isolation: Admin can access ONLY /admin. All other routes redirect to /admin */}
+        <Route
+          path="/admin/*"
+          element={isAdmin ? <AdminDashboard /> : <Navigate to="/login" replace />}
+        />
+
+        {/* User & Public Routes - Redirect Admin to Admin Dashboard */}
         <Route path="/" element={
           isAdmin
             ? <Navigate to="/admin" replace />
             : <FrontPage views={views} />
         } />
 
-        {/* Auth Routes */}
-        <Route path="/login" element={!user ? <Login /> : <Navigate to="/" replace />} />
+        <Route path="/login" element={!user ? <Login /> : (isAdmin ? <Navigate to="/admin" replace /> : <Navigate to="/" replace />)} />
         <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" replace />} />
 
-        {/* User Protected Routes - Redirect Admin to Admin Dashboard */}
+        {/* User Protected Routes - Strictly Block Admin */}
         <Route
           path="/dashboard"
           element={isAdmin ? <Navigate to="/admin" replace /> : (user ? <UserDashboard /> : <Navigate to="/login" />)}
@@ -108,21 +114,15 @@ const App = () => {
           element={isAdmin ? <Navigate to="/admin" replace /> : (user ? <ResumeAnalyze /> : <Navigate to="/login" />)}
         />
 
-        {/* Admin Isolation: Admin can access ONLY /admin */}
-        <Route
-          path="/admin/*"
-          element={isAdmin ? <AdminDashboard /> : <Navigate to="/" replace />}
-        />
-
-        {/* Other Routes */}
+        {/* Other Routes - Strictly Block Admin */}
         <Route path="/AboutUs" element={isAdmin ? <Navigate to="/admin" replace /> : <AboutUs />} />
-        <Route path="/VarifyMail" element={<GoogleVarification />} />
+        <Route path="/VarifyMail" element={isAdmin ? <Navigate to="/admin" replace /> : <GoogleVarification />} />
         <Route path="/HTML-PDF" element={isAdmin ? <Navigate to="/admin" replace /> : <HtmlToPdfConverter />} />
         <Route path="/ViewTemplates" element={isAdmin ? <Navigate to="/admin" replace /> : <ViewTemplates />} />
         <Route path="/Features" element={isAdmin ? <Navigate to="/admin" replace /> : <Features />} />
 
-        {/* Catch-all for Admin */}
-        {isAdmin && <Route path="*" element={<Navigate to="/admin" replace />} />}
+        {/* Catch-all: Redirect Admin to Admin Home, others to Home */}
+        <Route path="*" element={isAdmin ? <Navigate to="/admin" replace /> : <Navigate to="/" replace />} />
       </Routes>
     </div>
   );

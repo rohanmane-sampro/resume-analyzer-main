@@ -18,3 +18,4 @@ db = Database.get_db()
 users_collection = db['users']
 resumes_collection = db['resumes']
 templates_collection = db['templates']
+settings_collection = db['settings']

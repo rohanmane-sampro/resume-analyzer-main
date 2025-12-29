@@ -36,12 +36,12 @@ export const ENDPOINTS = {
         STATS: `${API_BASE_URL}/api/resume/stats`,
     },
     ADMIN: {
-        STATS: `${API_BASE_URL}/api/resume/admin/stats`,
         METRICS: `${API_BASE_URL}/api/admin/metrics`,
         USERS: `${API_BASE_URL}/api/admin/users`,
-        UPDATE_LIMIT: (id) => `${API_BASE_URL}/api/admin/users/${id}/limit`,
+        UPDATE_USER: (id) => `${API_BASE_URL}/api/admin/users/${id}`,
+        RESUME_TRENDS: `${API_BASE_URL}/api/admin/analytics/resume-trends`,
         TEMPLATE_ANALYTICS: `${API_BASE_URL}/api/admin/analytics/templates`,
-        TEMPLATES: `${API_BASE_URL}/api/admin/templates`,
+        SETTINGS: `${API_BASE_URL}/api/admin/settings`,
     }
 };
 

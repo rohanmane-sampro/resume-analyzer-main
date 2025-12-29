@@ -1,243 +1,219 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../AuthContext';
 import { ENDPOINTS, getAuthHeaders } from '../apiConfig';
-import { Users, FileText, Download, Activity, Shield, Edit2, Check, X, LogOut } from 'lucide-react';
+import {
+    Users, FileText, Download, Activity, Shield,
+    Edit2, Check, X, LogOut, Settings, BarChart3,
+    Database, Layers, Menu, ChevronLeft, ChevronRight,
+    Search, Filter, Save, ToggleLeft as Toggle, ArrowUpRight
+} from 'lucide-react';
 import toast from 'react-hot-toast';
-import Navbar from './Navbar';
+import {
+    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell
+} from 'recharts';
 
 const AdminDashboard = () => {
     const { user, logout } = useAuth();
+    const [activeTab, setActiveTab] = useState('overview');
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+    const [loading, setLoading] = useState(true);
+
+    // Data states
     const [metrics, setMetrics] = useState(null);
     const [usersList, setUsersList] = useState([]);
     const [templateAnalytics, setTemplateAnalytics] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [editingLimit, setEditingLimit] = useState(null);
-    const [newLimit, setNewLimit] = useState('');
+    const [trends, setTrends] = useState([]);
+    const [systemSettings, setSystemSettings] = useState(null);
 
     useEffect(() => {
-        const fetchAdminData = async () => {
+        const fetchAllData = async () => {
+            setLoading(true);
             try {
-                const [metricsRes, usersRes, templatesRes] = await Promise.all([
-                    fetch(ENDPOINTS.ADMIN.METRICS, { headers: getAuthHeaders() }),
-                    fetch(ENDPOINTS.ADMIN.USERS, { headers: getAuthHeaders() }),
-                    fetch(ENDPOINTS.ADMIN.TEMPLATE_ANALYTICS, { headers: getAuthHeaders() })
+                const headers = getAuthHeaders();
+                const [metricsRes, usersRes, templatesRes, trendsRes, settingsRes] = await Promise.all([
+                    fetch(ENDPOINTS.ADMIN.METRICS, { headers }),
+                    fetch(ENDPOINTS.ADMIN.USERS, { headers }),
+                    fetch(ENDPOINTS.ADMIN.TEMPLATE_ANALYTICS, { headers }),
+                    fetch(ENDPOINTS.ADMIN.RESUME_TRENDS, { headers }),
+                    fetch(ENDPOINTS.ADMIN.SETTINGS, { headers })
                 ]);
 
                 if (metricsRes.ok) setMetrics(await metricsRes.json());
-                if (usersRes.ok) {
-                    const data = await usersRes.json();
-                    setUsersList(data.users);
-                }
-                if (templatesRes.ok) {
-                    const data = await templatesRes.json();
-                    setTemplateAnalytics(data.template_usage);
-                }
+                if (usersRes.ok) setUsersList((await usersRes.json()).users);
+                if (templatesRes.ok) setTemplateAnalytics((await templatesRes.json()).template_usage);
+                if (trendsRes.ok) setTrends((await trendsRes.json()).trends);
+                if (settingsRes.ok) setSystemSettings(await settingsRes.json());
             } catch (error) {
-                console.error('Failed to fetch admin data:', error);
-                toast.error('Failed to load system data');
+                console.error('Admin data fetch error:', error);
+                toast.error('Failed to synchronize administration data');
             } finally {
                 setLoading(false);
             }
         };
 
         if (user?.role === 'admin') {
-            fetchAdminData();
+            fetchAllData();
         }
     }, [user]);
 
-    const handleUpdateLimit = async (userId) => {
-        if (!newLimit || isNaN(parseInt(newLimit))) {
-            toast.error('Please enter a valid number');
-            return;
-        }
-
-        try {
-            const response = await fetch(ENDPOINTS.ADMIN.UPDATE_LIMIT(userId), {
-                method: 'POST',
-                headers: getAuthHeaders(),
-                body: JSON.stringify({ limit: parseInt(newLimit) })
-            });
-
-            if (response.ok) {
-                setUsersList(usersList.map(u =>
-                    u.id === userId ? { ...u, download_limit: parseInt(newLimit) } : u
-                ));
-                setEditingLimit(null);
-                setNewLimit('');
-                toast.success('Limit updated successfully');
-            } else {
-                toast.error('Failed to update limit');
-            }
-        } catch (error) {
-            toast.error('An error occurred');
-        }
-    };
-
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#09090b] flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-500"></div>
+            <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-500"></div>
+                    <p className="text-slate-400 font-medium animate-pulse">Initializing Secure Admin Portal...</p>
+                </div>
             </div>
         );
     }
 
-    return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-100 to-pink-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 text-slate-900 dark:text-white transition-colors duration-300">
-            <Navbar />
+    const renderContent = () => {
+        switch (activeTab) {
+            case 'overview': return <OverviewTab metrics={metrics} trends={trends} templateAnalytics={templateAnalytics} />;
+            case 'all-users': return <AllUsersTab users={usersList} setUsers={setUsersList} />;
+            case 'manage-users': return <ManageUsersTab users={usersList} setUsers={setUsersList} />;
+            case 'resume-analytics': return <ResumeAnalyticsTab trends={trends} templateAnalytics={templateAnalytics} metrics={metrics} />;
+            case 'limits': return <LimitsSettingsTab settings={systemSettings} setSettings={setSystemSettings} />;
+            case 'settings': return <SystemSettingsTab settings={systemSettings} setSettings={setSystemSettings} />;
+            case 'future': return <FutureIntegrationsTab />;
+            default: return <OverviewTab metrics={metrics} trends={trends} templateAnalytics={templateAnalytics} />;
+        }
+    };
 
-            <div className="p-6 pt-24 max-w-7xl mx-auto">
-                <div className="mb-10 flex justify-between items-start">
-                    <div>
-                        <h1 className="text-4xl font-bold mb-2 flex items-center gap-3">
-                            <Shield className="text-teal-500" size={40} />
-                            System Administrator
-                        </h1>
-                        <p className="text-gray-400">Production-level oversight and system-wide controls</p>
-                    </div>
-                    <button
-                        onClick={logout}
-                        className="flex items-center gap-2 bg-red-600/10 dark:bg-red-500/10 hover:bg-red-600/20 dark:hover:bg-red-500/20 text-red-600 dark:text-red-500 border border-red-200 dark:border-red-500/20 px-6 py-3 rounded-xl transition-all font-semibold"
-                    >
-                        <LogOut size={20} />
-                        Exit System
+    return (
+        <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0f172a] flex text-slate-900 dark:text-slate-100 transition-colors duration-300">
+            {/* Sidebar */}
+            <aside className={`fixed inset-y-0 left-0 z-50 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 transition-all duration-300 ${isSidebarCollapsed ? 'w-20' : 'w-64'}`}>
+                <div className="p-6 flex items-center justify-between border-b border-slate-200 dark:border-slate-800">
+                    {!isSidebarCollapsed && (
+                        <div className="flex items-center gap-2">
+                            <Shield className="text-teal-500" size={24} />
+                            <span className="font-black text-xl tracking-tighter">SAMPRO<span className="text-teal-500">ADMIN</span></span>
+                        </div>
+                    )}
+                    <button onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)} className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-500">
+                        {isSidebarCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
                     </button>
                 </div>
 
-                {/* 1. System Metrics Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                    <MetricCard
-                        title="Registered Users"
-                        value={metrics?.total_users || 0}
-                        icon={<Users className="text-blue-600 dark:text-blue-400" />}
-                        subtitle="Total user base"
-                    />
-                    <MetricCard
-                        title="Resumes Created"
-                        value={metrics?.total_resumes || 0}
-                        icon={<FileText className="text-purple-600 dark:text-purple-400" />}
-                        subtitle="System-wide"
-                    />
-                    <MetricCard
-                        title="Total Downloads"
-                        value={metrics?.total_downloads || 0}
-                        icon={<Download className="text-green-600 dark:text-green-400" />}
-                        subtitle="Successful exports"
-                    />
-                    <MetricCard
-                        title="Active Users"
-                        value={metrics?.active_users || 0}
-                        icon={<Activity className="text-orange-600 dark:text-orange-400" />}
-                        subtitle="Last 7 days"
-                    />
-                </div>
+                <nav className="p-4 space-y-2 mt-4">
+                    <SidebarItem icon={<BarChart3 />} label="Dashboard Overview" active={activeTab === 'overview'} onClick={() => setActiveTab('overview')} collapsed={isSidebarCollapsed} />
+                    <SidebarItem icon={<Users />} label="All Users" active={activeTab === 'all-users'} onClick={() => setActiveTab('all-users')} collapsed={isSidebarCollapsed} />
+                    <SidebarItem icon={<Shield />} label="Manage Users" active={activeTab === 'manage-users'} onClick={() => setActiveTab('manage-users')} collapsed={isSidebarCollapsed} />
+                    <SidebarItem icon={<Activity />} label="Resume Analytics" active={activeTab === 'resume-analytics'} onClick={() => setActiveTab('resume-analytics')} collapsed={isSidebarCollapsed} />
+                    <SidebarItem icon={<Database />} label="Template & Limits" active={activeTab === 'limits'} onClick={() => setActiveTab('limits')} collapsed={isSidebarCollapsed} />
+                    <SidebarItem icon={<Settings />} label="System Settings" active={activeTab === 'settings'} onClick={() => setActiveTab('settings')} collapsed={isSidebarCollapsed} />
+                    <SidebarItem icon={<Layers />} label="Future Integrations" active={activeTab === 'future'} onClick={() => setActiveTab('future')} collapsed={isSidebarCollapsed} />
+                </nav>
 
-                {/* 2. Main Analytics Content */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* User Management Table */}
-                    <div className="lg:col-span-2 bg-white dark:bg-white/5 rounded-2xl border border-slate-200 dark:border-white/10 overflow-hidden shadow-sm dark:shadow-none">
-                        <div className="p-6 border-b border-slate-200 dark:border-white/10 flex justify-between items-center">
-                            <h2 className="text-xl font-bold">User Access Management</h2>
-                        </div>
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-left">
-                                <thead className="bg-slate-50 dark:bg-white/5 text-slate-500 dark:text-gray-400 text-sm uppercase">
-                                    <tr>
-                                        <th className="px-6 py-4 font-medium">User</th>
-                                        <th className="px-6 py-4 font-medium">Activity</th>
-                                        <th className="px-6 py-4 font-medium">Download Limit</th>
-                                        <th className="px-6 py-4 font-medium">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-slate-100 dark:divide-white/5">
-                                    {usersList.map((u) => (
-                                        <tr key={u.id} className="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
-                                            <td className="px-6 py-4">
-                                                <div className="font-medium text-slate-900 dark:text-white">{u.name}</div>
-                                                <div className="text-xs text-slate-500 dark:text-gray-400">{u.email}</div>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <div className="text-sm">
-                                                    <span className="text-teal-600 dark:text-teal-400 font-bold">{u.resumes_created}</span> resumes
-                                                </div>
-                                                <div className="text-xs text-slate-500 dark:text-gray-400">
-                                                    <span className="text-blue-600 dark:text-blue-400">{u.downloads_used}</span> downloads used
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                {editingLimit === u.id ? (
-                                                    <div className="flex items-center gap-2">
-                                                        <input
-                                                            type="number"
-                                                            className="w-16 bg-slate-100 dark:bg-white/10 border border-slate-300 dark:border-white/20 rounded px-2 py-1 text-sm outline-none text-slate-900 dark:text-white"
-                                                            value={newLimit}
-                                                            onChange={(e) => setNewLimit(e.target.value)}
-                                                            autoFocus
-                                                        />
-                                                        <button onClick={() => handleUpdateLimit(u.id)} className="text-green-600 dark:text-green-500 hover:text-green-700 dark:hover:text-green-400">
-                                                            <Check size={18} />
-                                                        </button>
-                                                        <button onClick={() => setEditingLimit(null)} className="text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400">
-                                                            <X size={18} />
-                                                        </button>
-                                                    </div>
-                                                ) : (
-                                                    <div className="flex items-center gap-2 group">
-                                                        <span className="text-sm font-medium text-slate-700 dark:text-gray-200">{u.download_limit} attempts</span>
-                                                        <button
-                                                            onClick={() => {
-                                                                setEditingLimit(u.id);
-                                                                setNewLimit(u.download_limit);
-                                                            }}
-                                                            className="opacity-0 group-hover:opacity-100 text-slate-400 dark:text-gray-500 hover:text-teal-500 transition-all"
-                                                        >
-                                                            <Edit2 size={14} />
-                                                        </button>
-                                                    </div>
-                                                )}
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${u.role === 'admin'
-                                                    ? 'bg-purple-100 dark:bg-purple-500/20 text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-500/30'
-                                                    : 'bg-teal-100 dark:bg-teal-500/20 text-teal-700 dark:text-teal-400 border border-teal-200 dark:border-teal-500/30'
-                                                    }`}>
-                                                    {u.role}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                <div className="absolute bottom-4 left-0 right-0 p-4">
+                    <button
+                        onClick={logout}
+                        className={`w-full flex items-center gap-3 p-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-all font-semibold ${isSidebarCollapsed ? 'justify-center' : ''}`}
+                    >
+                        <LogOut size={20} />
+                        {!isSidebarCollapsed && <span>Logout</span>}
+                    </button>
+                </div>
+            </aside>
+
+            {/* Main Content */}
+            <main className={`flex-1 transition-all duration-300 ${isSidebarCollapsed ? 'ml-20' : 'ml-64'} p-8`}>
+                <header className="mb-8 flex justify-between items-center">
+                    <div>
+                        <h1 className="text-3xl font-bold tracking-tight capitalize">{activeTab.replace('-', ' ')}</h1>
+                        <p className="text-slate-500 dark:text-slate-400 mt-1">Admin Session: {user?.name}</p>
+                    </div>
+                    <div className="flex items-center gap-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-2 rounded-2xl shadow-sm">
+                        <div className="w-10 h-10 rounded-xl bg-teal-500 flex items-center justify-center text-white font-bold">
+                            {user?.name?.charAt(0) || 'A'}
                         </div>
                     </div>
+                </header>
 
-                    {/* Template Usage Statistics */}
-                    <div className="bg-white dark:bg-white/5 rounded-2xl border border-slate-200 dark:border-white/10 overflow-hidden flex flex-col shadow-sm dark:shadow-none">
-                        <div className="p-6 border-b border-slate-200 dark:border-white/10">
-                            <h2 className="text-xl font-bold">Template Trends</h2>
-                        </div>
-                        <div className="p-6 flex-1 space-y-6">
-                            {templateAnalytics.map((t, idx) => (
-                                <div key={idx}>
-                                    <div className="flex justify-between mb-2">
-                                        <span className="text-sm font-medium flex items-center gap-2 text-slate-600 dark:text-gray-300">
-                                            <div className="w-2 h-2 rounded-full bg-teal-500" />
-                                            {t._id}
-                                        </span>
-                                        <span className="text-sm text-slate-500 dark:text-gray-400 font-mono">{t.usage_count} uses</span>
-                                    </div>
-                                    <div className="w-full bg-slate-100 dark:bg-white/5 rounded-full h-3">
-                                        <div
-                                            className="h-full bg-gradient-to-r from-teal-500 to-blue-500 rounded-full transition-all duration-1000"
-                                            style={{ width: `${(t.usage_count / (metrics?.total_resumes || 1)) * 100}%` }}
-                                        />
-                                    </div>
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    {renderContent()}
+                </div>
+            </main>
+        </div>
+    );
+};
+
+const SidebarItem = ({ icon, label, active, onClick, collapsed }) => (
+    <button
+        onClick={onClick}
+        className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${active
+            ? 'bg-teal-500 text-white shadow-lg shadow-teal-500/30'
+            : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'} ${collapsed ? 'justify-center' : ''}`}
+        title={collapsed ? label : ''}
+    >
+        {React.cloneElement(icon, { size: 22 })}
+        {!collapsed && <span className="font-medium text-sm whitespace-nowrap">{label}</span>}
+    </button>
+);
+
+// --- TABS COMPONENTS ---
+
+const OverviewTab = ({ metrics, trends, templateAnalytics }) => {
+    const COLORS = ['#14b8a6', '#8b5cf6', '#f59e0b', '#ef4444', '#3b82f6'];
+
+    return (
+        <div className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <MetricCard title="Total Users" value={metrics?.total_users} icon={<Users className="text-blue-500" />} trend="+12% this month" />
+                <MetricCard title="Resumes Generated" value={metrics?.total_resumes} icon={<FileText className="text-purple-500" />} trend="+8% vs last week" />
+                <MetricCard title="Total Downloads" value={metrics?.total_downloads} icon={<Download className="text-green-500" />} trend="+24% conversion" />
+                <MetricCard title="Download Velocity" value={metrics?.avg_downloads_per_user} icon={<Activity className="text-orange-500" />} subtitle="Avg. downloads/user" />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <h3 className="text-lg font-bold mb-6">Resume Creation Trends</h3>
+                    <div className="h-[300px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={trends}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" opacity={0.1} />
+                                <XAxis dataKey="date" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
+                                <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
+                                <Tooltip
+                                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', backgroundColor: '#1e293b', color: '#fff' }}
+                                />
+                                <Line type="monotone" dataKey="count" stroke="#14b8a6" strokeWidth={3} dot={{ r: 4, fill: '#14b8a6' }} activeDot={{ r: 8 }} />
+                            </LineChart>
+                        </ResponsiveContainer>
+                    </div>
+                </div>
+
+                <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <h3 className="text-lg font-bold mb-6">Popular Templates</h3>
+                    <div className="h-[300px] flex items-center">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <PieChart>
+                                <Pie
+                                    data={templateAnalytics}
+                                    cx="50%"
+                                    cy="50%"
+                                    innerRadius={80}
+                                    outerRadius={100}
+                                    paddingAngle={5}
+                                    dataKey="usage_count"
+                                    nameKey="_id"
+                                >
+                                    {templateAnalytics.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                    ))}
+                                </Pie>
+                                <Tooltip />
+                            </PieChart>
+                        </ResponsiveContainer>
+                        <div className="w-1/3 space-y-2">
+                            {templateAnalytics.slice(0, 5).map((t, i) => (
+                                <div key={i} className="flex items-center gap-2 text-sm">
+                                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }}></div>
+                                    <span className="text-slate-400 font-medium">T{t._id}</span>
+                                    <span className="ml-auto font-bold">{t.usage_count}</span>
                                 </div>
                             ))}
-                            {templateAnalytics.length === 0 && (
-                                <div className="flex flex-col items-center justify-center h-full text-slate-400 dark:text-gray-500 italic">
-                                    No template activity yet
-                                </div>
-                            )}
                         </div>
                     </div>
                 </div>
@@ -246,19 +222,465 @@ const AdminDashboard = () => {
     );
 };
 
-const MetricCard = ({ title, value, icon, subtitle }) => (
-    <div className="bg-white dark:bg-white/5 p-6 rounded-2xl border border-slate-200 dark:border-white/10 relative overflow-hidden group shadow-sm dark:shadow-none transition-all">
-        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-125 transition-transform">
-            {React.cloneElement(icon, { size: 64 })}
+const AllUsersTab = ({ users }) => {
+    const [filter, setFilter] = useState('All Users');
+    const [search, setSearch] = useState('');
+
+    const filteredUsers = users.filter(u => {
+        const matchesSearch = u.name?.toLowerCase().includes(search.toLowerCase()) || u.email?.toLowerCase().includes(search.toLowerCase());
+        const matchesFilter = filter === 'All Users' || u.type === filter.toLowerCase().replace(' ', '_');
+        return matchesSearch && matchesFilter;
+    });
+
+    return (
+        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+            <div className="p-6 border-b border-slate-200 dark:border-slate-800 flex flex-wrap gap-4 justify-between items-center">
+                <div className="relative w-full max-w-md">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                    <input
+                        type="text"
+                        placeholder="Search users by name or email..."
+                        className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-teal-500 outline-none"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+                </div>
+                <div className="flex items-center gap-4">
+                    <Filter className="text-slate-400" size={18} />
+                    <select
+                        className="bg-slate-50 dark:bg-slate-800 border-none rounded-xl py-2 px-4 focus:ring-2 focus:ring-teal-500 outline-none cursor-pointer"
+                        value={filter}
+                        onChange={(e) => setFilter(e.target.value)}
+                    >
+                        <option>All Users</option>
+                        <option>Standard</option>
+                        <option>Guest Users</option>
+                        <option>Knowledge Hub Users</option>
+                    </select>
+                </div>
+            </div>
+
+            <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                    <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider font-bold">
+                        <tr>
+                            <th className="px-6 py-4">User Identity</th>
+                            <th className="px-6 py-4">Role & Status</th>
+                            <th className="px-6 py-4 text-center">Resumes</th>
+                            <th className="px-6 py-4 text-center">Downloads (Used/Limit)</th>
+                            <th className="px-6 py-4">Joined At</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                        {filteredUsers.map(u => (
+                            <tr key={u.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+                                <td className="px-6 py-4">
+                                    <div className="font-bold text-slate-900 dark:text-white">{u.name}</div>
+                                    <div className="text-xs text-slate-500 dark:text-slate-400">{u.email}</div>
+                                </td>
+                                <td className="px-6 py-4">
+                                    <div className="flex gap-2">
+                                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${u.role === 'admin' ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-400' : 'bg-teal-100 text-teal-700 dark:bg-teal-500/20 dark:text-teal-400'}`}>
+                                            {u.role}
+                                        </span>
+                                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${u.status === 'active' ? 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'}`}>
+                                            {u.status}
+                                        </span>
+                                    </div>
+                                    <div className="text-[10px] text-slate-400 mt-1 uppercase font-bold tracking-tighter">{u.type.replace('_', ' ')}</div>
+                                </td>
+                                <td className="px-6 py-4 text-center">
+                                    <span className="font-black text-lg">{u.resumes_created}</span>
+                                </td>
+                                <td className="px-6 py-4 text-center">
+                                    <div className="flex flex-col items-center">
+                                        <span className="font-bold text-slate-700 dark:text-slate-300">{u.downloads_used} / {u.download_limit}</span>
+                                        <div className="w-16 bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full mt-1 overflow-hidden">
+                                            <div
+                                                className="h-full bg-teal-500 rounded-full"
+                                                style={{ width: `${Math.min((u.downloads_used / u.download_limit) * 100, 100)}%` }}
+                                            ></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td className="px-6 py-4 text-slate-500 dark:text-slate-400 text-xs">
+                                    {new Date(u.created_at).toLocaleDateString()}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+            {filteredUsers.length === 0 && (
+                <div className="p-12 text-center text-slate-500">
+                    <Database size={48} className="mx-auto mb-4 opacity-20" />
+                    <p>No user records found matching your criteria</p>
+                </div>
+            )}
         </div>
+    );
+};
+
+const ManageUsersTab = ({ users, setUsers }) => {
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [editMode, setEditMode] = useState(false);
+    const [formData, setFormData] = useState({ download_limit: 0, template_limit: 0, status: 'active' });
+
+    const handleEdit = (u) => {
+        setSelectedUser(u);
+        setFormData({ download_limit: u.download_limit, template_limit: u.template_limit, status: u.status });
+        setEditMode(true);
+    };
+
+    const handleSave = async () => {
+        try {
+            const response = await fetch(ENDPOINTS.ADMIN.UPDATE_USER(selectedUser.id), {
+                method: 'POST',
+                headers: getAuthHeaders(),
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
+                setUsers(users.map(u => u.id === selectedUser.id ? { ...u, ...formData } : u));
+                setEditMode(false);
+                toast.success('User privileges updated');
+            } else {
+                toast.error('Privilege escalation failed');
+            }
+        } catch (error) {
+            toast.error('Network security error');
+        }
+    };
+
+    return (
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            <div className="xl:col-span-2 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm h-fit">
+                <div className="p-6 border-b border-slate-200 dark:border-slate-800">
+                    <h3 className="font-bold flex items-center gap-2">
+                        <Shield className="text-teal-500" size={18} />
+                        Select User for Administrative Override
+                    </h3>
+                </div>
+                <div className="max-h-[600px] overflow-y-auto">
+                    {users.map(u => (
+                        <div
+                            key={u.id}
+                            onClick={() => handleEdit(u)}
+                            className={`p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-all ${selectedUser?.id === u.id ? 'bg-teal-50 dark:bg-teal-500/10 border-l-4 border-l-teal-500' : ''}`}
+                        >
+                            <div>
+                                <div className="font-bold">{u.name}</div>
+                                <div className="text-xs text-slate-500">{u.email}</div>
+                            </div>
+                            <div className="text-right">
+                                <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{u.status}</div>
+                                <div className="text-sm font-bold text-teal-600 dark:text-teal-400">Limit: {u.download_limit}</div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8 shadow-xl h-fit sticky top-8">
+                {editMode && selectedUser ? (
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-4 pb-6 border-b border-slate-100 dark:border-slate-800">
+                            <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-black text-teal-500 text-xl">
+                                {selectedUser.name.charAt(0)}
+                            </div>
+                            <div>
+                                <h3 className="font-black text-lg leading-tight">{selectedUser.name}</h3>
+                                <p className="text-xs text-slate-500">ID: {selectedUser.id}</p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Maximum Download Priority</label>
+                                <input
+                                    type="number"
+                                    className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-3 focus:ring-2 focus:ring-teal-500 outline-none"
+                                    value={formData.download_limit}
+                                    onChange={(e) => setFormData({ ...formData, download_limit: parseInt(e.target.value) })}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Template Access Capacity</label>
+                                <input
+                                    type="number"
+                                    className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-3 focus:ring-2 focus:ring-teal-500 outline-none"
+                                    value={formData.template_limit}
+                                    onChange={(e) => setFormData({ ...formData, template_limit: parseInt(e.target.value) })}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Account Authorization</label>
+                                <select
+                                    className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-3 focus:ring-2 focus:ring-teal-500 outline-none"
+                                    value={formData.status}
+                                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                                >
+                                    <option value="active">Active (Access Granted)</option>
+                                    <option value="disabled">Disabled (Access Revoked)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="flex gap-4 pt-4">
+                            <button onClick={handleSave} className="flex-1 bg-teal-500 text-white p-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-teal-600 transition-all shadow-lg shadow-teal-500/30">
+                                <Save size={18} />
+                                Commit
+                            </button>
+                            <button onClick={() => setEditMode(false)} className="px-4 py-3 bg-slate-100 dark:bg-slate-800 rounded-xl font-bold bg-slate-400/10 text-slate-500 hover:bg-slate-200 transition-all">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="text-center py-12">
+                        <Shield className="mx-auto text-slate-200 dark:text-slate-800 mb-6" size={80} strokeWidth={1} />
+                        <h4 className="font-bold text-slate-500">No User Target Selected</h4>
+                        <p className="text-sm text-slate-400 mt-2">Pick a user from the list to modify their system privileges.</p>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+const ResumeAnalyticsTab = ({ trends, templateAnalytics, metrics }) => {
+    return (
+        <div className="space-y-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <h3 className="text-xl font-bold mb-8">Generation Lifecycle Analytics</h3>
+                    <div className="h-[400px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={trends}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" opacity={0.1} />
+                                <XAxis dataKey="date" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
+                                <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
+                                <Tooltip
+                                    cursor={{ fill: '#f1f5f9', opacity: 0.1 }}
+                                    contentStyle={{ borderRadius: '16px', border: 'none', backgroundColor: '#1e293b', color: '#fff' }}
+                                />
+                                <Bar dataKey="count" fill="#14b8a6" radius={[6, 6, 0, 0]} barSize={40} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                </div>
+
+                <div className="space-y-6">
+                    <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <h4 className="text-slate-400 font-bold text-xs uppercase tracking-widest mb-4">Top Templates</h4>
+                        <div className="space-y-4">
+                            {templateAnalytics.slice(0, 3).map((t, i) => (
+                                <div key={i} className="flex items-center gap-4">
+                                    <div className="p-3 bg-teal-50 dark:bg-teal-500/10 rounded-xl text-teal-600 font-black text-sm">#{i + 1}</div>
+                                    <div>
+                                        <div className="font-bold">Template ID: {t._id}</div>
+                                        <div className="text-xs text-slate-500">{t.usage_count} implementations</div>
+                                    </div>
+                                    <ArrowUpRight className="ml-auto text-slate-300" size={16} />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="bg-teal-500 p-8 rounded-3xl text-white shadow-xl shadow-teal-500/20 relative overflow-hidden">
+                        <div className="relative z-10">
+                            <h4 className="font-black text-xs uppercase tracking-[.2em] opacity-80 mb-6">Efficiency Coefficient</h4>
+                            <div className="text-5xl font-black mb-2">{(metrics?.total_resumes / metrics?.total_users || 0).toFixed(1)}</div>
+                            <p className="text-teal-100 text-sm font-medium">Resumes per structural identity</p>
+                        </div>
+                        <Activity className="absolute -bottom-4 -right-4 text-white opacity-10 w-32 h-32" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const LimitsSettingsTab = ({ settings, setSettings }) => {
+    const handleSave = async (data) => {
+        try {
+            const response = await fetch(ENDPOINTS.ADMIN.SETTINGS, {
+                method: 'POST',
+                headers: getAuthHeaders(),
+                body: JSON.stringify({ ...settings, ...data })
+            });
+            if (response.ok) {
+                setSettings({ ...settings, ...data });
+                toast.success('System parameters synchronized');
+            }
+        } catch (error) { toast.error('I/O Persistence Error'); }
+    };
+
+    return (
+        <div className="max-w-4xl space-y-8">
+            <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <h3 className="text-xl font-bold mb-8 flex items-center gap-3">
+                    <Database className="text-teal-500" />
+                    Global Limitation Architecture
+                </h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 ring-1 ring-slate-100 dark:ring-slate-800 p-8 rounded-2xl">
+                    <div className="space-y-4">
+                        <label className="block">
+                            <span className="text-sm font-bold text-slate-500 uppercase tracking-widest text-[10px]">Default Download Limit</span>
+                            <div className="mt-1 flex items-center gap-3">
+                                <input
+                                    type="number"
+                                    className="flex-1 bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-3 focus:ring-2 focus:ring-teal-500 outline-none font-bold"
+                                    value={settings?.default_download_limit}
+                                    onChange={(e) => setSettings({ ...settings, default_download_limit: parseInt(e.target.value) })}
+                                />
+                                <button onClick={() => handleSave({ default_download_limit: settings.default_download_limit })} className="p-3 bg-teal-500 text-white rounded-xl shadow-lg shadow-teal-500/20"><Save size={18} /></button>
+                            </div>
+                        </label>
+                        <p className="text-xs text-slate-400">Assigned to all new standard user registrations.</p>
+                    </div>
+
+                    <div className="space-y-4">
+                        <label className="block">
+                            <span className="text-sm font-bold text-slate-500 uppercase tracking-widest text-[10px]">Default Template Quota</span>
+                            <div className="mt-1 flex items-center gap-3">
+                                <input
+                                    type="number"
+                                    className="flex-1 bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-3 focus:ring-2 focus:ring-teal-500 outline-none font-bold"
+                                    value={settings?.default_template_limit}
+                                    onChange={(e) => setSettings({ ...settings, default_template_limit: parseInt(e.target.value) })}
+                                />
+                                <button onClick={() => handleSave({ default_template_limit: settings.default_template_limit })} className="p-3 bg-teal-500 text-white rounded-xl shadow-lg shadow-teal-500/20"><Save size={18} /></button>
+                            </div>
+                        </label>
+                        <p className="text-xs text-slate-400">Restricts visual variation capacity globally.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const SystemSettingsTab = ({ settings, setSettings }) => {
+    const handleToggle = async (key, val) => {
+        try {
+            const response = await fetch(ENDPOINTS.ADMIN.SETTINGS, {
+                method: 'POST',
+                headers: getAuthHeaders(),
+                body: JSON.stringify({ ...settings, [key]: val })
+            });
+            if (response.ok) {
+                setSettings({ ...settings, [key]: val });
+                toast.success(`System ${key.replace('_', ' ')} logic updated`);
+            }
+        } catch (error) { toast.error('State persistence failure'); }
+    };
+
+    return (
+        <div className="max-w-4xl space-y-8">
+            <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <h3 className="text-xl font-bold mb-8 flex items-center gap-3">
+                    <Settings className="text-teal-500" />
+                    State Machine Control
+                </h3>
+
+                <div className="space-y-6">
+                    <div className="flex items-center justify-between p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+                        <div>
+                            <h4 className="font-bold text-lg">Global Download System</h4>
+                            <p className="text-sm text-slate-500">Enable or disable all file export logic system-wide</p>
+                        </div>
+                        <button
+                            onClick={() => handleToggle('downloads_enabled', !settings?.downloads_enabled)}
+                            className={`p-1 w-14 h-8 rounded-full transition-all flex items-center ${settings?.downloads_enabled ? 'bg-teal-500 justify-end' : 'bg-slate-300 dark:bg-slate-700 justify-start'}`}
+                        >
+                            <div className="bg-white w-6 h-6 rounded-full shadow-md"></div>
+                        </button>
+                    </div>
+
+                    <div className="flex items-center justify-between p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800 opacity-50 cursor-not-allowed">
+                        <div>
+                            <h4 className="font-bold text-lg">Maintenance Mode</h4>
+                            <p className="text-sm text-slate-500">Redirect all traffic to system offline terminal</p>
+                        </div>
+                        <button disabled className="p-1 w-14 h-8 bg-slate-200 dark:bg-slate-700 rounded-full flex items-center justify-start">
+                            <div className="bg-white/50 w-6 h-6 rounded-full shadow-md"></div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div className="p-6 bg-yellow-500/10 border-l-4 border-yellow-500 rounded-r-2xl">
+                <p className="text-yellow-700 dark:text-yellow-500 text-sm font-medium">Changes made to these parameters affect live production services immediately. Exercise high administrative caution.</p>
+            </div>
+        </div>
+    );
+};
+
+const FutureIntegrationsTab = () => {
+    return (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <IntegrationCard
+                title="Knowledge Hub Connection"
+                subtitle="Future Roadmap Phase 2"
+                description="Synchronize specialized knowledge bases for context-aware resume engineering."
+                icon={<Database size={32} className="text-blue-500" />}
+                tag="Knowledge Hub"
+            />
+            {/* <IntegrationCard
+                title="SAML / SSO Auth"
+                subtitle="Corporate Integration"
+                description="Enable enterprise-grade authentication and user source mapping."
+                icon={<Shield size={32} className="text-purple-500" />}
+                tag="Enterprise"
+            />
+            <IntegrationCard
+                title="Advanced NLP Hub"
+                subtitle="Content Intelligence"
+                description="Connect external LLM clusters for specialized semantic analysis."
+                icon={<Layers size={32} className="text-orange-500" />}
+                tag="AI Logic"
+            /> */}
+        </div>
+    );
+};
+
+// --- UTILS ---
+
+const MetricCard = ({ title, value, icon, trend, subtitle }) => (
+    <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group hover:shadow-xl transition-all duration-500">
         <div className="flex items-center gap-4 mb-4">
-            <div className="p-3 bg-slate-100 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10">
+            <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-800 group-hover:bg-teal-500/10 transition-colors">
                 {icon}
             </div>
-            <h4 className="text-slate-500 dark:text-gray-400 font-medium text-sm">{title}</h4>
+            <div>
+                <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest">{title}</h4>
+                {subtitle && <p className="text-[10px] text-slate-500">{subtitle}</p>}
+            </div>
         </div>
-        <div className="text-4xl font-bold mb-1 text-slate-900 dark:text-white">{value}</div>
-        <p className="text-slate-400 dark:text-gray-500 text-xs">{subtitle}</p>
+        <div className="text-3xl font-black">{value !== undefined ? value : '...'}</div>
+        {trend && <div className="mt-2 text-[10px] font-bold text-teal-500 bg-teal-500/10 w-fit px-2 py-0.5 rounded uppercase tracking-tighter">{trend}</div>}
+        <div className="absolute -bottom-4 -right-4 opacity-10 group-hover:scale-110 transition-transform">
+            {React.cloneElement(icon, { size: 100 })}
+        </div>
+    </div>
+);
+
+const IntegrationCard = ({ title, subtitle, description, icon, tag }) => (
+    <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm group hover:border-teal-500 transition-all cursor-not-allowed">
+        <div className="flex justify-between items-start mb-6">
+            <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-800">
+                {icon}
+            </div>
+            <span className="text-[10px] font-black uppercase bg-slate-100 dark:bg-slate-800 text-slate-500 px-3 py-1 rounded-full">{tag}</span>
+        </div>
+        <h4 className="text-slate-400 font-bold text-xs uppercase tracking-widest mb-1">{subtitle}</h4>
+        <h3 className="text-xl font-black mb-3">{title}</h3>
+        <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-6">{description}</p>
+        <div className="pt-6 border-t border-slate-100 dark:border-slate-800 flex items-center gap-2 text-slate-300 font-bold text-xs uppercase">
+            <Toggle /> Connection Unavailable
+        </div>
     </div>
 );
 
