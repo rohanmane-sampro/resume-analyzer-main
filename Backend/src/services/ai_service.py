@@ -1,29 +1,20 @@
 import os
 import json
 from src.config import Config
+from src.utils.groq_key_manager import groq_key_manager
 
-# Initialize Groq client
-groq_client = None
-
-if Config.GROQ_API_KEY:
-    try:
-        from groq import Groq
-        groq_client = Groq(api_key=Config.GROQ_API_KEY)
-        print("SUCCESS: Groq AI configured (Primary)")
-    except ImportError:
-        print("WARNING: 'groq' package not installed. Run 'pip install groq'")
-else:
-    print("ERROR: GROQ_API_KEY not found in environment variables!")
+# Groq client is now managed by groq_key_manager
+# It will randomly select from multiple API keys for each request
+print("✅ AI Service initialized with Groq Key Manager")
 
 def safe_ai_call(prompt, max_retries=3, max_tokens=4096):
-    """Safely call AI using ONLY Groq"""
-    global groq_client
-    
-    if not groq_client:
-        return "AI Error: Groq is not configured. Please check your .env file."
+    """Safely call AI using Groq with random key selection"""
     
     for attempt in range(max_retries):
         try:
+            # Get a random Groq client (different key each time)
+            groq_client = groq_key_manager.get_random_client()
+            
             print(f"Attempt {attempt + 1}: Making Groq AI call (max_tokens={max_tokens})...")
             completion = groq_client.chat.completions.create(
                 messages=[{"role": "user", "content": prompt}],

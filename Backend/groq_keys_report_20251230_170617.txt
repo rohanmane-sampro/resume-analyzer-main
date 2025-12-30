@@ -1,0 +1,47 @@
+================================================================================
+🔍 GROQ API KEYS VALIDATION REPORT
+Generated: 2025-12-30 17:06:03
+================================================================================
+
+📥 Found 14 API key(s) to test
+
+================================================================================
+TESTING RESULTS
+================================================================================
+
+❌ Key # 2 (...weta mam) - INVALID         - Invalid or expired API key
+❌ Key # 3 (...q6#aryan) - INVALID         - Invalid or expired API key
+❌ Key # 4 (...athamesh) - INVALID         - Invalid or expired API key
+❌ Key # 5 (...p#shital) - INVALID         - Invalid or expired API key
+✅ Key # 6 (...pvNJ6Hvq) - WORKING         - Key is active and working (155.36ms)
+✅ Key # 7 (...8Gmv1RYo) - WORKING         - Key is active and working (151.14ms)
+❌ Key # 8 (...LgIdD1wT) - INVALID         - Invalid or expired API key
+✅ Key # 9 (...tbwlsEfE) - WORKING         - Key is active and working (111.21ms)
+✅ Key #10 (...xcvlDHnW) - WORKING         - Key is active and working (671.05ms)
+✅ Key #11 (...Elou1QhW) - WORKING         - Key is active and working (243.73ms)
+✅ Key #12 (...v2cyC4lz) - WORKING         - Key is active and working (143.26ms)
+✅ Key #13 (...NFuQojCU) - WORKING         - Key is active and working (166.57ms)
+✅ Key #14 (...NJ9m71z2) - WORKING         - Key is active and working (131.34ms)
+✅ Key #15 (...jU81xXIZ) - WORKING         - Key is active and working (138.83ms)
+
+================================================================================
+📊 SUMMARY
+================================================================================
+
+  ✅ Working Keys:         9 / 14
+  ⏳ Rate Limited:        0 / 14
+  🚫 Quota Exceeded:      0 / 14
+  ❌ Invalid Keys:         5 / 14
+  ⚠️  Errors:              0 / 14
+
+✅ WORKING KEYS: #6, #7, #9, #10, #11, #12, #13, #14, #15
+   Average response time: 212.50ms
+
+❌ INVALID KEYS: #2, #3, #4, #5, #8
+   Check these keys in your Groq console
+
+📈 ESTIMATED CAPACITY (Free Tier):
+   Daily:   ~129,600 requests
+   Monthly: ~3,888,000 requests
+
+================================================================================
