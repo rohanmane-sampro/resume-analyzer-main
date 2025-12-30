@@ -97,5 +97,24 @@ class GroqKeyManager:
         
         raise Exception(f"❌ All {len(tried_keys)} Groq API keys failed. Last error: {last_error}")
 
-# Create global instance
-groq_key_manager = GroqKeyManager()
+# Global instance - will be initialized on first use
+_groq_key_manager_instance = None
+
+def _get_groq_key_manager():
+    """Get or create the global GroqKeyManager instance (lazy initialization)"""
+    global _groq_key_manager_instance
+    if _groq_key_manager_instance is None:
+        _groq_key_manager_instance = GroqKeyManager()
+    return _groq_key_manager_instance
+
+# Create a proxy object that initializes on first access
+class GroqKeyManagerProxy:
+    """Proxy that delays initialization until first use"""
+    
+    def __getattr__(self, name):
+        # Get the real manager and delegate the call
+        manager = _get_groq_key_manager()
+        return getattr(manager, name)
+
+# Export the proxy instead of direct instance
+groq_key_manager = GroqKeyManagerProxy()

@@ -175,13 +175,6 @@ def main():
     # Print to console
     full_output = "\n".join(output_lines)
     print("\n" + full_output)
-    
-    # Save to file
-    filename = f"groq_keys_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
-    with open(filename, 'w', encoding='utf-8') as f:
-        f.write(full_output)
-    
-    print(f"\n💾 Report saved to: {filename}\n")
 
 if __name__ == "__main__":
     try:
