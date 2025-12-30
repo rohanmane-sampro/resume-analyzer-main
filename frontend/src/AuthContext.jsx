@@ -31,33 +31,43 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const login = async (email, password) => {
-        const response = await fetch(ENDPOINTS.AUTH.LOGIN, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-        });
-        const data = await response.json();
-        if (response.ok) {
-            localStorage.setItem('token', data.token);
-            setUser(data.user);
-            return { success: true, user: data.user };
+        try {
+            const response = await fetch(ENDPOINTS.AUTH.LOGIN, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                localStorage.setItem('token', data.token);
+                setUser(data.user);
+                return { success: true, user: data.user };
+            }
+            return { success: false, message: data.message };
+        } catch (error) {
+            console.error("Login error:", error);
+            return { success: false, message: "Network error: Unable to connect to server." };
         }
-        return { success: false, message: data.message };
     };
 
     const register = async (name, email, password) => {
-        const response = await fetch(ENDPOINTS.AUTH.REGISTER, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email, password })
-        });
-        const data = await response.json();
-        if (response.ok) {
-            localStorage.setItem('token', data.token);
-            setUser(data.user);
-            return { success: true };
+        try {
+            const response = await fetch(ENDPOINTS.AUTH.REGISTER, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                localStorage.setItem('token', data.token);
+                setUser(data.user);
+                return { success: true };
+            }
+            return { success: false, message: data.message };
+        } catch (error) {
+            console.error("Registration error:", error);
+            return { success: false, message: "Network error: Unable to connect to server." };
         }
-        return { success: false, message: data.message };
     };
 
     const logout = () => {

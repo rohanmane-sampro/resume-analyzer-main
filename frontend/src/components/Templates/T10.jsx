@@ -11,6 +11,9 @@ const parseMarkdown = (text) => {
 };
 
 const StyledWrapper = styled.div`
+  font-family: 'Times New Roman', serif;
+  background-color: #f5f5f5;
+
 @media print {
   body {
     font-family: 'Times New Roman', serif;
@@ -29,11 +32,6 @@ const StyledWrapper = styled.div`
     border: none !important;
     box-shadow: none !important;
   }
-}
-
-body {
-  font-family: 'Times New Roman', serif;
-  background-color: #f5f5f5;
 }
 
 .resume {

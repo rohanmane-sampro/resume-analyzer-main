@@ -317,6 +317,10 @@ export const T9 = ({ jsonData }) => {
             <a href={`https://linkedin.com/in/${jsonData.contactInfo?.linkedin || ''}`} target="_blank" rel="noreferrer">
               linkedin.com/in/{jsonData.contactInfo?.linkedin || 'TimmyLu01'}
             </a>
+            <a href={`mailto:${jsonData.contactInfo?.emailAddress || ''}`}>
+              {jsonData.contactInfo?.emailAddress || 'email@example.com'}
+            </a>
+            <span>{jsonData.contactInfo?.phoneNumber || '(123) 456-7890'}</span>
           </div>
         </div>
 

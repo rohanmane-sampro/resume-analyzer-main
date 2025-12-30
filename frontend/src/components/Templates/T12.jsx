@@ -11,6 +11,9 @@ const parseMarkdown = (text) => {
 };
 
 const StyledWrapper = styled.div`
+  font-family: 'Arial', sans-serif;
+  background-color: #f5f5f5;
+
 @media print {
   body {
     margin: 0;
@@ -27,11 +30,6 @@ const StyledWrapper = styled.div`
     width: 100%;
     box-shadow: none !important;
   }
-}
-
-body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f5f5f5;
 }
 
 .resume {

@@ -14,6 +14,16 @@ const parseMarkdown = (text) => {
 const removespace = (str) => str.trim();
 
 const StyledWrapper = styled.div`
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 20px 0;
+
 @media print {
   body {
     font-family: 'Segoe UI', Arial, sans-serif;
@@ -43,18 +53,6 @@ const StyledWrapper = styled.div`
     break-inside: avoid;
     margin-bottom: 15px;
   }
-}
-
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f5f5f5;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  min-height: 100vh;
-  padding: 20px 0;
 }
 
 .resume {

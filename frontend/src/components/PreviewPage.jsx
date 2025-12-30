@@ -5,7 +5,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { ENDPOINTS, getAuthHeaders } from '../apiConfig';
 import { useAuth } from '../AuthContext';
-import { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21 } from './Templates';
+import {
+  T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+  T21, T22, T23, T24, T25, T26, T27, T28, T29, T30
+} from './Templates';
 
 const PreviewPage = () => {
   const location = useLocation();
@@ -270,7 +273,11 @@ const PreviewPage = () => {
 
   const getTemplateComponent = () => {
     const templateIndex = resumeData.selectedTemplate;
-    const templateComponents = { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21 };
+    const templateComponents = {
+      T1, T2, T3, T4, T5, T6, T7, T8, T9, T10,
+      T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+      T21, T22, T23, T24, T25, T26, T27, T28, T29, T30
+    };
     return templateComponents[`T${templateIndex}`] || T1;
   };
 
@@ -547,6 +554,9 @@ const PreviewPage = () => {
               Back to Edit
             </motion.button>
             <h1 className="text-2xl font-bold">Resume Preview</h1>
+            <span className="ml-4 px-3 py-1 bg-gray-800 rounded-full text-xs text-gray-400 border border-gray-700">
+              Template {resumeData?.selectedTemplate || '1'}
+            </span>
           </div>
 
           {/* Top Controls */}

@@ -1706,36 +1706,43 @@ const GetInfo = () => {
               <h2 className="text-xl sm:text-2xl font-bold border-b-4 pb-1 border-blue-900 mb-4 text-blue-800 dark:border-blue-500 dark:text-blue-400">Choose Template</h2>
               <p className='font-semibold mb-6 text-gray-600 dark:text-gray-200'>We will frequently add more template designs to provide more resume options.</p>
               <div className="grid grid-cols-2 gap-5">
-                {[1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].map((template) => (
-                  <div
-                    key={template}
-                    className={`relative p-4 border-2 rounded-lg transition-all duration-150 shadow-md hover:shadow-xl dark:shadow-gray-600 ${ExampleJsonData.selectedTemplate === String(template) ? 'border-blue-600 bg-blue-50 dark:bg-slate-800 ring-2 ring-blue-300' : 'dark:border-gray-700 hover:border-blue-400'
-                      }`}
-                  >
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].map((template) => {
+                  const TemplateMap = { 1: T1, 2: T2, 3: T3, 4: T4, 5: T5, 6: T6, 7: T7, 8: T8, 9: T9, 10: T10, 11: T11, 12: T12, 13: T13, 14: T14, 15: T15, 16: T16, 17: T17, 18: T18, 19: T19, 20: T20, 21: T21, 22: T22, 23: T23, 24: T24, 25: T25, 26: T26, 27: T27, 28: T28, 29: T29, 30: T30 };
+                  const TemplateComponent = TemplateMap[template] || T1;
+                  return (
                     <div
-                      onClick={() => setExampleJsonData((prev) => ({ ...prev, selectedTemplate: String(template) }))}
-                      className="cursor-pointer"
+                      key={template}
+                      className={`relative p-2 border-2 rounded-lg transition-all duration-150 shadow-md hover:shadow-xl dark:shadow-gray-600 overflow-hidden ${ExampleJsonData.selectedTemplate === String(template) ? 'border-blue-600 bg-blue-50 dark:bg-slate-800 ring-2 ring-blue-300' : 'dark:border-gray-700 hover:border-blue-400'
+                        }`}
+                      style={{ height: '300px' }}
                     >
-                      <img
-                        src={`/Resume-builder/Temp/cv${template}.png`}
-                        alt={`Template ${template}`}
-                        className="w-full h-auto rounded-lg dark:filter dark:brightness-90"
-                      />
-                      <p className="text-center mt-2 dark:text-gray-200 font-semibold">{AboutTemps[template - 1]}</p>
-                    </div>
-
-                    {/* Use This Template Button */}
-                    {ExampleJsonData.selectedTemplate === String(template) && (
-                      <button
-                        onClick={handleNext}
-                        className="mt-3 w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg font-bold text-sm transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+                      <div
+                        onClick={() => setExampleJsonData((prev) => ({ ...prev, selectedTemplate: String(template) }))}
+                        className="cursor-pointer h-full w-full relative overflow-hidden bg-white"
                       >
-                        <Check size={18} />
-                        Use This Template
-                      </button>
-                    )}
-                  </div>
-                ))}
+                        {/* Live Component Scaled Down */}
+                        <div style={{ transform: 'scale(0.25)', transformOrigin: 'top left', width: '400%', height: '400%', pointerEvents: 'none' }}>
+                          <TemplateComponent jsonData={ExampleJsonData} />
+                        </div>
+
+                        <p className="absolute bottom-0 w-full text-center bg-white/90 py-1 text-sm font-semibold dark:bg-slate-800/90 dark:text-gray-200 backdrop-blur-sm border-t">
+                          {AboutTemps[template - 1] || `Template ${template}`}
+                        </p>
+                      </div>
+
+                      {/* Use This Template Button */}
+                      {ExampleJsonData.selectedTemplate === String(template) && (
+                        <button
+                          onClick={handleNext}
+                          className="absolute bottom-10 left-1/2 transform -translate-x-1/2 w-4/5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-xs shadow-lg z-10 flex items-center justify-center gap-1"
+                        >
+                          <Check size={14} />
+                          Use This Template
+                        </button>
+                      )}
+                    </div>
+                  )
+                })}
               </div>
             </div>
           );

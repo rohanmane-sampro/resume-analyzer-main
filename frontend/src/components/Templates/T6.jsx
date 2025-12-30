@@ -11,7 +11,7 @@ const parseMarkdown = (text) => {
     .replace(/\n/g, ' '); // Convert line breaks to spaces for continuous text
 };
 
-const StyledWrapper = styled.div`body {
+const StyledWrapper = styled.div`
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
@@ -20,7 +20,6 @@ const StyledWrapper = styled.div`body {
   justify-content: center;
   align-items: center;
   height: auto;         /* (W/H) Ratio should be 0.7069 */
-}
 .resume {
   width: 210mm;           /* (W/H) Ratio should be 0.7069 */
   /* height: 1131px; */

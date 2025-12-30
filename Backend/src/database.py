@@ -8,10 +8,17 @@ class Database:
     @classmethod
     def get_db(cls):
         if cls._db is None:
-            cls._client = MongoClient(Config.MONGODB_URI)
-            # Extract database name from URI or default to resume_analyzer
-            db_name = Config.MONGODB_URI.split('/')[-1].split('?')[0] or 'resume_analyzer'
-            cls._db = cls._client[db_name]
+            try:
+                cls._client = MongoClient(Config.MONGODB_URI, serverSelectionTimeoutMS=5000)
+                # Extract database name from URI or default to resume_analyzer
+                db_name = Config.MONGODB_URI.split('/')[-1].split('?')[0] or 'resume_analyzer'
+                cls._db = cls._client[db_name]
+                # Trigger a connection attempt
+                cls._client.admin.command('ping')
+                print(f"✅ MongoDB Connected successfully to database: {db_name}")
+            except Exception as e:
+                print(f"❌ MongoDB Connection failed: {e}")
+                raise e
         return cls._db
 
 db = Database.get_db()

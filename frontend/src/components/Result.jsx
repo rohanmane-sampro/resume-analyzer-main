@@ -3,7 +3,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import toast from "react-hot-toast";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { html as html_beautify } from 'js-beautify';
-import { T1, T1Css, T2, T2Css, T3, T3Css, T4, T4Css, T5, T5Css, T6, T6Css, T7, T7Css, T9, T9Css, T10, T10Css, T11, T11Css, T12, T12Css, T13, T13Css, T14, T14Css, T15, T15Css, T16, T16Css, T17, T17Css, T18, T18Css, T19, T19Css, T20, T20Css, T21, T21Css } from './Templates';
+import {
+  T1, T1Css, T2, T2Css, T3, T3Css, T4, T4Css, T5, T5Css, T6, T6Css, T7, T7Css, T8, T8Css, T9, T9Css, T10, T10Css,
+  T11, T11Css, T12, T12Css, T13, T13Css, T14, T14Css, T15, T15Css, T16, T16Css, T17, T17Css, T18, T18Css, T19, T19Css, T20, T20Css,
+  T21, T21Css, T22, T22Css, T23, T23Css, T24, T24Css, T25, T25Css, T26, T26Css, T27, T27Css, T28, T28Css, T29, T29Css, T30, T30Css
+} from './Templates';
 import DownloadModal from './DownloadModal.jsx';
 import { ENDPOINTS } from '../apiConfig';
 
@@ -57,9 +61,10 @@ const Result = () => {
       const getTemplateCss = () => {
         const templateMap = {
           '1': T1Css, '2': T2Css, '3': T3Css, '4': T4Css, '5': T5Css, '6': T6Css,
-          '7': T7Css, '9': T9Css, '10': T10Css, '11': T11Css, '12': T12Css,
+          '7': T7Css, '8': T8Css, '9': T9Css, '10': T10Css, '11': T11Css, '12': T12Css,
           '13': T13Css, '14': T14Css, '15': T15Css, '16': T16Css, '17': T17Css, '18': T18Css,
-          '19': T19Css, '20': T20Css, '21': T21Css
+          '19': T19Css, '20': T20Css, '21': T21Css, '22': T22Css, '23': T23Css, '24': T24Css,
+          '25': T25Css, '26': T26Css, '27': T27Css, '28': T28Css, '29': T29Css, '30': T30Css
         };
         return templateMap[selectedTemplate] || T1Css;
       };
@@ -175,9 +180,10 @@ const Result = () => {
   const renderSelectedTemplate = () => {
     const templateMap = {
       1: T1, 2: T2, 3: T3, 4: T4, 5: T5, 6: T6,
-      7: T7, 9: T9, 10: T10, 11: T11, 12: T12,
+      7: T7, 8: T8, 9: T9, 10: T10, 11: T11, 12: T12,
       13: T13, 14: T14, 15: T15, 16: T16, 17: T17, 18: T18,
-      19: T19, 20: T20, 21: T21
+      19: T19, 20: T20, 21: T21, 22: T22, 23: T23, 24: T24,
+      25: T25, 26: T26, 27: T27, 28: T28, 29: T29, 30: T30
     };
     const TemplateComponent = templateMap[selectedTemplate] || T1;
     return <TemplateComponent jsonData={jsonData} />;
@@ -281,7 +287,12 @@ const Result = () => {
           <div ref={navigateToDiv} className="w-full flex flex-col items-center mt-8">
             <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative w-full mb-6 text-left">
               <span className="block sm:inline">
-                🎉 Your {versionType === 'enhanced' ? 'AI-Enhanced' : 'Original'} resume is ready! Choose your preferred format below to download.
+                🎉 Your {versionType === 'enhanced' ? 'AI-Enhanced' : 'Original'} resume is ready!
+                <span className="ml-2 inline-block px-2 py-0.5 bg-green-200 text-green-800 text-xs rounded-full border border-green-300">
+                  Template {jsonData?.selectedTemplate || '1'}
+                </span>
+                <br />
+                Choose your preferred format below to download.
                 {versionType === 'enhanced' && <><br />🤖 This version includes AI improvements: enhanced content, keywords, and professional formatting.</>}
                 {versionType === 'original' && <><br />📝 This is your original resume as you created it.</>}
               </span>
