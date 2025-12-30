@@ -3,11 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import toast from "react-hot-toast";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { html as html_beautify } from 'js-beautify';
-import {
-  T1, T1Css, T2, T2Css, T3, T3Css, T4, T4Css, T5, T5Css, T6, T6Css, T7, T7Css, T8, T8Css, T9, T9Css, T10, T10Css,
-  T11, T11Css, T12, T12Css, T13, T13Css, T14, T14Css, T15, T15Css, T16, T16Css, T17, T17Css, T18, T18Css, T19, T19Css, T20, T20Css,
-  T21, T21Css, T22, T22Css, T23, T23Css, T24, T24Css, T25, T25Css, T26, T26Css, T27, T27Css, T28, T28Css, T29, T29Css, T30, T30Css
-} from './Templates';
+import { T1, T1Css, T2, T2Css, T3, T3Css, T4, T4Css, T5, T5Css, T6, T6Css, T7, T7Css, T9, T9Css, T10, T10Css, T11, T11Css, T12, T12Css, T13, T13Css, T14, T14Css, T15, T15Css, T16, T16Css, T17, T17Css, T18, T18Css, T19, T19Css, T20, T20Css, T21, T21Css, T22, T22Css, T23, T23Css, T24, T24Css, T25, T25Css, T26, T26Css, T27, T27Css, T28, T28Css, T29, T29Css, T30, T30Css } from './Templates';
 import DownloadModal from './DownloadModal.jsx';
 import { ENDPOINTS } from '../apiConfig';
 
