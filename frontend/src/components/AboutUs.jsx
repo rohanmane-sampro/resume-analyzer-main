@@ -47,7 +47,7 @@ const AboutUs = () => {
     {
       icon: <Palette className="w-6 h-6" />,
       title: "Beautiful Templates",
-      description: "6 professionally designed, ATS-optimized templates to showcase your skills perfectly.",
+      description: "Professionally designed, ATS-optimized templates to showcase your skills perfectly.",
       gradient: "from-green-500 to-emerald-500"
     }
   ];
@@ -158,7 +158,7 @@ const AboutUs = () => {
           {/* Stats Section */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
             <div className="glass-card p-8 text-center bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-200 dark:border-purple-800">
-              <div className="text-5xl font-extrabold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">6+</div>
+              <div className="text-5xl font-extrabold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">30+</div>
               <div className="text-lg font-semibold text-slate-700 dark:text-slate-200">Professional Templates</div>
             </div>
             <div className="glass-card p-8 text-center bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border-blue-200 dark:border-blue-800">
