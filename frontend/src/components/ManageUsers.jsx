@@ -49,16 +49,14 @@ const ManageUsers = ({ users, setUsers }) => {
     };
 
     const handleBulkUpdate = async (type, limit, plan = null) => {
-        const confirmMsg = plan
-            ? `Set template limit to ${limit} for ALL Knowledge Hub ${plan} users?`
-            : `Set download limit to ${limit} for ALL ${type.replace('_', ' ')} users?`;
+        const confirmMsg = `Set template limit to ${limit} for ALL ${plan ? `Knowledge Hub ${plan}` : type.replace('_', ' ')} users?`;
 
         if (!confirm(confirmMsg)) return;
 
         try {
             const payload = {
                 user_type: type,
-                update_data: plan ? { template_limit: parseInt(limit) } : { download_limit: parseInt(limit) }
+                update_data: { template_limit: parseInt(limit) }
             };
 
             if (plan) payload.subscription_plan = plan.toLowerCase();
@@ -78,7 +76,7 @@ const ManageUsers = ({ users, setUsers }) => {
                         if (plan && u.subscription_plan === plan.toLowerCase()) {
                             return { ...u, template_limit: parseInt(limit) };
                         } else if (!plan) {
-                            return { ...u, download_limit: parseInt(limit) };
+                            return { ...u, template_limit: parseInt(limit) };
                         }
                     }
                     return u;
@@ -148,9 +146,6 @@ const ManageUsers = ({ users, setUsers }) => {
                                 <div key={plan} className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-purple-500/30 transition-all bg-slate-50 dark:bg-slate-800/20">
                                     <div className="flex justify-between items-start mb-2">
                                         <span className="capitalize font-bold text-slate-700 dark:text-slate-300">{plan}</span>
-                                        <span className="text-xs font-mono bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded text-slate-500">Default: {
-                                            plan === 'basic' ? 3 : plan === 'standard' ? 7 : plan === 'enterprise' ? 12 : 20
-                                        }</span>
                                     </div>
                                     <div className="flex items-center gap-2 mt-4">
                                         <input

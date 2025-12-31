@@ -94,3 +94,30 @@ def get_admin_stats(current_user):
         'total_resumes': total_resumes,
         'top_templates': top_templates
     }), 200
+
+@resume_bp.route('/available-templates', methods=['GET'])
+@token_required
+def get_available_templates(current_user):
+    # Admin sees all templates
+    if current_user['_id'] == 'admin_hardcoded':
+        all_templates = list(range(1, 31))
+        return jsonify({'is_admin': True, 'templates': all_templates, 'total': len(all_templates)}), 200
+    
+    # Get user
+    user_doc = users_collection.find_one({'_id': ObjectId(current_user['_id'])})
+    if not user_doc:
+        return jsonify({'message': 'User not found'}), 404
+    
+    # Get template limit
+    template_limit = user_doc.get('template_limit', 3)
+    
+    # Return sequential templates from 1
+    available_templates = list(range(1, template_limit + 1))
+    
+    return jsonify({
+        'templates': available_templates,
+        'total': len(available_templates),
+        'template_limit': template_limit,
+        'user_type': user_doc.get('type', 'standard'),
+        'subscription_plan': user_doc.get('subscription_plan', 'basic')
+    }), 200

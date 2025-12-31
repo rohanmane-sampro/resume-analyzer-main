@@ -34,6 +34,7 @@ export const ENDPOINTS = {
         TRACK_CREATE: `${API_BASE_URL}/api/resume/track/create`,
         TRACK_DOWNLOAD: (id) => `${API_BASE_URL}/api/resume/track/download/${id}`,
         STATS: `${API_BASE_URL}/api/resume/stats`,
+        AVAILABLE_TEMPLATES: `${API_BASE_URL}/api/resume/available-templates`,
     },
     ADMIN: {
         STATS: `${API_BASE_URL}/api/admin/stats`,

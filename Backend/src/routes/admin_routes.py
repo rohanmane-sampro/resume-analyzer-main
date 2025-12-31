@@ -115,7 +115,11 @@ def bulk_update_users(current_user):
         
     query = {}
     if user_type != 'all':
-        query['type'] = user_type
+        if user_type == 'guest':
+            # Guest users (website signups) don't have a 'type' field or it's not 'knowledge_hub'
+            query['type'] = {'$ne': 'knowledge_hub'}
+        else:
+            query['type'] = user_type
         
     subscription_plan = data.get('subscription_plan')
     if subscription_plan:

@@ -8,6 +8,7 @@ import Suggestions from "./Suggestions";
 import { useLocation } from 'react-router-dom';
 import JsonFiles from "./JsonFiles.jsx"
 import { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30 } from './Templates';
+import { ENDPOINTS, getAuthHeaders } from '../apiConfig';
 
 import AIAnalysis from './AIAnalysis.jsx';
 import AISuggestions from './AISuggestions.jsx';
@@ -24,6 +25,10 @@ const GetInfo = () => {
   const navigate = useNavigate();
   const [ExampleJsonData, setExampleJsonData] = useState(UserjsonData ? UserjsonData : JsonFiles[Math.floor(Math.random() * JsonFiles.length)]);
   const hasLoadedDataRef = useRef(false);
+
+  // Available templates state
+  const [availableTemplateNumbers, setAvailableTemplateNumbers] = useState([1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]);
+  const [loadingTemplates, setLoadingTemplates] = useState(true);
 
   // AI-related state
   // const [isChatBotOpen, setIsChatBotOpen] = useState(false); // Disabled for now
@@ -190,6 +195,40 @@ const GetInfo = () => {
         console.error("Error fetching resume count:", error);
       });
     */
+  }, []);
+
+  // Fetch available templates based on user's limit
+  useEffect(() => {
+    const fetchAvailableTemplates = async () => {
+      try {
+        const response = await fetch(ENDPOINTS.RESUME.AVAILABLE_TEMPLATES, {
+          method: 'GET',
+          headers: getAuthHeaders()
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // data.templates will be [1, 2, 3] for basic plan
+          // Filter out template 8 (doesn't exist) and set available templates
+          const templates = data.templates.filter(num => num !== 8);
+          setAvailableTemplateNumbers(templates);
+          console.log(`User can access ${data.total} templates:`, templates);
+        } else {
+          console.error('Failed to fetch templates:', data);
+          // Fallback: show all templates if API fails
+          setAvailableTemplateNumbers([1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]);
+        }
+      } catch (error) {
+        console.error('Error fetching available templates:', error);
+        // Fallback: show all templates if API fails
+        setAvailableTemplateNumbers([1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]);
+      } finally {
+        setLoadingTemplates(false);
+      }
+    };
+
+    fetchAvailableTemplates();
   }, []);
 
   // Load data when coming back from Result or Preview page or via FileUpload
@@ -1660,44 +1699,79 @@ const GetInfo = () => {
             <div className="space-y-4">
               <h2 className="text-xl sm:text-2xl font-bold border-b-4 pb-1 border-blue-900 mb-4 text-blue-800 dark:border-blue-500 dark:text-blue-400">Choose Template</h2>
               <p className='font-semibold mb-6 text-gray-600 dark:text-gray-200'>We will frequently add more template designs to provide more robust options.</p>
-              <div className="grid grid-cols-2 gap-5">
-                {[1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].map((template) => (
-                  <div
-                    key={template}
-                    className={`relative p-4 border-2 rounded-lg transition-all duration-150 shadow-md hover:shadow-xl dark:shadow-gray-600 ${formData.selectedTemplate === String(template) ? 'border-blue-600 bg-blue-50 dark:bg-slate-800 ring-2 ring-blue-300' : 'dark:border-gray-700 hover:border-blue-400'
-                      }`}
-                  >
-                    <div
-                      onClick={() => {
-                        setFormData((prev) => ({ ...prev, selectedTemplate: String(template) }));
-                        if (i === 2) setI(1);
-                        const timer2 = setTimeout(() => {
-                          if (i === 1 || i === 2) setI(2);
-                        }, 50);
-                      }}
-                      className="cursor-pointer"
-                    >
-                      <img
-                        src={`${import.meta.env.BASE_URL}Temp/cv${template}.png`}
-                        alt={`Template ${template}`}
-                        className="w-full h-auto rounded-lg dark:filter dark:brightness-90"
-                      />
-                      <p className="text-center mt-2 dark:text-gray-200 font-semibold">{AboutTemps[template - 1]}</p>
-                    </div>
-
-                    {/* Use This Template Button */}
-                    {formData.selectedTemplate === String(template) && (
-                      <button
-                        onClick={handleNext}
-                        className="mt-3 w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg font-bold text-sm transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+              {loadingTemplates ? (
+                <div className="flex items-center justify-center min-h-[400px]">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-5">
+                  {[1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].map((template) => {
+                    const isLocked = !availableTemplateNumbers.includes(template);
+                    return (
+                      <div
+                        key={template}
+                        className={`relative p-4 border-2 rounded-lg transition-all duration-150 shadow-md hover:shadow-xl dark:shadow-gray-600 ${formData.selectedTemplate === String(template) ? 'border-blue-600 bg-blue-50 dark:bg-slate-800 ring-2 ring-blue-300' : 'dark:border-gray-700 hover:border-blue-400'
+                          } ${isLocked ? 'opacity-90' : ''}`}
                       >
-                        <Check size={18} />
-                        Use This Template
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div>
+                        <div
+                          onClick={() => {
+                            if (isLocked) {
+                              toast((t) => (
+                                <div className="flex flex-col gap-2">
+                                  <span className="font-bold">Premium Template 🔒</span>
+                                  <span className="text-sm">Upgrade your plan to unlock this design!</span>
+                                  <button
+                                    onClick={() => { toast.dismiss(t.id); navigate('/pricing'); }}
+                                    className="bg-purple-600 text-white px-3 py-1 rounded text-xs mt-1 w-fit"
+                                  >
+                                    View Pricing
+                                  </button>
+                                </div>
+                              ), { duration: 4000 });
+                              return;
+                            }
+                            setFormData((prev) => ({ ...prev, selectedTemplate: String(template) }));
+                            if (i === 2) setI(1);
+                            const timer2 = setTimeout(() => {
+                              if (i === 1 || i === 2) setI(2);
+                            }, 50);
+                          }}
+                          className="cursor-pointer"
+                        >
+                          <img
+                            src={`${import.meta.env.BASE_URL}Temp/cv${template}.png`}
+                            alt={`Template ${template}`}
+                            className="w-full h-auto rounded-lg dark:filter dark:brightness-90"
+                          />
+
+                          {isLocked && (
+                            <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center z-10 backdrop-blur-[1px]">
+                              <div className="bg-white/10 p-4 rounded-full mb-2 backdrop-blur-md border border-white/20">
+                                {/* Using Check because Lock might not be imported, but wait I check imports */}
+                                <div className="text-white text-3xl">🔒</div>
+                              </div>
+                              <span className="text-white font-bold text-sm bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-1.5 rounded-full shadow-lg">Premium</span>
+                            </div>
+                          )}
+
+                          <p className="text-center mt-2 dark:text-gray-200 font-semibold">{AboutTemps[template - 1]}</p>
+                        </div>
+
+                        {/* Use This Template Button - Only show if selected (which won't happen if locked) */}
+                        {formData.selectedTemplate === String(template) && (
+                          <button
+                            onClick={handleNext}
+                            className="mt-3 w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg font-bold text-sm transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+                          >
+                            <Check size={18} />
+                            Use This Template
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           );
         } else {
@@ -1705,38 +1779,74 @@ const GetInfo = () => {
             <div className="space-y-4">
               <h2 className="text-xl sm:text-2xl font-bold border-b-4 pb-1 border-blue-900 mb-4 text-blue-800 dark:border-blue-500 dark:text-blue-400">Choose Template</h2>
               <p className='font-semibold mb-6 text-gray-600 dark:text-gray-200'>We will frequently add more template designs to provide more resume options.</p>
-              <div className="grid grid-cols-2 gap-5">
-                {[1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].map((template) => (
-                  <div
-                    key={template}
-                    className={`relative p-4 border-2 rounded-lg transition-all duration-150 shadow-md hover:shadow-xl dark:shadow-gray-600 ${ExampleJsonData.selectedTemplate === String(template) ? 'border-blue-600 bg-blue-50 dark:bg-slate-800 ring-2 ring-blue-300' : 'dark:border-gray-700 hover:border-blue-400'
-                      }`}
-                  >
-                    <div
-                      onClick={() => setExampleJsonData((prev) => ({ ...prev, selectedTemplate: String(template) }))}
-                      className="cursor-pointer"
-                    >
-                      <img
-                        src={`/Resume-builder/Temp/cv${template}.png`}
-                        alt={`Template ${template}`}
-                        className="w-full h-auto rounded-lg dark:filter dark:brightness-90"
-                      />
-                      <p className="text-center mt-2 dark:text-gray-200 font-semibold">{AboutTemps[template - 1]}</p>
-                    </div>
-
-                    {/* Use This Template Button */}
-                    {ExampleJsonData.selectedTemplate === String(template) && (
-                      <button
-                        onClick={handleNext}
-                        className="mt-3 w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg font-bold text-sm transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+              {loadingTemplates ? (
+                <div className="flex items-center justify-center min-h-[400px]">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-5">
+                  {[1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].map((template) => {
+                    const isLocked = !availableTemplateNumbers.includes(template);
+                    return (
+                      <div
+                        key={template}
+                        className={`relative p-4 border-2 rounded-lg transition-all duration-150 shadow-md hover:shadow-xl dark:shadow-gray-600 ${ExampleJsonData.selectedTemplate === String(template) ? 'border-blue-600 bg-blue-50 dark:bg-slate-800 ring-2 ring-blue-300' : 'dark:border-gray-700 hover:border-blue-400'
+                          } ${isLocked ? 'opacity-90' : ''}`}
                       >
-                        <Check size={18} />
-                        Use This Template
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div>
+                        <div
+                          onClick={() => {
+                            if (isLocked) {
+                              toast((t) => (
+                                <div className="flex flex-col gap-2">
+                                  <span className="font-bold">Premium Template 🔒</span>
+                                  <span className="text-sm">Upgrade your plan to unlock this design!</span>
+                                  <button
+                                    onClick={() => { toast.dismiss(t.id); navigate('/pricing'); }}
+                                    className="bg-purple-600 text-white px-3 py-1 rounded text-xs mt-1 w-fit"
+                                  >
+                                    View Pricing
+                                  </button>
+                                </div>
+                              ), { duration: 4000 });
+                              return;
+                            }
+                            setExampleJsonData((prev) => ({ ...prev, selectedTemplate: String(template) }))
+                          }}
+                          className="cursor-pointer"
+                        >
+                          <img
+                            src={`${import.meta.env.BASE_URL}Temp/cv${template}.png`}
+                            alt={`Template ${template}`}
+                            className="w-full h-auto rounded-lg dark:filter dark:brightness-90"
+                          />
+
+                          {isLocked && (
+                            <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center z-10 backdrop-blur-[1px]">
+                              <div className="bg-white/10 p-4 rounded-full mb-2 backdrop-blur-md border border-white/20">
+                                <div className="text-white text-3xl">🔒</div>
+                              </div>
+                              <span className="text-white font-bold text-sm bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-1.5 rounded-full shadow-lg">Premium</span>
+                            </div>
+                          )}
+
+                          <p className="text-center mt-2 dark:text-gray-200 font-semibold">{AboutTemps[template - 1]}</p>
+                        </div>
+
+                        {/* Use This Template Button */}
+                        {ExampleJsonData.selectedTemplate === String(template) && (
+                          <button
+                            onClick={handleNext}
+                            className="mt-3 w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg font-bold text-sm transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+                          >
+                            <Check size={18} />
+                            Use This Template
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           );
         }
