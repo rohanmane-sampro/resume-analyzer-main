@@ -13,6 +13,7 @@ import { ENDPOINTS, getAuthHeaders } from '../apiConfig';
 import AIAnalysis from './AIAnalysis.jsx';
 import AISuggestions from './AISuggestions.jsx';
 import DownloadModal from './DownloadModal.jsx';
+import PricingModal from './PricingModal.jsx';
 
 const GetInfo = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -34,6 +35,7 @@ const GetInfo = () => {
   // const [isChatBotOpen, setIsChatBotOpen] = useState(false); // Disabled for now
   const [showAIAnalysis, setShowAIAnalysis] = useState(false);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
+  const [showPricingModal, setShowPricingModal] = useState(false);
   const [enhancedResumeData, setEnhancedResumeData] = useState(null);
   // console.log('ReceiveData',ExampleJsonData.skills.hardSkills)
   const [formData, setFormData] = useState({
@@ -177,6 +179,9 @@ const GetInfo = () => {
   const [i, setI] = useState(0);
 
 
+  // Available templates state
+  const [allTemplateNumbers, setAllTemplateNumbers] = useState([]);
+  // const [loadingTemplates, setLoadingTemplates] = useState(true); // Already declared above
 
 
   // Use environment variable for Firebase URL
@@ -209,20 +214,31 @@ const GetInfo = () => {
         const data = await response.json();
 
         if (response.ok) {
-          // data.templates will be [1, 2, 3] for basic plan
-          // Filter out template 8 (doesn't exist) and set available templates
+          // Filter out template 8 (doesn't exist) just in case, though API sends valid list
           const templates = data.templates.filter(num => num !== 8);
           setAvailableTemplateNumbers(templates);
-          console.log(`User can access ${data.total} templates:`, templates);
+
+          // Set all templates for rendering (locked/unlocked)
+          if (data.all_templates) {
+            setAllTemplateNumbers(data.all_templates.filter(num => num !== 8));
+          } else {
+            // Fallback if backend doesn't send all_templates yet
+            setAllTemplateNumbers([1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]);
+          }
+          console.log(`User can access ${data.total} of ${data.total_system_templates} templates`);
         } else {
           console.error('Failed to fetch templates:', data);
-          // Fallback: show all templates if API fails
-          setAvailableTemplateNumbers([1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]);
+          // Fallback
+          const fallback = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30];
+          setAvailableTemplateNumbers(fallback);
+          setAllTemplateNumbers(fallback);
         }
       } catch (error) {
         console.error('Error fetching available templates:', error);
-        // Fallback: show all templates if API fails
-        setAvailableTemplateNumbers([1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]);
+        // Fallback
+        const fallback = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30];
+        setAvailableTemplateNumbers(fallback);
+        setAllTemplateNumbers(fallback);
       } finally {
         setLoadingTemplates(false);
       }
@@ -1705,7 +1721,7 @@ const GetInfo = () => {
                 </div>
               ) : (
                 <div className="grid grid-cols-2 gap-5">
-                  {[1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].map((template) => {
+                  {allTemplateNumbers.map((template) => {
                     const isLocked = !availableTemplateNumbers.includes(template);
                     return (
                       <div
@@ -1716,18 +1732,7 @@ const GetInfo = () => {
                         <div
                           onClick={() => {
                             if (isLocked) {
-                              toast((t) => (
-                                <div className="flex flex-col gap-2">
-                                  <span className="font-bold">Premium Template 🔒</span>
-                                  <span className="text-sm">Upgrade your plan to unlock this design!</span>
-                                  <button
-                                    onClick={() => { toast.dismiss(t.id); navigate('/pricing'); }}
-                                    className="bg-purple-600 text-white px-3 py-1 rounded text-xs mt-1 w-fit"
-                                  >
-                                    View Pricing
-                                  </button>
-                                </div>
-                              ), { duration: 4000 });
+                              setShowPricingModal(true);
                               return;
                             }
                             setFormData((prev) => ({ ...prev, selectedTemplate: String(template) }));
@@ -1785,7 +1790,7 @@ const GetInfo = () => {
                 </div>
               ) : (
                 <div className="grid grid-cols-2 gap-5">
-                  {[1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].map((template) => {
+                  {allTemplateNumbers.map((template) => {
                     const isLocked = !availableTemplateNumbers.includes(template);
                     return (
                       <div
@@ -1796,18 +1801,7 @@ const GetInfo = () => {
                         <div
                           onClick={() => {
                             if (isLocked) {
-                              toast((t) => (
-                                <div className="flex flex-col gap-2">
-                                  <span className="font-bold">Premium Template 🔒</span>
-                                  <span className="text-sm">Upgrade your plan to unlock this design!</span>
-                                  <button
-                                    onClick={() => { toast.dismiss(t.id); navigate('/pricing'); }}
-                                    className="bg-purple-600 text-white px-3 py-1 rounded text-xs mt-1 w-fit"
-                                  >
-                                    View Pricing
-                                  </button>
-                                </div>
-                              ), { duration: 4000 });
+                              setShowPricingModal(true);
                               return;
                             }
                             setExampleJsonData((prev) => ({ ...prev, selectedTemplate: String(template) }))
@@ -2116,6 +2110,11 @@ const GetInfo = () => {
           resumeData={enhancedResumeData || getCurrentResumeData()}
           selectedTemplate={getCurrentResumeData().selectedTemplate}
         />
+      )}
+
+      {/* Pricing Modal */}
+      {showPricingModal && (
+        <PricingModal onClose={() => setShowPricingModal(false)} />
       )}
     </div>
   );

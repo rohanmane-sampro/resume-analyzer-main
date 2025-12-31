@@ -95,13 +95,22 @@ def get_admin_stats(current_user):
         'top_templates': top_templates
     }), 200
 
+# Define total available templates in the system
+TOTAL_SYSTEM_TEMPLATES = 30
+
 @resume_bp.route('/available-templates', methods=['GET'])
 @token_required
 def get_available_templates(current_user):
     # Admin sees all templates
     if current_user['_id'] == 'admin_hardcoded':
-        all_templates = list(range(1, 31))
-        return jsonify({'is_admin': True, 'templates': all_templates, 'total': len(all_templates)}), 200
+        all_templates = list(range(1, TOTAL_SYSTEM_TEMPLATES + 1))
+        return jsonify({
+            'is_admin': True, 
+            'templates': all_templates, 
+            'total': len(all_templates),
+            'total_system_templates': TOTAL_SYSTEM_TEMPLATES,
+            'all_templates': all_templates
+        }), 200
     
     # Get user
     user_doc = users_collection.find_one({'_id': ObjectId(current_user['_id'])})
@@ -112,12 +121,16 @@ def get_available_templates(current_user):
     template_limit = user_doc.get('template_limit', 3)
     
     # Return sequential templates from 1
-    available_templates = list(range(1, template_limit + 1))
+    # Ensure limit doesn't exceed total system templates
+    safe_limit = min(template_limit, TOTAL_SYSTEM_TEMPLATES)
+    available_templates = list(range(1, safe_limit + 1))
     
     return jsonify({
-        'templates': available_templates,
+        'templates': available_templates, # The ones user CAN access
         'total': len(available_templates),
         'template_limit': template_limit,
         'user_type': user_doc.get('type', 'standard'),
-        'subscription_plan': user_doc.get('subscription_plan', 'basic')
+        'subscription_plan': user_doc.get('subscription_plan', 'basic'),
+        'total_system_templates': TOTAL_SYSTEM_TEMPLATES, # Total in existence
+        'all_templates': list(range(1, TOTAL_SYSTEM_TEMPLATES + 1)) # Full list for UI rendering
     }), 200
