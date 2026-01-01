@@ -83,6 +83,10 @@ const FileUploadPage = () => {
           setCurrentStep(4);
 
           if (result.success) {
+            console.log('✅ Resume parsed successfully!');
+            console.log('📋 Parsed resume data:', result.data);
+            console.log('📞 Phone number extracted:', result.data.contactInfo.phoneNumber);
+
             setJsonData(result.data);
             setDocUploaded(true);
 

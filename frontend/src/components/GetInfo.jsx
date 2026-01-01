@@ -253,6 +253,10 @@ const GetInfo = () => {
 
     const stateSelectedTemplate = location.state?.selectedTemplate;
 
+    console.log('🔍 GetInfo - Checking for imported data...');
+    console.log('📦 UserjsonData:', UserjsonData);
+    console.log('📞 Phone from import:', UserjsonData?.contactInfo?.phoneNumber);
+
     if (UserjsonData || stateSelectedTemplate) {
       hasLoadedDataRef.current = true;
 
@@ -260,6 +264,10 @@ const GetInfo = () => {
 
       if (UserjsonData) {
         newFormData = { ...UserjsonData };
+        console.log('✅ Loading imported resume data');
+        console.log('📋 New form data:', newFormData);
+        console.log('📞 Phone in form data:', newFormData.contactInfo.phoneNumber);
+
         setIsExampleProcessing(false);
         // Mark data steps as completed
         setCompletedSteps(new Set([1, 2, 3, 4, 5, 6, 7]));
@@ -571,10 +579,9 @@ const GetInfo = () => {
             <div className="space-y-2">
               <label className="block text-sm font-medium dark:text-slate-300">Phone Number <span className="text-red-500">*</span></label>
               <input
-                type="number"
+                type="tel"
                 placeholder="96XXXXXXXX"
-                className={`w-full sm:p-2 sm:px-6 border rounded peer px-3 py-2 focus:outline-none focus:ring-2 ${isInvalidMob ? "focus:ring-red-500" : "focus:ring-blue-500"}  dark:bg-gray-800 dark:text-white dark:border-gray-600 
-                  [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
+                className={`w-full sm:p-2 sm:px-6 border rounded peer px-3 py-2 focus:outline-none focus:ring-2 ${isInvalidMob ? "focus:ring-red-500" : "focus:ring-blue-500"}  dark:bg-gray-800 dark:text-white dark:border-gray-600`}
                 value={isExampleProcessing ? ExampleJsonData.contactInfo.phoneNumber : formData.contactInfo.phoneNumber}
                 onChange={(e) => { handleInputChange("contactInfo", "phoneNumber", e.target.value) }}
                 onBlur={(e) => {

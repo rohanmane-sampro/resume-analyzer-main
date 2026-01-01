@@ -60,7 +60,13 @@ function extractEmail(text) {
 function extractPhone(text) {
   const phoneRegex = /(\+?\d{1,3}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}/g;
   const matches = text.match(phoneRegex);
-  return matches ? matches[0] : '';
+  if (matches) {
+    // Extract only digits from the matched phone number
+    const cleaned = matches[0].replace(/\D/g, '');
+    // Return last 10 digits (for international numbers with country codes)
+    return cleaned.length >= 10 ? cleaned.slice(-10) : cleaned;
+  }
+  return '';
 }
 
 /**
@@ -471,6 +477,7 @@ export async function parseResume(file) {
     };
 
     console.log('Parsed data (Local):', structuredData);
+    console.log('Phone number extracted:', structuredData.contactInfo.phoneNumber);
 
     return {
       success: true,
