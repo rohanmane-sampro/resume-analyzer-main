@@ -85,7 +85,8 @@ export default function ViewTemplates() {
     "Deedy Resume - Fresher",
     "HowToTeX Minimal - Fresher",
     "Modern Simple Photo",
-    "Classic Professional"
+    "Classic Professional",
+    "Modern Sidebar"
   ];
 
   const items = [
@@ -280,6 +281,12 @@ export default function ViewTemplates() {
       title: titles[31],
       codeLink: "#/template/32",
       templateLink: "#/template/32",
+    },
+    {
+      img: `${import.meta.env.BASE_URL}Temp/cv33.png`,
+      title: titles[32],
+      codeLink: "#/template/33",
+      templateLink: "#/template/33",
     },
   ];
 
