@@ -86,7 +86,8 @@ export default function ViewTemplates() {
     "HowToTeX Minimal - Fresher",
     "Modern Simple Photo",
     "Classic Professional",
-    "Modern Sidebar"
+    "Modern Sidebar",
+    "Clean Blue Professional"
   ];
 
   const items = [
@@ -287,6 +288,12 @@ export default function ViewTemplates() {
       title: titles[32],
       codeLink: "#/template/33",
       templateLink: "#/template/33",
+    },
+    {
+      img: `${import.meta.env.BASE_URL}Temp/cv34.png`,
+      title: titles[33],
+      codeLink: "#/template/34",
+      templateLink: "#/template/34",
     },
   ];
 

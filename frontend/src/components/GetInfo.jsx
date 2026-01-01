@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import Suggestions from "./Suggestions";
 import { useLocation } from 'react-router-dom';
 import JsonFiles from "./JsonFiles.jsx"
-import { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33 } from './Templates';
+import { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34 } from './Templates';
 import { ENDPOINTS, getAuthHeaders } from '../apiConfig';
 
 import AIAnalysis from './AIAnalysis.jsx';
@@ -28,7 +28,7 @@ const GetInfo = () => {
   const hasLoadedDataRef = useRef(false);
 
   // Available templates state
-  const [availableTemplateNumbers, setAvailableTemplateNumbers] = useState([1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33]);
+  const [availableTemplateNumbers, setAvailableTemplateNumbers] = useState([1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34]);
   const [loadingTemplates, setLoadingTemplates] = useState(true);
 
   // AI-related state
@@ -151,7 +151,8 @@ const GetInfo = () => {
     "HowToTeX Minimal - Fresher",
     "Modern Simple Photo",
     "Classic Professional",
-    "Modern Sidebar"
+    "Modern Sidebar",
+    "Clean Blue Professional"
   ]
   const Suggests = [
     "Hi, I'm here to assist you. 🤝",
@@ -2038,6 +2039,7 @@ const GetInfo = () => {
                   case '31': return <T31 jsonData={data} />;
                   case '32': return <T32 jsonData={data} />;
                   case '33': return <T33 jsonData={data} />;
+                  case '34': return <T34 jsonData={data} />;
                   default: return <T1 jsonData={data} />;
                 }
               })()}

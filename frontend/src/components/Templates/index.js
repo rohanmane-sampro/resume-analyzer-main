@@ -35,6 +35,7 @@ export { T30, T30Css } from './T30.jsx';
 export { T31, T31Css } from './T31.jsx';
 export { T32, T32Css } from './T32.jsx';
 export { T33, T33Css } from './T33.jsx';
+export { T34, T34Css } from './T34.jsx';
 
 // Template Configuration
 export const TEMPLATE_CONFIG = {
@@ -71,7 +72,8 @@ export const TEMPLATE_CONFIG = {
     31: { name: 'Modern Simple Photo', component: 'T31', cssName: 'T31Css' },
     32: { name: 'Classic Professional', component: 'T32', cssName: 'T32Css' },
     33: { name: 'Modern Sidebar', component: 'T33', cssName: 'T33Css' },
+    34: { name: 'Clean Blue Professional', component: 'T34', cssName: 'T34Css' },
 };
 
 // Template Count
-export const TOTAL_TEMPLATES = 33;
+export const TOTAL_TEMPLATES = 34;
