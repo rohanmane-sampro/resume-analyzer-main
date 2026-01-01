@@ -83,7 +83,8 @@ export default function ViewTemplates() {
     "ModernCV - Fresher",
     "RPI Graduate CV - Fresher",
     "Deedy Resume - Fresher",
-    "HowToTeX Minimal - Fresher"
+    "HowToTeX Minimal - Fresher",
+    "Modern Simple Photo"
   ];
 
   const items = [
@@ -266,6 +267,12 @@ export default function ViewTemplates() {
       title: titles[30],
       codeLink: "#/template/30",
       templateLink: "#/template/30",
+    },
+    {
+      img: `${import.meta.env.BASE_URL}Temp/cv31.png`,
+      title: titles[30],
+      codeLink: "#/template/31",
+      templateLink: "#/template/31",
     },
   ];
 

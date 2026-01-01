@@ -4,7 +4,7 @@ import { Download, FileText, X, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { html as html_beautify } from 'js-beautify';
-import { T1Css, T2Css, T3Css, T4Css, T5Css, T6Css, T7Css, T9Css, T10Css, T11Css, T12Css, T13Css, T14Css, T15Css, T16Css, T17Css, T18Css, T19Css, T20Css, T21Css, T22Css, T23Css, T24Css, T25Css, T26Css, T27Css, T28Css, T29Css, T30Css } from './Templates';
+import { T1Css, T2Css, T3Css, T4Css, T5Css, T6Css, T7Css, T9Css, T10Css, T11Css, T12Css, T13Css, T14Css, T15Css, T16Css, T17Css, T18Css, T19Css, T20Css, T21Css, T22Css, T23Css, T24Css, T25Css, T26Css, T27Css, T28Css, T29Css, T30Css, T31Css } from './Templates';
 
 const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate, resumeId }) => {
   const [downloading, setDownloading] = useState({});
@@ -183,7 +183,7 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate, resumeId
         '7': T7Css, '9': T9Css, '10': T10Css, '11': T11Css, '12': T12Css,
         '13': T13Css, '14': T14Css, '15': T15Css, '16': T16Css, '17': T17Css, '18': T18Css,
         '19': T19Css, '20': T20Css, '21': T21Css, '22': T22Css, '23': T23Css, '24': T24Css,
-        '25': T25Css, '26': T26Css, '27': T27Css, '28': T28Css, '29': T29Css, '30': T30Css
+        '25': T25Css, '26': T26Css, '27': T27Css, '28': T28Css, '29': T29Css, '30': T30Css, '31': T31Css
       };
       return templateCssMap[selectedTemplate] || T1Css;
     };

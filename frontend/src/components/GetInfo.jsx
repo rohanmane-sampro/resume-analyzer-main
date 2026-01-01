@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import Suggestions from "./Suggestions";
 import { useLocation } from 'react-router-dom';
 import JsonFiles from "./JsonFiles.jsx"
-import { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30 } from './Templates';
+import { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31 } from './Templates';
 import { ENDPOINTS, getAuthHeaders } from '../apiConfig';
 
 import AIAnalysis from './AIAnalysis.jsx';
@@ -28,7 +28,7 @@ const GetInfo = () => {
   const hasLoadedDataRef = useRef(false);
 
   // Available templates state
-  const [availableTemplateNumbers, setAvailableTemplateNumbers] = useState([1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]);
+  const [availableTemplateNumbers, setAvailableTemplateNumbers] = useState([1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]);
   const [loadingTemplates, setLoadingTemplates] = useState(true);
 
   // AI-related state
@@ -148,7 +148,8 @@ const GetInfo = () => {
     "ModernCV - Fresher",
     "RPI Graduate CV - Fresher",
     "Deedy Resume - Fresher",
-    "HowToTeX Minimal - Fresher"
+    "HowToTeX Minimal - Fresher",
+    "Modern Simple Photo"
   ]
   const Suggests = [
     "Hi, I'm here to assist you. 🤝",
@@ -223,13 +224,13 @@ const GetInfo = () => {
             setAllTemplateNumbers(data.all_templates.filter(num => num !== 8));
           } else {
             // Fallback if backend doesn't send all_templates yet
-            setAllTemplateNumbers([1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]);
+            setAllTemplateNumbers([1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]);
           }
           console.log(`User can access ${data.total} of ${data.total_system_templates} templates`);
         } else {
           console.error('Failed to fetch templates:', data);
           // Fallback
-          const fallback = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30];
+          const fallback = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31];
           setAvailableTemplateNumbers(fallback);
           setAllTemplateNumbers(fallback);
         }
@@ -667,7 +668,7 @@ const GetInfo = () => {
             </div>
 
             {/* Profile Image Upload - For Templates with Photo Support */}
-            {(isExampleProcessing ? ['4', '7', '11', '12', '13', '19', '21', '27'].includes(ExampleJsonData.selectedTemplate) : ['4', '7', '11', '12', '13', '19', '21', '27'].includes(formData.selectedTemplate)) && (
+            {(isExampleProcessing ? ['4', '7', '11', '12', '13', '19', '21', '27', '31'].includes(ExampleJsonData.selectedTemplate) : ['4', '7', '11', '12', '13', '19', '21', '27', '31'].includes(formData.selectedTemplate)) && (
               <div className="space-y-2 mt-4 p-4 border-2 border-blue-200 rounded-lg bg-blue-50 dark:bg-slate-700 dark:border-blue-600">
                 <label className="block text-sm font-medium dark:text-slate-300 flex items-center gap-2">
                   <span>📸 Profile Picture (For Selected Template)</span>
@@ -2032,6 +2033,7 @@ const GetInfo = () => {
                   case '28': return <T28 jsonData={data} />;
                   case '29': return <T29 jsonData={data} />;
                   case '30': return <T30 jsonData={data} />;
+                  case '31': return <T31 jsonData={data} />;
                   default: return <T1 jsonData={data} />;
                 }
               })()}
