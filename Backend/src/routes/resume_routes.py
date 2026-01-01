@@ -96,7 +96,7 @@ def get_admin_stats(current_user):
     }), 200
 
 # Define total available templates in the system
-TOTAL_SYSTEM_TEMPLATES = 31
+TOTAL_SYSTEM_TEMPLATES = 32
 
 @resume_bp.route('/available-templates', methods=['GET'])
 @token_required
