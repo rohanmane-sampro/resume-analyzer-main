@@ -642,36 +642,65 @@ Return only the enhanced text with keywords added (no labels, no explanations):"
                     except:
                         pass  # Keep original if enhancement fails
         
-        # Step 4: Enhance work experience descriptions (one at a time for token efficiency)
+        # Step 4: Add 1 ATS-friendly sentence to ALL work experiences
         work_exp = resume_data.get('workExperience', [])
-        if work_exp and isinstance(work_exp, list) and len(work_exp) > 0:
-            # Only enhance the first/most recent experience to save tokens
-            first_exp = work_exp[0]
-            if first_exp.get('keyAchievements') and len(first_exp['keyAchievements']) < 300:
-                exp_prompt = f"""Enhance this {first_exp.get('jobTitle', 'role')} achievement (2-3 sentences, use **bold** for key terms):
-Original: {first_exp['keyAchievements']}
-Enhanced:"""
-                
-                try:
-                    enhanced_achievement = safe_ai_call(exp_prompt, max_tokens=200)
-                    enhanced_resume['workExperience'][0]['keyAchievements'] = enhanced_achievement.strip()
-                except:
-                    pass  # Keep original if enhancement fails
+        if work_exp and isinstance(work_exp, list):
+            for idx, exp in enumerate(work_exp):
+                if exp.get('keyAchievements'):
+                    original_achievement = exp['keyAchievements']
+                    
+                    # Only enhance if not too long already
+                    if len(original_achievement) < 500:
+                        exp_prompt = f"""Add 1 SHORT sentence (10-15 words) with ATS keywords:
+
+{original_achievement}
+
+Add sentence:"""
+                        
+                        try:
+                            additional_sentence = safe_ai_call(exp_prompt, max_tokens=60)
+                            cleaned = additional_sentence.strip().strip('"\'')
+                            
+                            # Simple cleanup - remove if it starts with common labels
+                            if ':' in cleaned[:20]:  # If there's a colon in first 20 chars, it's likely a label
+                                cleaned = cleaned.split(':', 1)[1].strip()
+                            
+                            # Add if reasonable length
+                            if 20 < len(cleaned) < 200:
+                                enhanced_resume['workExperience'][idx]['keyAchievements'] = f"{original_achievement} {cleaned}"
+                        except:
+                            pass
         
-        # Step 5: Enhance first project description (if exists)
+        # Step 5: Add 1 ATS-friendly sentence to ALL projects
         projects = resume_data.get('projects', [])
-        if projects and isinstance(projects, list) and len(projects) > 0:
-            first_project = projects[0]
-            if first_project.get('toolsTechUsed') and len(first_project['toolsTechUsed']) < 200:
-                project_prompt = f"""Enhance project tech description (1-2 sentences, use **bold** for technologies):
-Original: {first_project['toolsTechUsed']}
-Enhanced:"""
-                
-                try:
-                    enhanced_project = safe_ai_call(project_prompt, max_tokens=150)
-                    enhanced_resume['projects'][0]['toolsTechUsed'] = enhanced_project.strip()
-                except:
-                    pass  # Keep original if enhancement fails
+        if projects and isinstance(projects, list):
+            for idx, project in enumerate(projects):
+                if project.get('toolsTechUsed'):
+                    original_tools = project['toolsTechUsed']
+                    project_title = project.get('projectTitle', 'Project')
+                    
+                    # Only enhance if not too long already
+                    if len(original_tools) < 300:
+                        project_prompt = f"""Add 1 SHORT sentence (10-15 words) about what this project does:
+
+Project: {project_title}
+Tech: {original_tools}
+
+Add sentence:"""
+                        
+                        try:
+                            additional_sentence = safe_ai_call(project_prompt, max_tokens=60)
+                            cleaned = additional_sentence.strip().strip('"\'')
+                            
+                            # Simple cleanup - remove if it starts with common labels
+                            if ':' in cleaned[:20]:
+                                cleaned = cleaned.split(':', 1)[1].strip()
+                            
+                            # Add if reasonable length
+                            if 20 < len(cleaned) < 200:
+                                enhanced_resume['projects'][idx]['toolsTechUsed'] = f"{original_tools}. {cleaned}"
+                        except:
+                            pass
         
         # Step 6: Add soft skills if missing or minimal
         if not soft_skills or len(soft_skills) < 30:
