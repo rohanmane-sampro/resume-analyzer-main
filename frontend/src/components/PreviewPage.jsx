@@ -42,10 +42,27 @@ const PreviewPage = () => {
 
   const enhanceWithAI = async () => {
     setIsEnhancing(true);
+
+    // If user is not logged in, skip API call and use fallback directly
+    if (!user) {
+      setTimeout(() => {
+        const fallbackEnhanced = createFallbackEnhancement(resumeData);
+        setAiEnhancedData(fallbackEnhanced);
+        setSelectedVersion('enhanced');
+        toast('Login to use Premium AI features. Using built-in enhancements for now.', {
+          icon: 'ℹ️',
+          duration: 4000
+        });
+        setIsEnhancing(false);
+      }, 1500); // Fake delay for better UX
+      return;
+    }
+
     try {
       const response = await fetch(ENDPOINTS.COMPLETE_RESUME, {
         method: 'POST',
         headers: {
+          ...getAuthHeaders(), // Add authentication headers
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
