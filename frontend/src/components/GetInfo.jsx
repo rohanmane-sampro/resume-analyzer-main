@@ -321,34 +321,16 @@ const GetInfo = () => {
     setCompletedSteps(newSet);
   };
 
-  const handleVerify = (e) => {
-    if (e.key === "Enter" || e.key == "Tab" || pin.length == 6) {
-      if (pin === "2025") {
-        setExampleJsonData(JsonFiles[0]); // Load Prashant's data
-        toast.success("Authorized - Prashant's data loaded", {
-          duration: 3000,
-          position: "top-right",
-        });
-        setError(false)
-        setShowInput(false)
-        HandleExampleProcessing();
-      } else if (pin === "2026") {
-        setExampleJsonData(JsonFiles[1]); // Load Nishant's data
-        toast.success("Authorized - Nishant's data loaded", {
-          duration: 3000,
-          position: "top-right",
-        });
-        setError(false)
-        setShowInput(false)
-        HandleExampleProcessing();
-      } else {
-        toast.error("Pin is incorrect. try 2025 or 2026!", {
-          duration: 3000,
-          position: "top-right",
-        });
-        setError(true);
-      }
-    }
+  const handleVerify = () => {
+    // Automatically load first example data without PIN
+    setExampleJsonData(JsonFiles[0]);
+    toast.success("Sample data loaded successfully!", {
+      duration: 3000,
+      position: "top-right",
+    });
+    setError(false);
+    setShowInput(false);
+    HandleExampleProcessing();
   };
 
   useEffect(() => { // || !formData.contactInfo.fullName
@@ -1904,28 +1886,11 @@ const GetInfo = () => {
           <div>
             <h2
               className="space-y-3 mx-4 md:mx-0 mt-4 p-2 flex items-center justify-center gap-3 rounded-lg cursor-pointer transition-transform duration-400 bg-blue-50 hover:bg-blue-100 text-blue-600 dark:text-zinc-300 dark:bg-slate-700/50 dark:hover:bg-slate-700/95"
-              title="It is only for Test & Present purpose. with authorized access"
-              onClick={() => {
-                if (showInput) {
-                  setShowInput(false)
-                } else { setShowInput(true) }
-              }}
+              title="Load sample data to preview templates"
+              onClick={handleVerify}
             >
               Example Processing
             </h2>
-
-            {showInput && (
-              <div className="mx-4 md:mx-0 dark:bg-gray-800 rounded-lg">
-                <input
-                  type="password"
-                  className={`w-full mt-2 p-2 border rounded bg-white text-black dark:bg-gray-700 dark:text-white ${error ? "border-red-500 dark:border-red-400 focus:ring-red-500" : "border-blue-500 dark:border-blue-400 focus:ring-blue-500"} focus:outline-none focus:ring-2`}
-                  value={pin}
-                  onChange={(e) => setPin(e.target.value)}
-                  onKeyDown={handleVerify}
-                  placeholder="Enter PIN"
-                />
-              </div>
-            )}
             <div className="flex items-center mt-4 justify-center gap-2 mr-2 dark:text-slate-300" title='Total number of Resumes built by this application'>
               <p>Over</p>
               <b>{ResumesBuilt === 0 ? "loading..." : ResumesBuilt}</b>
