@@ -885,7 +885,8 @@ Add sentence:"""
                     "institutionName": "", # University/College name
                     "degreeName": "",      # Degree type and field (e.g., "B.Tech in Computer Science")
                     "graduationYear": "",  # Year of graduation
-                    "currentCGPA": ""      # GPA/CGPA/Percentage if mentioned
+                    "currentCGPA": "",     # GPA/CGPA/Percentage if mentioned
+                    "location": ""         # City, Country or State of the institution
                 }}
             ],
             "certificates": [            # Array of ALL certifications

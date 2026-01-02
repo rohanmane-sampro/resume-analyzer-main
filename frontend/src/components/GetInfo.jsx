@@ -77,12 +77,17 @@ const GetInfo = () => {
       courseDuration: '',
       providerName: ''
     }],
+    hobbies: '',
     Description: {
       UserDescription: ""
     }
   });
 
   const topHardSkills = isExampleProcessing ? ExampleJsonData.skills.hardSkills?.split(",").slice(0, 5).map(skill => skill.trim()).join(", ") : formData.skills.hardSkills?.split(",").slice(0, 5).map(skill => skill.trim()).join(", ");
+
+  // ... (Use existing code lines to match context, but the replacement is large so I will target smaller blocks or use multi_replace. Let's stick to smaller blocks for safety)
+  // Actually I will do multiple replacements in one go if they are non-contiguous, or use multi_replace.
+  // I will use multi_replace_file_content since the changes are in `formData`, `steps` and `handleNext`.
 
   const ResumeDescriptions = [
     `A passionate ${isExampleProcessing ? ExampleJsonData.contactInfo.jobTitle : formData.contactInfo.jobTitle} graduated from ${isExampleProcessing ? ExampleJsonData.education[0]?.institutionName : formData.education[0]?.institutionName}, with expertise in ${topHardSkills} and more. honed through 8+ projects. Skilled at leveraging cutting-edge tools to deliver innovative solutions. Proficient in ${isExampleProcessing ? ExampleJsonData.contactInfo.Languages : formData.contactInfo.Languages}and recognized for exceptional ${isExampleProcessing ? ExampleJsonData.skills.softSkills : formData.skills.softSkills}.`,
@@ -313,7 +318,8 @@ const GetInfo = () => {
     { title: 'Highlight your top projects', key: 'Projects' },
     { title: 'Demonstrate your knowledge', key: 'Education' },
     { title: 'Add your achieved certifications', key: 'Certificates' },
-    { title: 'Decribe about you', key: 'Description' }
+    { title: 'Share your hobbies', key: 'Hobbies' },
+    { title: 'Summary', key: 'Description' }
   ];
 
   const HandleExampleProcessing = () => {
@@ -471,8 +477,6 @@ const GetInfo = () => {
         formData.contactInfo.fullName,
         formData.contactInfo.phoneNumber,
         formData.contactInfo.emailAddress,
-        formData.contactInfo.linkedin,
-        formData.contactInfo.portfolio,
         formData.contactInfo.jobTitle,
       ],
       2: [
@@ -485,7 +489,8 @@ const GetInfo = () => {
       4: formData.projects.length > 0 ? formData.projects.map(proj => [proj.projectTitle, proj.toolsTechUsed]) : [[]],
       5: formData.education.length > 0 ? formData.education.map(edu => [edu.institutionName, edu.location, edu.degreeName, edu.graduationYear, edu.currentCGPA]) : [[]],
       6: formData.certificates.length > 0 ? formData.certificates.map(cert => [cert.certificateName, cert.courseDuration, cert.providerName]) : [[]],
-      7: [formData.Description.UserDescription],
+      7: [], // Hobbies (Optional)
+      8: [formData.Description.UserDescription],
     };
 
     if (!(currentStep in Fields)) {
@@ -518,7 +523,7 @@ const GetInfo = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep((prev) => prev + 1);
     } else {          // its only validate if input current step is previously doned {if future step found to be next without filling details it though error}
-      for (let step = 0; step <= 7; step++) {
+      for (let step = 0; step <= 8; step++) {
         const requiredFields = Fields[step].flat();
         if (requiredFields.length > 0 && !areFieldsValid(requiredFields) && !isExampleProcessing) {
           toast.error("Please complete all required fields before submitting.", {
@@ -622,7 +627,7 @@ const GetInfo = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium dark:text-slate-300">LinkedIn UserName <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-medium dark:text-slate-300">LinkedIn UserName <span className="text-gray-400 text-xs">(Optional)</span></label>
               <input
                 type="text"
                 placeholder="www.linkedin.com/in/john-doe-85948b1aa"
@@ -636,7 +641,7 @@ const GetInfo = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium dark:text-slate-300">Portfolio URL / Github UserName <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-medium dark:text-slate-300">Portfolio URL / Github UserName <span className="text-gray-400 text-xs">(Optional)</span></label>
               <input
                 type="text"
                 placeholder='Portfolio link/Github username'
@@ -1276,14 +1281,16 @@ const GetInfo = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium dark:text-slate-300">Location</label>
-                    <input
-                      type="text"
-                      placeholder="Pune, India"
-                      className="w-full sm:px-6 sm:p-2 border rounded peer px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
-                      value={edu.location || ''}
-                      onChange={(e) => handleInputChange('education', 'location', e.target.value, index)}
-                    />
+                    <div className="peer w-full">
+                      <Suggestions
+                        label="Location"
+                        placeholder="Pune (Maharashtra)"
+                        value={edu.location || ''}
+                        onChange={(val) => handleInputChange('education', 'location', val, index)}
+                        suggestions={['Agartala (Tripura)', 'Ahmedabad (Gujarat)', 'Aizawl (Mizoram)', 'Ambala (Haryana)', 'Amritsar (Punjab)', 'Aurangabad (Maharashtra)', 'Bengaluru (Karnataka)', 'Bhopal (Madhya Pradesh)', 'Bhubaneswar (Odisha)', 'Chandigarh', 'Chennai (Tamil Nadu)', 'Coimbatore (Tamil Nadu)', 'Cuttack (Odisha)', 'Dehradun (Uttarakhand)', 'Delhi', 'Dimapur (Nagaland)', 'Dispur (Assam)', 'Faridabad (Haryana)', 'Gandhinagar (Gujarat)', 'Gangtok (Sikkim)', 'Ghaziabad (Uttar Pradesh)', 'Gurugram (Haryana)', 'Guwahati (Assam)', 'Gwalior (Madhya Pradesh)', 'Haridwar (Uttarakhand)', 'Howrah (West Bengal)', 'Hubli (Karnataka)', 'Hyderabad (Telangana)', 'Imphal (Manipur)', 'Indore (Madhya Pradesh)', 'Itanagar (Arunachal Pradesh)', 'Jaipur (Rajasthan)', 'Jalandhar (Punjab)', 'Jamshedpur (Jharkhand)', 'Jodhpur (Rajasthan)', 'Kanpur (Uttar Pradesh)', 'Kochi (Kerala)', 'Kolkata (West Bengal)', 'Kota (Rajasthan)', 'Kozhikode (Kerala)', 'Lucknow (Uttar Pradesh)', 'Ludhiana (Punjab)', 'Madurai (Tamil Nadu)', 'Mangalore (Karnataka)', 'Mohali (Punjab)', 'Mumbai (Maharashtra)', 'Mysuru (Karnataka)', 'Nagpur (Maharashtra)', 'Nainital (Uttarakhand)', 'Nashik (Maharashtra)', 'New Delhi', 'Noida (Uttar Pradesh)', 'Panaji (Goa)', 'Panchkula (Haryana)', 'Patiala (Punjab)', 'Patna (Bihar)', 'Pune (Maharashtra)', 'Raipur (Chhattisgarh)', 'Rajkot (Gujarat)', 'Ranchi (Jharkhand)', 'Rishikesh (Uttarakhand)', 'Salem (Tamil Nadu)', 'Secunderabad (Telangana)', 'Shillong (Meghalaya)', 'Siliguri (West Bengal)', 'Surat (Gujarat)', 'Thane (Maharashtra)', 'Thiruvananthapuram (Kerala)', 'Tiruchirappalli (Tamil Nadu)', 'Udaipur (Rajasthan)', 'Vadodara (Gujarat)', 'Varanasi (Uttar Pradesh)', 'Warangal (Telangana)']}
+                        isMultiSuggestion={false}
+                      />
+                    </div>
                     <div className="ml-4 w-0 h-1 rounded-full bg-blue-500 transition-all duration-300 peer-hover:w-[60%] peer-focus:w-[88%] sm:peer-focus:w-[94%]"></div>
                   </div>
 
@@ -1382,14 +1389,16 @@ const GetInfo = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium dark:text-slate-300">Location</label>
-                    <input
-                      type="text"
-                      placeholder="Pune, India"
-                      className="w-full sm:px-6 sm:p-2 border rounded peer px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
-                      value={edu.location || ''}
-                      onChange={(e) => handleInputChange('education', 'location', e.target.value, index)}
-                    />
+                    <div className="peer w-full">
+                      <Suggestions
+                        label="Location"
+                        placeholder="Pune (Maharashtra)"
+                        value={edu.location || ''}
+                        onChange={(val) => handleInputChange('education', 'location', val, index)}
+                        suggestions={['Agartala (Tripura)', 'Ahmedabad (Gujarat)', 'Aizawl (Mizoram)', 'Ambala (Haryana)', 'Amritsar (Punjab)', 'Aurangabad (Maharashtra)', 'Bengaluru (Karnataka)', 'Bhopal (Madhya Pradesh)', 'Bhubaneswar (Odisha)', 'Chandigarh', 'Chennai (Tamil Nadu)', 'Coimbatore (Tamil Nadu)', 'Cuttack (Odisha)', 'Dehradun (Uttarakhand)', 'Delhi', 'Dimapur (Nagaland)', 'Dispur (Assam)', 'Faridabad (Haryana)', 'Gandhinagar (Gujarat)', 'Gangtok (Sikkim)', 'Ghaziabad (Uttar Pradesh)', 'Gurugram (Haryana)', 'Guwahati (Assam)', 'Gwalior (Madhya Pradesh)', 'Haridwar (Uttarakhand)', 'Howrah (West Bengal)', 'Hubli (Karnataka)', 'Hyderabad (Telangana)', 'Imphal (Manipur)', 'Indore (Madhya Pradesh)', 'Itanagar (Arunachal Pradesh)', 'Jaipur (Rajasthan)', 'Jalandhar (Punjab)', 'Jamshedpur (Jharkhand)', 'Jodhpur (Rajasthan)', 'Kanpur (Uttar Pradesh)', 'Kochi (Kerala)', 'Kolkata (West Bengal)', 'Kota (Rajasthan)', 'Kozhikode (Kerala)', 'Lucknow (Uttar Pradesh)', 'Ludhiana (Punjab)', 'Madurai (Tamil Nadu)', 'Mangalore (Karnataka)', 'Mohali (Punjab)', 'Mumbai (Maharashtra)', 'Mysuru (Karnataka)', 'Nagpur (Maharashtra)', 'Nainital (Uttarakhand)', 'Nashik (Maharashtra)', 'New Delhi', 'Noida (Uttar Pradesh)', 'Panaji (Goa)', 'Panchkula (Haryana)', 'Patiala (Punjab)', 'Patna (Bihar)', 'Pune (Maharashtra)', 'Raipur (Chhattisgarh)', 'Rajkot (Gujarat)', 'Ranchi (Jharkhand)', 'Rishikesh (Uttarakhand)', 'Salem (Tamil Nadu)', 'Secunderabad (Telangana)', 'Shillong (Meghalaya)', 'Siliguri (West Bengal)', 'Surat (Gujarat)', 'Thane (Maharashtra)', 'Thiruvananthapuram (Kerala)', 'Tiruchirappalli (Tamil Nadu)', 'Udaipur (Rajasthan)', 'Vadodara (Gujarat)', 'Varanasi (Uttar Pradesh)', 'Warangal (Telangana)']}
+                        isMultiSuggestion={false}
+                      />
+                    </div>
                     <div className="ml-4 w-0 h-1 rounded-full bg-blue-500 transition-all duration-300 peer-hover:w-[60%] peer-focus:w-[88%] sm:peer-focus:w-[94%]"></div>
                   </div>
 
@@ -1630,7 +1639,30 @@ const GetInfo = () => {
             </div>
           );
         }
+
       case 7:
+        return (
+          <div className="space-y-4">
+            <h2 className="text-xl sm:text-2xl font-bold border-b-4 pb-1 border-blue-900 mb-4 text-blue-800 dark:border-blue-500 dark:text-blue-400">Hobbies (Optional)</h2>
+            <div className="space-y-2">
+              <div className="peer">
+                <Suggestions
+                  label="Share your hobbies"
+                  placeholder="Coding, Reading, Gaming, Traveling"
+                  value={isExampleProcessing ? ExampleJsonData.hobbies : formData.hobbies}
+                  onChange={(val) => {
+                    handleInputChange("hobbies", null, val);
+                  }}
+                  suggestions={['Coding', 'Reading', 'Gaming', 'Traveling', 'Music', 'Photography', 'Writing', 'Drawing', 'Cooking', 'Hiking', 'Cycling', 'Swimming', 'Running', 'Dancing', 'Singing', 'Acting', 'Volunteering', 'Mentoring', 'Public Speaking', 'Blogging', 'Vlogging', 'Podcasting']}
+                />
+              </div>
+              <div className="ml-4 w-0 h-1 rounded-full bg-blue-500 transition-all duration-300 peer-hover:w-[60%] peer-focus:w-[88%] sm:peer-focus:w-[94%]"></div>
+            </div>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Separate multiple hobbies with commas.</p>
+          </div>
+        );
+
+      case 8:
         if (!isExampleProcessing) {
           if (i === 18 || i === 19) {
             setI(20);

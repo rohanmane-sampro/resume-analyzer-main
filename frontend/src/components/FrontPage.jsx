@@ -78,19 +78,34 @@ const FrontPage = () => {
         </div>
 
         {/* Templates Showcase */}
-        <div className="w-full relative animate-fade-in" style={{ animationDelay: '0.3s' }}>
-          {/* Glass Card Container for Templates */}
-          <div className="glass-card overflow-hidden w-full">
-            <div className="p-6 md:p-8 pb-0 flex justify-between items-center">
-              <div>
-                <h3 className="text-2xl md:text-3xl font-black text-slate-800 dark:text-white">Professional Templates</h3>
-                <p className="text-slate-500 dark:text-slate-400 text-sm md:text-base mt-1">Choose from our curated collection of high-performing designs</p>
+        <div className="w-full relative animate-fade-in mt-16" style={{ animationDelay: '0.3s' }}>
+
+          {/* Header */}
+          <div className="flex flex-col md:flex-row justify-between items-end mb-8 px-2">
+            <div>
+              <div className="inline-block px-3 py-1 mb-3 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold uppercase tracking-wider">
+                Premium Collection
               </div>
-              <button onClick={handleViewTemplates} className="hidden md:flex items-center gap-2 px-6 py-2 rounded-full border border-teal-500/30 text-teal-600 dark:text-teal-400 font-bold hover:bg-teal-500 hover:text-white transition-all">
-                View Gallery <span>→</span>
-              </button>
+              <h3 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white leading-tight">
+                Professional <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">Templates</span>
+              </h3>
+              <p className="text-slate-500 dark:text-slate-400 text-lg mt-2 max-w-2xl">
+                Choose from our curated collection of high-performing designs that get you hired faster.
+              </p>
             </div>
-            <Examplepages />
+            <button onClick={handleViewTemplates} className="hidden md:flex items-center gap-2 px-6 py-3 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold hover:shadow-lg hover:scale-105 transition-all text-sm">
+              View All Templates <span>→</span>
+            </button>
+          </div>
+
+          {/* Full Width Animation Container */}
+          <div className="w-[100vw] relative left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] overflow-hidden">
+            {/* Background Decor */}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-50/50 dark:via-blue-900/5 to-transparent pointer-events-none" />
+
+            <div className="py-10">
+              <Examplepages />
+            </div>
           </div>
         </div>
 
