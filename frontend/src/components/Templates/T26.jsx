@@ -1,772 +1,298 @@
-
 import React from 'react';
-import styled from "styled-components";
-
-// Helper function to convert markdown to HTML
-const parseMarkdown = (text) => {
-  if (!text || typeof text !== 'string') return '';
-  return text
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>') // Bold
-    .replace(/\*(.+?)\*/g, '<em>$1</em>') // Italic
-    .replace(/\n/g, '<br/>'); // Convert line breaks
-};
-
-const StyledWrapper = styled.div`
-@media print {
-  * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-    color-adjust: exact !important;
-  }
-  
-  body {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: white !important;
-  }
-  
-  @page {
-   size: A4 portrait;
-   margin: 0;
-  }
-  
-  .resume {
-    width: 210mm !important;
-    min-height: 297mm !important;
-    margin: 0 !important;
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-  }
-}
-
-body {
-  font-family: 'Arial', sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f5f5f5;
-}
-
-.resume {
-  width: 210mm;
-  min-height: 297mm;
-  background: white;
-  margin: 20px auto;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-}
-
-.header {
-  padding: 40px 50px 30px;
-  display: flex;
-  align-items: center;
-  gap: 30px;
-  border-bottom: 3px solid #f5a623;
-}
-
-.profile-photo {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 4px solid #f5a623;
-  flex-shrink: 0;
-}
-
-.header-content {
-  flex: 1;
-}
-
-.name {
-  font-size: 32px;
-  font-weight: bold;
-  margin: 0 0 5px 0;
-  color: #000;
-}
-
-.job-title {
-  font-size: 15px;
-  font-style: italic;
-  margin: 0 0 15px 0;
-  color: #666;
-}
-
-.contact-info {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  font-size: 10px;
-  color: #333;
-}
-
-.contact-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.contact-icon {
-  color: #f5a623;
-  font-weight: bold;
-  width: 16px;
-}
-
-.main-content {
-  display: grid;
-  grid-template-columns: 1fr 1.5fr;
-  gap: 30px;
-  padding: 30px 50px 40px;
-}
-
-.left-column {
-  border-right: 2px solid #f5a623;
-  padding-right: 30px;
-}
-
-.right-column {
-  padding-left: 0;
-}
-
-.section {
-  margin-bottom: 25px;
-}
-
-.section-title {
-  font-size: 13px;
-  font-weight: bold;
-  color: #000;
-  margin-bottom: 12px;
-  padding-bottom: 5px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.section-icon {
-  color: #f5a623;
-  font-size: 16px;
-}
-
-.section-content {
-  font-size: 11px;
-  line-height: 1.6;
-  color: #333;
-}
-
-.education-item, .skill-category {
-  margin-bottom: 15px;
-}
-
-.education-degree {
-  font-weight: bold;
-  font-size: 11px;
-  color: #000;
-  margin-bottom: 3px;
-}
-
-.education-institution {
-  font-size: 10px;
-  color: #666;
-  font-style: italic;
-  margin-bottom: 2px;
-}
-
-.education-date {
-  font-size: 10px;
-  color: #999;
-}
-
-.education-details {
-  font-size: 10px;
-  color: #333;
-  margin-top: 3px;
-}
-
-.education-details ul {
-  margin: 3px 0;
-  padding-left: 15px;
-}
-
-.skill-category-title {
-  font-size: 11px;
-  font-weight: bold;
-  color: #000;
-  margin-bottom: 6px;
-}
-
-.skill-list {
-  font-size: 10px;
-  line-height: 1.7;
-  color: #333;
-}
-
-.skill-item {
-  padding-left: 12px;
-  position: relative;
-  margin-bottom: 2px;
-}
-
-.skill-item:before {
-  content: "•";
-  position: absolute;
-  left: 0;
-  color: #f5a623;
-  font-weight: bold;
-}
-
-.languages-list {
-  font-size: 11px;
-  color: #333;
-}
-
-.language-item {
-  margin-bottom: 8px;
-}
-
-.language-name {
-  font-weight: bold;
-  color: #000;
-}
-
-.language-level {
-  font-size: 10px;
-  color: #666;
-}
-
-.experience-item, .project-item {
-  margin-bottom: 20px;
-}
-
-.item-header {
-  margin-bottom: 5px;
-}
-
-.item-title {
-  font-weight: bold;
-  font-size: 12px;
-  color: #000;
-  margin-bottom: 2px;
-}
-
-.item-subtitle {
-  font-size: 11px;
-  color: #666;
-  font-style: italic;
-  margin-bottom: 2px;
-}
-
-.item-date {
-  font-size: 10px;
-  color: #f5a623;
-  font-weight: 600;
-  margin-bottom: 5px;
-}
-
-.item-description {
-  font-size: 11px;
-  line-height: 1.5;
-  color: #333;
-}
-
-.item-description ul {
-  margin: 5px 0;
-  padding-left: 20px;
-}
-
-.item-description li {
-  margin-bottom: 4px;
-}
-
-.project-tech {
-  font-size: 10px;
-  color: #666;
-  margin-top: 5px;
-}
-`;
+import styled from 'styled-components';
 
 export const T26 = ({ jsonData }) => {
-  // Process skills
-  const hardSkills = jsonData.skills?.hardSkills
-    ? jsonData.skills.hardSkills.split(',').map(skill => skill.trim()).filter(skill => skill !== '')
-    : [];
+  const {
+    contactInfo = {},
+    Description = {},
+    workExperience = [],
+    education = [],
+    projects = [],
+    certificates = [],
+    skills = {},
+  } = jsonData;
 
-  const softSkills = jsonData.skills?.softSkills
-    ? jsonData.skills.softSkills.split(',').map(skill => skill.trim()).filter(skill => skill !== '')
-    : [];
-
-  // Process languages
-  const languages = jsonData.contactInfo?.Languages
-    ? jsonData.contactInfo.Languages.split(',').map(lang => lang.trim()).filter(lang => lang !== '')
-    : [];
-
-  // Process education
-  const educationList = jsonData.education && jsonData.education.length > 0
-    ? jsonData.education.map((edu, index) => (
-      <div key={`edu-${index}`} className="education-item">
-        <div className="education-degree">{edu.institutionName || 'Institution Name'},</div>
-        <div className="education-institution">{edu.degreeName || 'Degree Name'}</div>
-        <div className="education-date">{edu.graduationYear || '2019 - 2024'} {edu.location ? `| ${edu.location}` : ''}</div>
-        {edu.currentCGPA && (
-          <div className="education-details">
-            <ul>
-              <li>CGPA: {edu.currentCGPA}</li>
-            </ul>
-          </div>
-        )}
-      </div>
-    ))
-    : null;
-
-  // Process work experience
-  const workExpList = jsonData.workExperience && jsonData.workExperience.length > 0
-    ? jsonData.workExperience.map((we, index) => (
-      <div key={`work-${index}`} className="experience-item">
-        <div className="item-header">
-          <div className="item-title">{we.jobTitle || 'Job Title'}, <span style={{ fontStyle: 'italic', fontWeight: 'normal' }}>{we.companyName || 'Company Name'}</span></div>
-          <div className="item-date">{we.WorkDuration || 'set 2024 - dic 2024'} | {we.location || 'Location'}</div>
-        </div>
-        <div className="item-description">
-          <ul>
-            <li dangerouslySetInnerHTML={{ __html: parseMarkdown(we.keyAchievements || 'Key achievements and responsibilities') }} />
-          </ul>
-        </div>
-      </div>
-    ))
-    : null;
-
-  // Process projects
-  const projectsList = jsonData.projects && jsonData.projects.length > 0
-    ? jsonData.projects.map((proj, index) => (
-      <div key={`proj-${index}`} className="project-item">
-        <div className="item-header">
-          <div className="item-title">{proj.projectTitle || 'Project Title'}, <span style={{ fontStyle: 'italic', fontWeight: 'normal' }}>{proj.organization || 'Organization'}</span></div>
-          <div className="item-date">{proj.duration || 'Jan 2025 - Present'}</div>
-        </div>
-        <div className="item-description">
-          <ul>
-            <li>{proj.projectDescription || 'Project description'}</li>
-          </ul>
-        </div>
-        {proj.toolsTechUsed && (
-          <div className="project-tech">
-            Technologies: {proj.toolsTechUsed}
-          </div>
-        )}
-      </div>
-    ))
-    : null;
+  const hardSkillsList = skills.hardSkills ? skills.hardSkills.split(',').map(s => s.trim()) : [];
+  const softSkillsList = skills.softSkills ? skills.softSkills.split(',').map(s => s.trim()) : [];
 
   return (
     <StyledWrapper>
-      <div className="resume">
-        {/* Header */}
-        <div className="header">
-          {jsonData.contactInfo?.profilePicture && (
-            <img
-              src={jsonData.contactInfo.profilePicture}
-              alt="Profile"
-              className="profile-photo"
-            />
-          )}
-          <div className="header-content">
-            <div className="name">{jsonData.contactInfo?.fullName || 'Elio Giordano'}</div>
-            <div className="job-title">{jsonData.contactInfo?.jobTitle || 'Full-Stack Web Developer'}</div>
-            <div className="contact-info">
-              <div className="contact-item">
-                <span className="contact-icon">✉</span>
-                {jsonData.contactInfo?.emailAddress || 'elio.giordano.dev@email.com'}
-              </div>
-              <div className="contact-item">
-                <span className="contact-icon">☎</span>
-                {jsonData.contactInfo?.phoneNumber || '+39 348 133 4567'}
-              </div>
-              <div className="contact-item">
-                <span className="contact-icon">📍</span>
-                {jsonData.contactInfo?.Location || 'Bologna, Italy'}
-              </div>
-              <div className="contact-item">
-                <span className="contact-icon">🌐</span>
-                {jsonData.contactInfo?.portfolio || 'eliog.dev'}
-              </div>
-              <div className="contact-item">
-                <span className="contact-icon">💼</span>
-                {jsonData.contactInfo?.linkedin || 'linkedin.com/in/elio-giordano-dev'}
-              </div>
-              <div className="contact-item">
-                <span className="contact-icon">💻</span>
-                {jsonData.contactInfo?.github || 'github.com/egiordano'}
-              </div>
+      <div className="resume" id="capture-content">
+        <header className="header">
+          <h1 className="name">{contactInfo.fullName || 'Andrew Kim'}</h1>
+          <div className="contact-bar">
+            <span>{contactInfo.emailAddress}</span>
+            {contactInfo.phoneNumber && <span className="dot">•</span>}
+            <span>{contactInfo.phoneNumber}</span>
+            {contactInfo.Location && <span className="dot">•</span>}
+            <span>{contactInfo.Location}</span>
+            {contactInfo.portfolio && <span className="dot">•</span>}
+            <span>{contactInfo.portfolio}</span>
+          </div>
+        </header>
+
+        <section className="section">
+          <div className="section-title-bar">
+            <h2>Profile</h2>
+          </div>
+          <p className="profile-text">{Description.UserDescription}</p>
+        </section>
+
+        {workExperience.length > 0 && (
+          <section className="section">
+            <div className="section-title-bar">
+              <h2>Work Experience</h2>
             </div>
-          </div>
-        </div>
-
-        {/* Main Content */}
-        <div className="main-content">
-          {/* Left Column */}
-          <div className="left-column">
-            {/* Education */}
-            {educationList && educationList.length > 0 && (
-              <div className="section">
-                <div className="section-title">
-                  <span className="section-icon">🎓</span>
-                  EDUCATION
+            {workExperience.map((job, index) => (
+              <div key={index} className="experience-item">
+                <div className="item-left">
+                  <span className="duration">{job.WorkDuration}</span>
                 </div>
-                {educationList}
-              </div>
-            )}
-
-            {/* Skills */}
-            {(hardSkills.length > 0 || softSkills.length > 0) && (
-              <div className="section">
-                <div className="section-title">
-                  <span className="section-icon">⚙</span>
-                  SKILLS
-                </div>
-                {hardSkills.length > 0 && (
-                  <div className="skill-category">
-                    <div className="skill-category-title">Programming Languages:</div>
-                    <div className="skill-list">
-                      {hardSkills.map((skill, index) => (
-                        <div key={`hard-${index}`} className="skill-item">
-                          {skill}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {softSkills.length > 0 && (
-                  <div className="skill-category">
-                    <div className="skill-category-title">Frameworks & Libraries:</div>
-                    <div className="skill-list">
-                      {softSkills.map((skill, index) => (
-                        <div key={`soft-${index}`} className="skill-item">
-                          {skill}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Languages */}
-            {languages.length > 0 && (
-              <div className="section">
-                <div className="section-title">
-                  <span className="section-icon">🌍</span>
-                  LANGUAGES
-                </div>
-                <div className="languages-list">
-                  {languages.map((lang, index) => (
-                    <div key={`lang-${index}`} className="language-item">
-                      <div className="language-name">{lang}:</div>
-                      <div className="language-level">Professional Working Proficiency</div>
-                    </div>
-                  ))}
+                <div className="item-right">
+                  <div className="job-title">{job.jobTitle}</div>
+                  <div className="company-name">{job.companyName}</div>
+                  <ul className="achievements-list">
+                    {job.keyAchievements?.split('\n').map((bullet, i) => (
+                      <li key={i}>{bullet.replace(/^[•-]\s*/, '')}</li>
+                    ))}
+                  </ul>
                 </div>
               </div>
-            )}
-          </div>
+            ))}
+          </section>
+        )}
 
-          {/* Right Column */}
-          <div className="right-column">
-            {/* Work Experience */}
-            {workExpList && workExpList.length > 0 && (
-              <div className="section">
-                <div className="section-title">
-                  <span className="section-icon">💼</span>
-                  WORK EXPERIENCE
+        {education.length > 0 && (
+          <section className="section">
+            <div className="section-title-bar">
+              <h2>Education</h2>
+            </div>
+            {education.map((edu, index) => (
+              <div key={index} className="experience-item">
+                <div className="item-left">
+                  <span className="duration">{edu.graduationYear}</span>
                 </div>
-                {workExpList}
+                <div className="item-right">
+                  <div className="job-title">{edu.degreeName}</div>
+                  <div className="company-name">{edu.institutionName}</div>
+                  {edu.currentCGPA && (
+                    <ul className="achievements-list">
+                      <li>Grade: {edu.currentCGPA}</li>
+                    </ul>
+                  )}
+                </div>
               </div>
-            )}
+            ))}
+          </section>
+        )}
 
-            {/* Projects */}
-            {projectsList && projectsList.length > 0 && (
-              <div className="section">
-                <div className="section-title">
-                  <span className="section-icon">🚀</span>
-                  PROJECTS
+        {projects.length > 0 && (
+          <section className="section">
+            <div className="section-title-bar">
+              <h2>Projects</h2>
+            </div>
+            {projects.map((proj, index) => (
+              <div key={index} className="experience-item">
+                <div className="item-left">
+                  <span className="duration">{proj.toolsTechUsed}</span>
                 </div>
-                {projectsList}
+                <div className="item-right">
+                  <div className="job-title">{proj.projectTitle}</div>
+                  <p className="profile-text" style={{ padding: 0, marginTop: '4px' }}>
+                    {proj.projectDescription}
+                  </p>
+                </div>
               </div>
-            )}
-          </div>
-        </div>
+            ))}
+          </section>
+        )}
+
+        {(hardSkillsList.length > 0 || softSkillsList.length > 0) && (
+          <section className="section">
+            <div className="section-title-bar">
+              <h2>Skills</h2>
+            </div>
+            <div className="skills-grid">
+              {hardSkillsList.map((skill, index) => (
+                <div key={index} className="skill-item">
+                  <div className="skill-name">{skill}</div>
+                </div>
+              ))}
+              {softSkillsList.map((skill, index) => (
+                <div key={index} className="skill-item">
+                  <div className="skill-name">{skill}</div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {certificates.length > 0 && (
+          <section className="section">
+            <div className="section-title-bar">
+              <h2>Certificates</h2>
+            </div>
+            <div className="skills-grid">
+              {certificates.map((cert, index) => (
+                <div key={index} className="skill-item">
+                  <div className="skill-name">{cert.certificateName}</div>
+                  <div className="skill-desc">{cert.providerName} | {cert.courseDuration}</div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </StyledWrapper>
   );
 };
 
 export const T26Css = `
-@media print {
-  * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-    color-adjust: exact !important;
-  }
-  
-  body {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: white !important;
-  }
-  
-  @page {
-   size: A4 portrait;
-   margin: 0;
-  }
-  
-  .resume {
-    width: 210mm !important;
-    min-height: 297mm !important;
-    margin: 0 !important;
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-  }
-}
-
-body {
-  font-family: 'Arial', sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f5f5f5;
-}
-
 .resume {
-  width: 210mm;
-  min-height: 297mm;
-  background: white;
-  margin: 20px auto;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+width: 210mm;
+min-height: 297mm;
+padding: 25.4mm 20mm;
+margin: 0 auto;
+background: white;
+font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+color: #1a1a1a;
+box-sizing: border-box;
 }
 
 .header {
-  padding: 40px 50px 30px;
-  display: flex;
-  align-items: center;
-  gap: 30px;
-  border-bottom: 3px solid #f5a623;
-}
-
-.profile-photo {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 4px solid #f5a623;
-  flex-shrink: 0;
-}
-
-.header-content {
-  flex: 1;
+margin-bottom: 25px;
 }
 
 .name {
-  font-size: 32px;
-  font-weight: bold;
-  margin: 0 0 5px 0;
-  color: #000;
+font-size: 26pt;
+color: #1e2a44;
+margin: 0 0 8px 0;
+font-weight: bold;
+letter-spacing: -0.5px;
 }
 
-.job-title {
-  font-size: 15px;
-  font-style: italic;
-  margin: 0 0 15px 0;
-  color: #666;
+.contact-bar {
+display: flex;
+flex-wrap: wrap;
+align-items: center;
+gap: 8px;
+font-size: 10pt;
+color: #333;
 }
 
-.contact-info {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  font-size: 10px;
-  color: #333;
-}
-
-.contact-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.contact-icon {
-  color: #f5a623;
-  font-weight: bold;
-  width: 16px;
-}
-
-.main-content {
-  display: grid;
-  grid-template-columns: 1fr 1.5fr;
-  gap: 30px;
-  padding: 30px 50px 40px;
-}
-
-.left-column {
-  border-right: 2px solid #f5a623;
-  padding-right: 30px;
-}
-
-.right-column {
-  padding-left: 0;
+.dot {
+color: #666;
+font-weight: bold;
 }
 
 .section {
-  margin-bottom: 25px;
+margin-bottom: 20px;
 }
 
-.section-title {
-  font-size: 13px;
-  font-weight: bold;
-  color: #000;
-  margin-bottom: 12px;
-  padding-bottom: 5px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.section-title-bar {
+background-color: #f0f1f6;
+padding: 6px 15px;
+margin-bottom: 12px;
+display: flex;
+justify-content: center;
 }
 
-.section-icon {
-  color: #f5a623;
-  font-size: 16px;
+.section-title-bar h2 {
+font-size: 13pt;
+color: #1e2a44;
+margin: 0;
+text-transform: capitalize;
+font-weight: bold;
 }
 
-.section-content {
-  font-size: 11px;
-  line-height: 1.6;
-  color: #333;
+.profile-text {
+font-size: 10pt;
+line-height: 1.5;
+margin: 0;
+padding: 0 5px;
+color: #2c2c2c;
 }
 
-.education-item, .skill-category {
-  margin-bottom: 15px;
+.experience-item {
+display: flex;
+margin-bottom: 15px;
+padding: 0 5px;
 }
 
-.education-degree {
-  font-weight: bold;
-  font-size: 11px;
-  color: #000;
-  margin-bottom: 3px;
+.item-left {
+width: 28%;
+flex-shrink: 0;
+font-size: 9.5pt;
+color: #444;
+padding-top: 2px;
 }
 
-.education-institution {
-  font-size: 10px;
-  color: #666;
-  font-style: italic;
-  margin-bottom: 2px;
+.item-right {
+width: 72%;
 }
 
-.education-date {
-  font-size: 10px;
-  color: #999;
+.job-title {
+font-size: 11pt;
+font-weight: bold;
+color: #1a1a1a;
+margin-bottom: 2px;
 }
 
-.education-details {
-  font-size: 10px;
-  color: #333;
-  margin-top: 3px;
+.company-name {
+font-size: 10.5pt;
+font-style: italic;
+color: #444;
+margin-bottom: 6px;
 }
 
-.education-details ul {
-  margin: 3px 0;
-  padding-left: 15px;
+.achievements-list {
+margin: 0;
+padding-left: 18px;
+list-style-type: disc;
 }
 
-.skill-category-title {
-  font-size: 11px;
-  font-weight: bold;
-  color: #000;
-  margin-bottom: 6px;
+.achievements-list li {
+font-size: 10pt;
+line-height: 1.4;
+margin-bottom: 4px;
+color: #2c2c2c;
 }
 
-.skill-list {
-  font-size: 10px;
-  line-height: 1.7;
-  color: #333;
+.skills-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 15px;
+padding: 0 5px;
 }
 
 .skill-item {
-  padding-left: 12px;
-  position: relative;
-  margin-bottom: 2px;
+margin-bottom: 5px;
 }
 
-.skill-item:before {
-  content: "•";
-  position: absolute;
-  left: 0;
-  color: #f5a623;
-  font-weight: bold;
+.skill-name {
+font-size: 10.5pt;
+font-weight: bold;
+color: #1a1a1a;
 }
 
-.languages-list {
-  font-size: 11px;
-  color: #333;
+.skill-desc {
+font-size: 9.5pt;
+color: #555;
+margin-top: 2px;
 }
 
-.language-item {
-  margin-bottom: 8px;
+@media print {
+body {
+margin: 0;
+padding: 0;
 }
-
-.language-name {
-  font-weight: bold;
-  color: #000;
+.resume {
+margin: 0;
+box-shadow: none;
+width: 210mm;
+height: 297mm;
 }
-
-.language-level {
-  font-size: 10px;
-  color: #666;
-}
-
-.experience-item, .project-item {
-  margin-bottom: 20px;
-}
-
-.item-header {
-  margin-bottom: 5px;
-}
-
-.item-title {
-  font-weight: bold;
-  font-size: 12px;
-  color: #000;
-  margin-bottom: 2px;
-}
-
-.item-subtitle {
-  font-size: 11px;
-  color: #666;
-  font-style: italic;
-  margin-bottom: 2px;
-}
-
-.item-date {
-  font-size: 10px;
-  color: #f5a623;
-  font-weight: 600;
-  margin-bottom: 5px;
-}
-
-.item-description {
-  font-size: 11px;
-  line-height: 1.5;
-  color: #333;
-}
-
-.item-description ul {
-  margin: 5px 0;
-  padding-left: 20px;
-}
-
-.item-description li {
-  margin-bottom: 4px;
-}
-
-.project-tech {
-  font-size: 10px;
-  color: #666;
-  margin-top: 5px;
 }
 `;
+
+const StyledWrapper = styled.div`${T26Css}`;

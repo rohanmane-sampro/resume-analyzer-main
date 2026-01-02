@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import Suggestions from "./Suggestions";
 import { useLocation } from 'react-router-dom';
 import JsonFiles from "./JsonFiles.jsx"
-import { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30 } from './Templates';
+import { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34 } from './Templates';
 import { ENDPOINTS, getAuthHeaders } from '../apiConfig';
 
 import AIAnalysis from './AIAnalysis.jsx';
@@ -28,7 +28,7 @@ const GetInfo = () => {
   const hasLoadedDataRef = useRef(false);
 
   // Available templates state
-  const [availableTemplateNumbers, setAvailableTemplateNumbers] = useState([1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]);
+  const [availableTemplateNumbers, setAvailableTemplateNumbers] = useState([1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34]);
   const [loadingTemplates, setLoadingTemplates] = useState(true);
 
   // AI-related state
@@ -153,7 +153,11 @@ const GetInfo = () => {
     "ModernCV - Fresher",
     "RPI Graduate CV - Fresher",
     "Deedy Resume - Fresher",
-    "HowToTeX Minimal - Fresher"
+    "HowToTeX Minimal - Fresher",
+    "Modern Simple Photo",
+    "Classic Professional",
+    "Modern Sidebar",
+    "Clean Blue Professional"
   ]
   const Suggests = [
     "Hi, I'm here to assist you. 🤝",
@@ -228,13 +232,13 @@ const GetInfo = () => {
             setAllTemplateNumbers(data.all_templates.filter(num => num !== 8));
           } else {
             // Fallback if backend doesn't send all_templates yet
-            setAllTemplateNumbers([1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]);
+            setAllTemplateNumbers([1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]);
           }
           console.log(`User can access ${data.total} of ${data.total_system_templates} templates`);
         } else {
           console.error('Failed to fetch templates:', data);
           // Fallback
-          const fallback = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30];
+          const fallback = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32];
           setAvailableTemplateNumbers(fallback);
           setAllTemplateNumbers(fallback);
         }
@@ -335,34 +339,16 @@ const GetInfo = () => {
     setCompletedSteps(newSet);
   };
 
-  const handleVerify = (e) => {
-    if (e.key === "Enter" || e.key == "Tab" || pin.length == 6) {
-      if (pin === "2025") {
-        setExampleJsonData(JsonFiles[0]); // Load Prashant's data
-        toast.success("Authorized - Prashant's data loaded", {
-          duration: 3000,
-          position: "top-right",
-        });
-        setError(false)
-        setShowInput(false)
-        HandleExampleProcessing();
-      } else if (pin === "2026") {
-        setExampleJsonData(JsonFiles[1]); // Load Nishant's data
-        toast.success("Authorized - Nishant's data loaded", {
-          duration: 3000,
-          position: "top-right",
-        });
-        setError(false)
-        setShowInput(false)
-        HandleExampleProcessing();
-      } else {
-        toast.error("Pin is incorrect. try 2025 or 2026!", {
-          duration: 3000,
-          position: "top-right",
-        });
-        setError(true);
-      }
-    }
+  const handleVerify = () => {
+    // Automatically load first example data without PIN
+    setExampleJsonData(JsonFiles[0]);
+    toast.success("Sample data loaded successfully!", {
+      duration: 3000,
+      position: "top-right",
+    });
+    setError(false);
+    setShowInput(false);
+    HandleExampleProcessing();
   };
 
   useEffect(() => { // || !formData.contactInfo.fullName
@@ -672,7 +658,7 @@ const GetInfo = () => {
             </div>
 
             {/* Profile Image Upload - For Templates with Photo Support */}
-            {(isExampleProcessing ? ['4', '7', '11', '12', '13', '19', '21', '27'].includes(ExampleJsonData.selectedTemplate) : ['4', '7', '11', '12', '13', '19', '21', '27'].includes(formData.selectedTemplate)) && (
+            {(isExampleProcessing ? ['4', '7', '11', '12', '13', '19', '21', '27', '31', '33'].includes(ExampleJsonData.selectedTemplate) : ['4', '7', '11', '12', '13', '19', '21', '27', '31', '33'].includes(formData.selectedTemplate)) && (
               <div className="space-y-2 mt-4 p-4 border-2 border-blue-200 rounded-lg bg-blue-50 dark:bg-slate-700 dark:border-blue-600">
                 <label className="block text-sm font-medium dark:text-slate-300 flex items-center gap-2">
                   <span>📸 Profile Picture (For Selected Template)</span>
@@ -1943,28 +1929,11 @@ const GetInfo = () => {
           <div>
             <h2
               className="space-y-3 mx-4 md:mx-0 mt-4 p-2 flex items-center justify-center gap-3 rounded-lg cursor-pointer transition-transform duration-400 bg-blue-50 hover:bg-blue-100 text-blue-600 dark:text-zinc-300 dark:bg-slate-700/50 dark:hover:bg-slate-700/95"
-              title="It is only for Test & Present purpose. with authorized access"
-              onClick={() => {
-                if (showInput) {
-                  setShowInput(false)
-                } else { setShowInput(true) }
-              }}
+              title="Load sample data to preview templates"
+              onClick={handleVerify}
             >
               Example Processing
             </h2>
-
-            {showInput && (
-              <div className="mx-4 md:mx-0 dark:bg-gray-800 rounded-lg">
-                <input
-                  type="password"
-                  className={`w-full mt-2 p-2 border rounded bg-white text-black dark:bg-gray-700 dark:text-white ${error ? "border-red-500 dark:border-red-400 focus:ring-red-500" : "border-blue-500 dark:border-blue-400 focus:ring-blue-500"} focus:outline-none focus:ring-2`}
-                  value={pin}
-                  onChange={(e) => setPin(e.target.value)}
-                  onKeyDown={handleVerify}
-                  placeholder="Enter PIN"
-                />
-              </div>
-            )}
             <div className="flex items-center mt-4 justify-center gap-2 mr-2 dark:text-slate-300" title='Total number of Resumes built by this application'>
               <p>Over</p>
               <b>{ResumesBuilt === 0 ? "loading..." : ResumesBuilt}</b>
@@ -2064,6 +2033,10 @@ const GetInfo = () => {
                   case '28': return <T28 jsonData={data} />;
                   case '29': return <T29 jsonData={data} />;
                   case '30': return <T30 jsonData={data} />;
+                  case '31': return <T31 jsonData={data} />;
+                  case '32': return <T32 jsonData={data} />;
+                  case '33': return <T33 jsonData={data} />;
+                  case '34': return <T34 jsonData={data} />;
                   default: return <T1 jsonData={data} />;
                 }
               })()}
