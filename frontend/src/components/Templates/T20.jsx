@@ -1,423 +1,215 @@
-
 import React from 'react';
-import styled from "styled-components";
-
-const parseMarkdown = (text) => {
-  if (!text || typeof text !== 'string') return '';
-  return text
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/\n/g, '<br/>');
-};
+import styled from 'styled-components';
 
 const StyledWrapper = styled.div`
 @media print {
-  body {
-    margin: 0;
-    padding: 0;
-    background-color: white !important;
-  }
-  @page {
-   size: A4;
-   margin: 0;
-  }
-  .resume {
-    width: 100%;
-    box-shadow: none !important;
-  }
+* {
+-webkit-print-color-adjust: exact !important;
+print-color-adjust: exact !important;
 }
-
 body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f5f5f5;
+margin: 0;
+padding: 0;
+background-color: white !important;
+}
+@page {
+size: A4 portrait;
+margin: 0;
+}
+.resume {
+width: 210mm !important;
+max-width: 210mm !important;
+min-height: 297mm !important;
+margin: 0 !important;
+padding: 15mm !important;
+box-shadow: none !important;
+}
 }
 
 .resume {
-  width: 210mm;
-  min-height: 297mm;
-  background: white;
-  margin: 20px auto;
-  padding: 35px 45px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-}
-
-.header {
-  margin-bottom: 18px;
-}
-
-.name {
-  font-size: 20px;
-  font-weight: bold;
-  margin: 0 0 8px 0;
-  color: #000;
-}
-
-.contact-info {
-  display: flex;
-  gap: 15px;
-  font-size: 9px;
-  color: #555;
-  margin-bottom: 15px;
-}
-
-.section {
-  margin-bottom: 18px;
-}
-
-.section-title {
-  font-size: 11px;
-  font-weight: bold;
-  color: #000;
-  margin-bottom: 10px;
-  padding-bottom: 3px;
-  border-bottom: 1px solid #000;
-}
-
-.profile-text {
-  font-size: 9px;
-  line-height: 1.5;
-  color: #444;
-  text-align: justify;
-}
-
-.experience-item {
-  margin-bottom: 14px;
-}
-
-.exp-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 3px;
-}
-
-.exp-title {
-  font-size: 10px;
-  font-weight: bold;
-  color: #000;
-}
-
-.exp-date {
-  font-size: 9px;
-  color: #666;
-}
-
-.exp-company {
-  font-size: 9px;
-  color: #666;
-  margin-bottom: 5px;
-}
-
-.exp-description {
-  font-size: 9px;
-  line-height: 1.4;
-  color: #555;
-}
-
-.exp-description ul {
-  margin: 3px 0;
-  padding-left: 16px;
-}
-
-.exp-description li {
-  margin-bottom: 2px;
-}
-
-.skills-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-}
-
-.skill-category {
-  margin-bottom: 10px;
-}
-
-.skill-category-title {
-  font-size: 9px;
-  font-weight: bold;
-  color: #000;
-  margin-bottom: 5px;
-}
-
-.skill-item {
-  font-size: 9px;
-  color: #555;
-  margin-bottom: 3px;
-}
-
-.cert-item {
-  margin-bottom: 8px;
-  font-size: 9px;
-  color: #555;
-}
-
-.cert-name {
-  font-weight: bold;
-  color: #000;
+width: 210mm;
+min-height: 297mm;
+padding: 15mm;
+margin: 20px auto;
+background-color: white;
+font-family: 'Helvetica', 'Arial', sans-serif;
+color: #000;
+line-height: 1.3;
+font-size: 9.5pt;
+box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+box-sizing: border-box;
 }
 `;
 
+const Header = styled.header`margin-bottom: 12px;`;
+
+const NameRow = styled.div`display: flex; align-items: baseline; gap: 10px; margin-bottom: 5px;`;
+
+const FullName = styled.h1`font-size: 24pt; font-weight: bold; margin: 0;`;
+
+const JobTitleLabel = styled.span`font-size: 16pt; font-style: italic; font-weight: normal; color: #333;`;
+
+const ContactInfoRow = styled.div`display: flex; gap: 15px; font-size: 9pt; margin-bottom: 15px; align-items: center;`;
+
+const ContactItem = styled.div`display: flex; align-items: center; gap: 5px;`;
+
+const Summary = styled.div`margin-bottom: 20px; text-align: justify; font-size: 9.5pt;`;
+
+const Section = styled.section`margin-bottom: 15px;`;
+
+const SectionTitle = styled.h2`font-size: 11pt; font-weight: bold; text-transform: uppercase; margin: 0 0 3px 0; border-bottom: 1px solid #000; padding-bottom: 2px;`;
+
+const EntryContainer = styled.div`display: flex; margin-top: 10px; margin-bottom: 12px;`;
+
+const LeftCol = styled.div`width: 120px; flex-shrink: 0; font-size: 9pt; font-weight: 500;`;
+
+const RightCol = styled.div`flex-grow: 1;`;
+
+const CompanyName = styled.div`font-weight: bold; font-size: 10pt;`;
+
+const RoleName = styled.div`font-style: italic; font-size: 9pt; margin-bottom: 4px;`;
+
+const BulletList = styled.ul`margin: 0; padding-left: 18px; list-style-type: disc;`;
+
+const BulletItem = styled.li`margin-bottom: 2px; font-size: 9.2pt;`;
+
+const SkillRow = styled.div`margin-top: 5px; display: flex; gap: 5px; font-size: 9.5pt;`;
+
+const SkillType = styled.span`font-weight: bold;`;
+
 export const T20 = ({ jsonData }) => {
-  const workExpList = jsonData.workExperience && jsonData.workExperience.length > 0
-    ? jsonData.workExperience.map((we, index) => (
-      <div key={`work-${index}`} className="experience-item">
-        <div className="exp-header">
-          <div className="exp-title">{we.jobTitle || 'Position'}</div>
-          <div className="exp-date">{we.WorkDuration || '2015 Sep - 2017 Jul'}</div>
-        </div>
-        <div className="exp-company">{we.companyName || 'Company, Location'}</div>
-        <div className="exp-description">
-          <ul>
-            <li dangerouslySetInnerHTML={{ __html: parseMarkdown(we.keyAchievements || 'Responsibilities') }} />
-          </ul>
-        </div>
-      </div>
-    ))
-    : null;
-
-  const educationList = jsonData.education && jsonData.education.length > 0
-    ? jsonData.education.map((edu, index) => (
-      <div key={`edu-${index}`} className="experience-item">
-        <div className="exp-header">
-          <div className="exp-title">{edu.degreeName || 'Degree'}</div>
-          <div className="exp-date">{edu.graduationYear || 'Year'}</div>
-        </div>
-        <div className="exp-company">{edu.institutionName || 'University'}</div>
-      </div>
-    ))
-    : null;
-
-  const hardSkills = jsonData.skills?.hardSkills
-    ? jsonData.skills.hardSkills.split(',').map(s => s.trim()).filter(s => s !== '')
-    : [];
+  const contact = jsonData?.contactInfo || {};
+  const description = jsonData?.Description?.UserDescription || '';
+  const work = jsonData?.workExperience || [];
+  const education = jsonData?.education || [];
+  const projects = jsonData?.projects || [];
+  const certificates = jsonData?.certificates || [];
+  const hardSkills = jsonData?.skills?.hardSkills || '';
+  const softSkills = jsonData?.skills?.softSkills || '';
 
   return (
     <StyledWrapper>
       <div className="resume" id="capture-content">
-        <div className="header">
-          <div className="name">{jsonData.contactInfo?.fullName || 'Andrew Kim'}</div>
-          <div className="contact-info">
-            <span>{jsonData.contactInfo?.emailAddress || 'andrew.kim@gmail.com'}</span>
-            <span>{jsonData.contactInfo?.phoneNumber || '+1 415 555 2011'}</span>
-            <span>{jsonData.contactInfo?.Location || 'New York City, USA'}</span>
-          </div>
-        </div>
+        <Header>
+          <NameRow>
+            <FullName>{contact.fullName}</FullName>
+            <JobTitleLabel>{work[0]?.jobTitle}</JobTitleLabel>
+          </NameRow>
 
-        <div className="section">
-          <div className="section-title">Profile</div>
-          <div className="profile-text">
-            {jsonData.Description?.UserDescription || 'Experienced finance professional...'}
-          </div>
-        </div>
+          <ContactInfoRow>
+            <ContactItem>
+              <span>✉</span> {contact.emailAddress}
+            </ContactItem>
+            <ContactItem>
+              <span>📞</span> {contact.phoneNumber}
+            </ContactItem>
+            <ContactItem>
+              <span>📍</span> {contact.Location}
+            </ContactItem>
+            {contact.portfolio && (
+              <ContactItem>
+                <span>🔗</span> {contact.portfolio.replace(/^https?:\/\//, '')}
+              </ContactItem>
+            )}
+          </ContactInfoRow>
+        </Header>
 
-        {workExpList && workExpList.length > 0 && (
-          <div className="section">
-            <div className="section-title">Work Experience</div>
-            {workExpList}
-          </div>
+        {description && <Summary>{description}</Summary>}
+
+        {work.length > 0 && (
+          <Section>
+            <SectionTitle>Professional Experience</SectionTitle>
+            {work.map((item, index) => (
+              <EntryContainer key={index}>
+                <LeftCol>
+                  <div>{item.WorkDuration}</div>
+                  <div style={{ color: '#666' }}>{contact.Location}</div>
+                </LeftCol>
+                <RightCol>
+                  <CompanyName>{item.companyName}</CompanyName>
+                  <RoleName>{item.jobTitle}</RoleName>
+                  {item.keyAchievements && (
+                    <BulletList>
+                      {item.keyAchievements.split('\n').filter(line => line.trim()).map((bullet, i) => (
+                        <BulletItem key={i}>{bullet.replace(/^[•*-]\s*/, '')}</BulletItem>
+                      ))}
+                    </BulletList>
+                  )}
+                </RightCol>
+              </EntryContainer>
+            ))}
+          </Section>
         )}
 
-        {educationList && educationList.length > 0 && (
-          <div className="section">
-            <div className="section-title">Education</div>
-            {educationList}
-          </div>
+        {education.length > 0 && (
+          <Section>
+            <SectionTitle>Education</SectionTitle>
+            {education.map((item, index) => (
+              <EntryContainer key={index}>
+                <LeftCol>
+                  {item.graduationYear}
+                </LeftCol>
+                <RightCol>
+                  <CompanyName>{item.institutionName}</CompanyName>
+                  <RoleName>{item.degreeName} {item.currentCGPA ? `| CGPA: ${item.currentCGPA}` : ''}</RoleName>
+                </RightCol>
+              </EntryContainer>
+            ))}
+          </Section>
         )}
 
-        {hardSkills.length > 0 && (
-          <div className="section">
-            <div className="section-title">Skills</div>
-            <div className="skills-grid">
-              <div className="skill-category">
-                <div className="skill-category-title">Financial Modeling</div>
-                <div className="skill-item">Built financial models in Excel</div>
-              </div>
-              <div className="skill-category">
-                <div className="skill-category-title">Investment Analysis</div>
-                <div className="skill-item">Prepared and presented investment reports</div>
-              </div>
-              <div className="skill-category">
-                <div className="skill-category-title">Budgeting and Forecasting</div>
-                <div className="skill-item">Developed and analyzed data on monthly cycles</div>
-              </div>
-              <div className="skill-category">
-                <div className="skill-category-title">Business Valuation</div>
-                <div className="skill-item">DCF and calc of price multiples</div>
-              </div>
-            </div>
-          </div>
+        {(hardSkills || softSkills) && (
+          <Section>
+            <SectionTitle>Skills</SectionTitle>
+            {hardSkills && (
+              <SkillRow>
+                <SkillType>Technical Skills:</SkillType>
+                <span>{hardSkills}</span>
+              </SkillRow>
+            )}
+            {softSkills && (
+              <SkillRow>
+                <SkillType>Soft Skills:</SkillType>
+                <span>{softSkills}</span>
+              </SkillRow>
+            )}
+          </Section>
         )}
 
-        <div className="section">
-          <div className="section-title">Certifications</div>
-          <div className="skills-grid">
-            <div className="cert-item">
-              <div className="cert-name">CPA</div>
-              Level 2 of 2
-            </div>
-            <div className="cert-item">
-              <div className="cert-name">CFA</div>
-              Level 2
-            </div>
-          </div>
-        </div>
+        {projects.length > 0 && (
+          <Section>
+            <SectionTitle>Projects</SectionTitle>
+            {projects.map((item, index) => (
+              <EntryContainer key={index}>
+                <LeftCol>
+                  {item.toolsTechUsed}
+                </LeftCol>
+                <RightCol>
+                  <CompanyName>{item.projectTitle}</CompanyName>
+                  <div style={{ fontSize: '9.2pt', marginTop: '2px' }}>{item.projectDescription}</div>
+                </RightCol>
+              </EntryContainer>
+            ))}
+          </Section>
+        )}
+
+        {certificates.length > 0 && (
+          <Section>
+            <SectionTitle>Certifications & Activities</SectionTitle>
+            {certificates.map((item, index) => (
+              <EntryContainer key={index} style={{ marginTop: '5px', marginBottom: '5px' }}>
+                <LeftCol>{item.courseDuration}</LeftCol>
+                <RightCol>
+                  <CompanyName>{item.certificateName}</CompanyName>
+                  <RoleName>{item.providerName}</RoleName>
+                </RightCol>
+              </EntryContainer>
+            ))}
+          </Section>
+        )}
       </div>
     </StyledWrapper>
   );
 };
 
-export const T20Css = `
-@media print {
-  * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-  body {
-    margin: 0;
-    padding: 0;
-    background-color: white !important;
-  }
-  @page {
-   size: A4 portrait;
-   margin: 0;
-  }
-  .resume {
-    width: 210mm !important;
-    max-width: 210mm !important;
-    min-height: 297mm !important;
-    margin: 0 !important;
-    box-shadow: none !important;
-  }
-}
-
-body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f5f5f5;
-}
-
-.resume {
-  width: 210mm;
-  min-height: 297mm;
-  background: white;
-  margin: 20px auto;
-  padding: 35px 45px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-}
-
-.header {
-  margin-bottom: 18px;
-}
-
-.name {
-  font-size: 20px;
-  font-weight: bold;
-  margin: 0 0 8px 0;
-  color: #000;
-}
-
-.contact-info {
-  display: flex;
-  gap: 15px;
-  font-size: 9px;
-  color: #555;
-  margin-bottom: 15px;
-}
-
-.section {
-  margin-bottom: 18px;
-}
-
-.section-title {
-  font-size: 11px;
-  font-weight: bold;
-  color: #000;
-  margin-bottom: 10px;
-  padding-bottom: 3px;
-  border-bottom: 1px solid #000;
-}
-
-.profile-text {
-  font-size: 9px;
-  line-height: 1.5;
-  color: #444;
-  text-align: justify;
-}
-
-.experience-item {
-  margin-bottom: 14px;
-}
-
-.exp-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 3px;
-}
-
-.exp-title {
-  font-size: 10px;
-  font-weight: bold;
-  color: #000;
-}
-
-.exp-date {
-  font-size: 9px;
-  color: #666;
-}
-
-.exp-company {
-  font-size: 9px;
-  color: #666;
-  margin-bottom: 5px;
-}
-
-.exp-description {
-  font-size: 9px;
-  line-height: 1.4;
-  color: #555;
-}
-
-.exp-description ul {
-  margin: 3px 0;
-  padding-left: 16px;
-}
-
-.exp-description li {
-  margin-bottom: 2px;
-}
-
-.skills-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-}
-
-.skill-category {
-  margin-bottom: 10px;
-}
-
-.skill-category-title {
-  font-size: 9px;
-  font-weight: bold;
-  color: #000;
-  margin-bottom: 5px;
-}
-
-.skill-item {
-  font-size: 9px;
-  color: #555;
-  margin-bottom: 3px;
-}
-
-.cert-item {
-  margin-bottom: 8px;
-  font-size: 9px;
-  color: #555;
-}
-
-.cert-name {
-  font-weight: bold;
-  color: #000;
-}
-`;
+export const T20Css = `@media print { .resume { width: 210mm !important; max-width: 210mm !important; min-height: 297mm !important; margin: 0 !important; padding: 15mm !important; } }`;

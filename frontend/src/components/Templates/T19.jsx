@@ -1,580 +1,212 @@
-
 import React from 'react';
-import styled from "styled-components";
+import styled from 'styled-components';
 
-const parseMarkdown = (text) => {
-  if (!text || typeof text !== 'string') return '';
-  return text
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/\n/g, '<br/>');
-};
+const PRIMARY_DARK = '#34495e';
+const ACCENT_BLUE = '#2980b9';
+const BORDER_COLOR = '#dcdde1';
+const TEXT_MAIN = '#2f3640';
+const TEXT_LIGHT = '#7f8c8d';
 
 const StyledWrapper = styled.div`
 @media print {
-  body {
-    margin: 0;
-    padding: 0;
-    background-color: white !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-  @page {
-   size: A4;
-   margin: 0;
-  }
-  .resume {
-    width: 100%;
-    box-shadow: none !important;
-  }
+* {
+-webkit-print-color-adjust: exact !important;
+print-color-adjust: exact !important;
 }
-
 body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f5f5f5;
+margin: 0;
+padding: 0;
+background-color: white !important;
+}
+@page {
+size: A4 portrait;
+margin: 0;
+}
+.resume {
+width: 210mm !important;
+max-width: 210mm !important;
+min-height: 297mm !important;
+margin: 0 !important;
+padding: 0 !important;
+box-shadow: none !important;
+}
 }
 
 .resume {
-  width: 210mm;
-  min-height: 297mm;
-  background: white;
-  margin: 20px auto;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-  display: flex;
-}
-
-.sidebar {
-  width: 180px;
-  background: #2c3e50;
-  color: white;
-  padding: 25px 20px;
-}
-
-.profile-photo {
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  background: #34495e;
-  margin: 0 auto 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.profile-photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.photo-placeholder {
-  font-size: 60px;
-  color: #7f8c8d;
-}
-
-.sidebar-section {
-  margin-bottom: 20px;
-}
-
-.sidebar-title {
-  font-size: 11px;
-  font-weight: bold;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.sidebar-title i {
-  font-size: 12px;
-}
-
-.sidebar-item {
-  font-size: 9px;
-  margin-bottom: 6px;
-  color: #ecf0f1;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.sidebar-item i {
-  font-size: 8px;
-  min-width: 12px;
-}
-
-.language-item {
-  margin-bottom: 8px;
-}
-
-.language-name {
-  font-size: 10px;
-  font-weight: bold;
-  margin-bottom: 3px;
-}
-
-.language-level {
-  font-size: 8px;
-  color: #bdc3c7;
-}
-
-.course-item {
-  margin-bottom: 12px;
-}
-
-.course-title {
-  font-size: 9px;
-  font-weight: bold;
-  margin-bottom: 2px;
-}
-
-.course-org {
-  font-size: 8px;
-  color: #bdc3c7;
-  margin-bottom: 2px;
-}
-
-.course-date {
-  font-size: 8px;
-  color: #95a5a6;
-}
-
-.main-content {
-  flex: 1;
-  padding: 25px 30px;
-}
-
-.header {
-  margin-bottom: 20px;
-}
-
-.name {
-  font-size: 22px;
-  font-weight: bold;
-  margin: 0 0 3px 0;
-  color: #000;
-}
-
-.job-title {
-  font-size: 13px;
-  color: #666;
-  margin: 0 0 15px 0;
-}
-
-.section {
-  margin-bottom: 20px;
-}
-
-.section-title {
-  font-size: 11px;
-  font-weight: bold;
-  text-transform: uppercase;
-  color: #000;
-  margin-bottom: 10px;
-  padding-bottom: 3px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.section-title i {
-  font-size: 12px;
-}
-
-.experience-item {
-  margin-bottom: 14px;
-}
-
-.exp-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 3px;
-}
-
-.exp-title {
-  font-size: 10px;
-  font-weight: bold;
-  color: #000;
-}
-
-.exp-date {
-  font-size: 9px;
-  color: #666;
-}
-
-.exp-company {
-  font-size: 9px;
-  color: #666;
-  margin-bottom: 5px;
-}
-
-.exp-description {
-  font-size: 9px;
-  line-height: 1.4;
-  color: #555;
-}
-
-.exp-description ul {
-  margin: 3px 0;
-  padding-left: 16px;
-}
-
-.exp-description li {
-  margin-bottom: 2px;
+width: 210mm;
+min-height: 297mm;
+margin: 20px auto;
+background-color: white;
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+color: ${TEXT_MAIN};
+line-height: 1.5;
+font-size: 10pt;
+box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+display: flex;
+position: relative;
 }
 `;
 
+const Sidebar = styled.aside`width: 35%; background-color: #f9f9f9; border-right: 1px solid ${BORDER_COLOR}; padding: 0 0 20px 0; display: flex; flex-direction: column;`;
+
+const HeaderAccent = styled.div`background-color: ${PRIMARY_DARK}; height: 40px; width: 100%; position: relative; &::after { content: ''; position: absolute; right: 0; bottom: 0; width: 0; height: 0; border-style: solid; border-width: 0 0 40px 40px; border-color: transparent transparent white transparent; }`;
+
+const ProfileSection = styled.div`padding: 20px 30px; text-align: left;`;
+
+const ProfileImage = styled.div`width: 100%; aspect-ratio: 4/5; background-color: #eee; margin-bottom: 20px; background-image: url('[https://via.placeholder.com/200x250](https://via.placeholder.com/200x250)'); background-size: cover; background-position: center;`;
+
+const FullName = styled.h1`font-size: 18pt; font-weight: 500; margin: 0; color: ${PRIMARY_DARK};`;
+
+const SidebarSubTitle = styled.div`font-size: 9pt; color: ${TEXT_LIGHT}; margin-bottom: 15px; line-height: 1.2;`;
+
+const ContactList = styled.ul`list-style: none; padding: 0; margin: 0 0 30px 0;`;
+
+const ContactItem = styled.li`
+font-size: 8.5pt;
+margin-bottom: 8px;
+display: flex;
+align-items: center;
+gap: 8px;
+color: ${TEXT_MAIN};
+
+&::before {
+content: '▶';
+font-size: 6pt;
+color: ${PRIMARY_DARK};
+}
+`;
+
+const SidebarSectionTitle = styled.h2`font-size: 14pt; font-weight: 400; color: ${TEXT_LIGHT}; margin: 0 0 10px 0; padding-bottom: 5px; border-bottom: 1.5px solid ${BORDER_COLOR}; width: fit-content; min-width: 80px;`;
+
+const SkillContainer = styled.div`margin-bottom: 12px;`;
+
+const SkillLabel = styled.div`display: flex; justify-content: space-between; font-size: 8.5pt; font-weight: 600; margin-bottom: 4px;`;
+
+const ProgressBar = styled.div`height: 6px; background-color: #ddd; position: relative; overflow: hidden; &::after { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: ${props => props.width || '80%'}; background-color: ${PRIMARY_DARK}; }`;
+
+const MainContent = styled.main`width: 65%; padding: 40px 40px;`;
+
+const Section = styled.section`margin-bottom: 35px;`;
+
+const SectionTitle = styled.h2`font-size: 16pt; font-weight: 400; color: ${TEXT_LIGHT}; margin: 0 0 15px 0; padding-bottom: 5px; border-bottom: 1.5px solid ${BORDER_COLOR}; width: fit-content; min-width: 150px;`;
+
+const BiographyText = styled.p`font-size: 10pt; color: ${TEXT_MAIN}; text-align: justify; margin: 0;`;
+
+const ExperienceEntry = styled.div`margin-bottom: 25px; position: relative;`;
+
+const EntryHeader = styled.div`display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;`;
+
+const JobInfo = styled.div`flex: 1;`;
+
+const JobTitle = styled.div`font-weight: bold; font-size: 10.5pt; color: ${TEXT_MAIN};`;
+
+const CompanyName = styled.div`font-size: 9.5pt; color: ${TEXT_LIGHT};`;
+
+const DateBadge = styled.div`background-color: ${PRIMARY_DARK}; color: white; font-size: 8.5pt; padding: 4px 12px; font-weight: bold; white-space: nowrap;`;
+
+const DescriptionList = styled.ul`margin: 10px 0 0 0; padding-left: 0; list-style: none; font-size: 9.5pt; color: ${TEXT_MAIN};`;
+
+const DescriptionItem = styled.li`margin-bottom: 5px; position: relative; padding-left: 0;`;
+
 export const T19 = ({ jsonData }) => {
-  const workExpList = jsonData.workExperience && jsonData.workExperience.length > 0
-    ? jsonData.workExperience.map((we, index) => (
-      <div key={`work-${index}`} className="experience-item">
-        <div className="exp-header">
-          <div className="exp-title">{we.jobTitle || 'Position'}</div>
-          <div className="exp-date">{we.WorkDuration || '08/2024 - Present'}</div>
-        </div>
-        <div className="exp-company">{we.companyName || 'Company, Location'}</div>
-        <div className="exp-description">
-          <ul>
-            <li dangerouslySetInnerHTML={{ __html: parseMarkdown(we.keyAchievements || 'Responsibilities') }} />
-          </ul>
-        </div>
-      </div>
-    ))
-    : null;
-
-  const educationList = jsonData.education && jsonData.education.length > 0
-    ? jsonData.education.map((edu, index) => (
-      <div key={`edu-${index}`} className="experience-item">
-        <div className="exp-header">
-          <div className="exp-title">{edu.degreeName || 'Degree'}</div>
-          <div className="exp-date">{edu.graduationYear || 'Year'}</div>
-        </div>
-        <div className="exp-company">{edu.institutionName || 'University'}</div>
-      </div>
-    ))
-    : null;
-
-  const languages = jsonData.contactInfo?.Languages
-    ? jsonData.contactInfo.Languages.split(',').map(l => l.trim()).filter(l => l !== '')
-    : ['Portuguese', 'German', 'English', 'Spanish'];
+  const hardSkills = jsonData.skills?.hardSkills ? jsonData.skills.hardSkills.split(',') : [];
+  const softSkills = jsonData.skills?.softSkills ? jsonData.skills.softSkills.split(',') : [];
 
   return (
     <StyledWrapper>
       <div className="resume" id="capture-content">
-        <div className="sidebar">
-          <div className="profile-photo">
-            {jsonData.contactInfo?.profileImage ? (
-              <img src={jsonData.contactInfo.profileImage} alt="Profile" />
-            ) : (
-              <div className="photo-placeholder">
-                <i className="fas fa-user"></i>
-              </div>
-            )}
-          </div>
+        <Sidebar>
+          <HeaderAccent />
+          <ProfileSection>
+            <ProfileImage />
+            <FullName>{jsonData.contactInfo?.fullName}</FullName>
+            <SidebarSubTitle>
+              {jsonData.workExperience?.[0]?.jobTitle || 'Professional'}
+            </SidebarSubTitle>
 
-          <div className="sidebar-section">
-            <div className="sidebar-item">
-              <i className="fas fa-envelope"></i>
-              <span>{jsonData.contactInfo?.emailAddress || 'isabela.campos@email.com'}</span>
-            </div>
-            <div className="sidebar-item">
-              <i className="fas fa-phone"></i>
-              <span>{jsonData.contactInfo?.phoneNumber || '+41 79 123 45 67'}</span>
-            </div>
-            <div className="sidebar-item">
-              <i className="fas fa-map-marker-alt"></i>
-              <span>{jsonData.contactInfo?.Location || 'Geneve, Switzerland, CH'}</span>
-            </div>
-            <div className="sidebar-item">
-              <i className="fas fa-calendar"></i>
-              <span>12.01.1994</span>
-            </div>
-            <div className="sidebar-item">
-              <i className="fas fa-user-circle"></i>
-              <span>Brazilian, Swiss, CH</span>
-            </div>
-            <div className="sidebar-item">
-              <i className="fas fa-heart"></i>
-              <span>Married</span>
-            </div>
-          </div>
+            <ContactList>
+              {jsonData.contactInfo?.phoneNumber && <ContactItem>{jsonData.contactInfo.phoneNumber}</ContactItem>}
+              {jsonData.contactInfo?.Location && <ContactItem>{jsonData.contactInfo.Location}</ContactItem>}
+              {jsonData.contactInfo?.emailAddress && <ContactItem>{jsonData.contactInfo.emailAddress}</ContactItem>}
+              {jsonData.contactInfo?.portfolio && <ContactItem>{jsonData.contactInfo.portfolio}</ContactItem>}
+            </ContactList>
 
-          <div className="sidebar-section">
-            <div className="sidebar-title">
-              <i className="fas fa-globe"></i>
-              LANGUAGES
-            </div>
-            {languages.map((lang, idx) => (
-              <div key={idx} className="language-item">
-                <div className="language-name">{lang}</div>
-                <div className="language-level">Native / B2 Level</div>
-              </div>
+            <SidebarSectionTitle>Skills</SidebarSectionTitle>
+            {hardSkills.map((skill, index) => (
+              <SkillContainer key={index}>
+                <SkillLabel>
+                  <span>{skill.trim()}</span>
+                  <span style={{ color: TEXT_LIGHT, fontWeight: 400 }}>Exp.</span>
+                </SkillLabel>
+                <ProgressBar width={`${95 - (index * 8)}%`} />
+              </SkillContainer>
             ))}
-          </div>
+            {softSkills.map((skill, index) => (
+              <SkillContainer key={index}>
+                <SkillLabel>
+                  <span>{skill.trim()}</span>
+                </SkillLabel>
+                <ProgressBar width="70%" />
+              </SkillContainer>
+            ))}
+          </ProfileSection>
+        </Sidebar>
 
-          <div className="sidebar-section">
-            <div className="sidebar-title">
-              <i className="fas fa-certificate"></i>
-              COURSES
-            </div>
-            <div className="course-item">
-              <div className="course-title">Certified Associate in Project Management (CAPM)</div>
-              <div className="course-org">PMI Global</div>
-              <div className="course-date">09/2021 - 01/2022 | Switzerland</div>
-            </div>
-          </div>
-        </div>
-
-        <div className="main-content">
-          <div className="header">
-            <div className="name">{jsonData.contactInfo?.fullName || 'Isabela Campos'}</div>
-            <div className="job-title">{jsonData.contactInfo?.jobTitle || 'Area Supervisor'}</div>
-          </div>
-
-          {workExpList && workExpList.length > 0 && (
-            <div className="section">
-              <div className="section-title">
-                <i className="fas fa-briefcase"></i>
-                PROFESSIONAL EXPERIENCE
-              </div>
-              {workExpList}
-            </div>
+        <MainContent>
+          {jsonData.Description?.UserDescription && (
+            <Section>
+              <SectionTitle>Biography</SectionTitle>
+              <BiographyText>{jsonData.Description.UserDescription}</BiographyText>
+            </Section>
           )}
 
-          {educationList && educationList.length > 0 && (
-            <div className="section">
-              <div className="section-title">
-                <i className="fas fa-graduation-cap"></i>
-                EDUCATION
-              </div>
-              {educationList}
-            </div>
+          {jsonData.workExperience && jsonData.workExperience.length > 0 && (
+            <Section>
+              <SectionTitle>Work experience</SectionTitle>
+              {jsonData.workExperience.map((exp, index) => (
+                <ExperienceEntry key={index}>
+                  <EntryHeader>
+                    <JobInfo>
+                      <JobTitle>{exp.jobTitle}</JobTitle>
+                      <CompanyName>{exp.companyName}</CompanyName>
+                    </JobInfo>
+                    <DateBadge>{exp.WorkDuration}</DateBadge>
+                  </EntryHeader>
+                  <DescriptionList>
+                    <DescriptionItem>
+                      {exp.keyAchievements || 'Job details and responsibilities go here.'}
+                    </DescriptionItem>
+                  </DescriptionList>
+                </ExperienceEntry>
+              ))}
+            </Section>
           )}
-        </div>
+
+          {jsonData.education && jsonData.education.length > 0 && (
+            <Section>
+              <SectionTitle>Education</SectionTitle>
+              {jsonData.education.map((edu, index) => (
+                <ExperienceEntry key={index}>
+                  <EntryHeader>
+                    <JobInfo>
+                      <JobTitle>{edu.degreeName}</JobTitle>
+                      <CompanyName>{edu.institutionName}</CompanyName>
+                    </JobInfo>
+                    <DateBadge>{edu.graduationYear}</DateBadge>
+                  </EntryHeader>
+                  {edu.currentCGPA && (
+                    <DescriptionList>
+                      <DescriptionItem>CGPA: {edu.currentCGPA}</DescriptionItem>
+                    </DescriptionList>
+                  )}
+                </ExperienceEntry>
+              ))}
+            </Section>
+          )}
+        </MainContent>
       </div>
     </StyledWrapper>
   );
 };
 
-export const T19Css = `
-@media print {
-  * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-  body {
-    margin: 0;
-    padding: 0;
-    background-color: white !important;
-  }
-  @page {
-   size: A4 portrait;
-   margin: 0;
-  }
-  .resume {
-    width: 210mm !important;
-    max-width: 210mm !important;
-    min-height: 297mm !important;
-    margin: 0 !important;
-    box-shadow: none !important;
-  }
-}
-
-body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f5f5f5;
-}
-
-.resume {
-  width: 210mm;
-  min-height: 297mm;
-  background: white;
-  margin: 20px auto;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-  display: flex;
-}
-
-.sidebar {
-  width: 180px;
-  background: #2c3e50;
-  color: white;
-  padding: 25px 20px;
-}
-
-.profile-photo {
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  background: #34495e;
-  margin: 0 auto 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.profile-photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.photo-placeholder {
-  font-size: 60px;
-  color: #7f8c8d;
-}
-
-.sidebar-section {
-  margin-bottom: 20px;
-}
-
-.sidebar-title {
-  font-size: 11px;
-  font-weight: bold;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.sidebar-title i {
-  font-size: 12px;
-}
-
-.sidebar-item {
-  font-size: 9px;
-  margin-bottom: 6px;
-  color: #ecf0f1;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.sidebar-item i {
-  font-size: 8px;
-  min-width: 12px;
-}
-
-.language-item {
-  margin-bottom: 8px;
-}
-
-.language-name {
-  font-size: 10px;
-  font-weight: bold;
-  margin-bottom: 3px;
-}
-
-.language-level {
-  font-size: 8px;
-  color: #bdc3c7;
-}
-
-.course-item {
-  margin-bottom: 12px;
-}
-
-.course-title {
-  font-size: 9px;
-  font-weight: bold;
-  margin-bottom: 2px;
-}
-
-.course-org {
-  font-size: 8px;
-  color: #bdc3c7;
-  margin-bottom: 2px;
-}
-
-.course-date {
-  font-size: 8px;
-  color: #95a5a6;
-}
-
-.main-content {
-  flex: 1;
-  padding: 25px 30px;
-}
-
-.header {
-  margin-bottom: 20px;
-}
-
-.name {
-  font-size: 22px;
-  font-weight: bold;
-  margin: 0 0 3px 0;
-  color: #000;
-}
-
-.job-title {
-  font-size: 13px;
-  color: #666;
-  margin: 0 0 15px 0;
-}
-
-.section {
-  margin-bottom: 20px;
-}
-
-.section-title {
-  font-size: 11px;
-  font-weight: bold;
-  text-transform: uppercase;
-  color: #000;
-  margin-bottom: 10px;
-  padding-bottom: 3px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.section-title i {
-  font-size: 12px;
-}
-
-.experience-item {
-  margin-bottom: 14px;
-}
-
-.exp-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 3px;
-}
-
-.exp-title {
-  font-size: 10px;
-  font-weight: bold;
-  color: #000;
-}
-
-.exp-date {
-  font-size: 9px;
-  color: #666;
-}
-
-.exp-company {
-  font-size: 9px;
-  color: #666;
-  margin-bottom: 5px;
-}
-
-.exp-description {
-  font-size: 9px;
-  line-height: 1.4;
-  color: #555;
-}
-
-.exp-description ul {
-  margin: 3px 0;
-  padding-left: 16px;
-}
-
-.exp-description li {
-  margin-bottom: 2px;
-}
-`;
+export const T19Css = `.resume { background-color: white; } @media print { .resume { box-shadow: none !important; } }`;
