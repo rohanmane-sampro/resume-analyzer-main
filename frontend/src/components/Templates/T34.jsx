@@ -160,27 +160,31 @@ const StyledWrapper = styled.div`
   .resume-container {
     background-color: white;
     width: 210mm;
-    min-height: 297mm;
-    padding: 3rem;
+    height: 297mm;
+    max-height: 297mm;
+    padding: 2rem 2.5rem;
     color: #1f2937;
     font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     box-sizing: border-box;
+    overflow: hidden;
+    page-break-after: always;
   }
 
   .header {
-    margin-bottom: 2rem;
+    margin-bottom: 1.25rem;
     border-bottom: 0;
   }
 
   .name {
-    font-size: 2.25rem;
+    font-size: 2rem;
     font-weight: 700;
     color: #312e81;
     margin: 0;
+    line-height: 1.2;
   }
 
   .job-title-inline {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     font-weight: 400;
     font-style: italic;
     color: #4f46e5;
@@ -190,16 +194,16 @@ const StyledWrapper = styled.div`
   .contact-info {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.5rem;
-    margin-top: 1rem;
-    font-size: 0.875rem;
+    gap: 1rem;
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
     color: #374151;
   }
 
   .contact-item {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
   }
 
   .contact-item svg {
@@ -211,16 +215,16 @@ const StyledWrapper = styled.div`
   }
 
   .section {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
   }
 
   .section-header {
     background-color: #eef2ff;
-    padding: 0.25rem 0;
+    padding: 0.2rem 0;
     text-align: center;
     border-top: 1px solid #e0e7ff;
     border-bottom: 1px solid #e0e7ff;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
   }
 
   .section-title {
@@ -228,20 +232,20 @@ const StyledWrapper = styled.div`
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    font-size: 0.875rem;
+    font-size: 0.8rem;
     margin: 0;
   }
 
   .profile-text {
-    font-size: 0.875rem;
-    line-height: 1.625;
+    font-size: 0.8rem;
+    line-height: 1.4;
     text-align: justify;
-    margin-top: 0.75rem;
+    margin-top: 0.5rem;
   }
 
   .experience-item {
-    margin-top: 0.75rem;
-    margin-bottom: 1.25rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.75rem;
   }
 
   .experience-header {
@@ -250,7 +254,7 @@ const StyledWrapper = styled.div`
     align-items: baseline;
     font-weight: 700;
     color: #111827;
-    font-size: 0.875rem;
+    font-size: 0.8rem;
   }
 
   .experience-title {
@@ -258,7 +262,7 @@ const StyledWrapper = styled.div`
   }
 
   .experience-date {
-    font-size: 0.875rem;
+    font-size: 0.75rem;
   }
 
   .experience-subheader {
@@ -267,8 +271,8 @@ const StyledWrapper = styled.div`
     align-items: baseline;
     font-style: italic;
     color: #4b5563;
-    font-size: 0.875rem;
-    margin-bottom: 0.5rem;
+    font-size: 0.75rem;
+    margin-bottom: 0.3rem;
   }
 
   .experience-company {
@@ -278,22 +282,23 @@ const StyledWrapper = styled.div`
   }
 
   .experience-description {
-    font-size: 0.875rem;
-    line-height: 1.5;
+    font-size: 0.75rem;
+    line-height: 1.3;
   }
 
   .experience-description ul {
     list-style-type: disc;
-    margin-left: 1.25rem;
-    margin-top: 0.25rem;
+    margin-left: 1rem;
+    margin-top: 0.2rem;
   }
 
   .experience-description li {
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.15rem;
   }
 
   .education-item {
-    margin-top: 0.75rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
   }
 
   .education-header {
@@ -302,7 +307,7 @@ const StyledWrapper = styled.div`
     align-items: baseline;
     font-weight: 700;
     color: #111827;
-    font-size: 0.875rem;
+    font-size: 0.8rem;
   }
 
   .education-degree {
@@ -310,37 +315,37 @@ const StyledWrapper = styled.div`
   }
 
   .education-date {
-    font-size: 0.875rem;
+    font-size: 0.75rem;
   }
 
   .education-institution {
     font-style: italic;
     color: #4b5563;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     margin: 0;
   }
 
   .skills-list {
     list-style-type: disc;
-    margin-left: 1.25rem;
-    font-size: 0.875rem;
+    margin-left: 1rem;
+    font-size: 0.75rem;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    margin-top: 0.75rem;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
   }
 
   .languages-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-    margin-top: 0.75rem;
-    font-size: 0.875rem;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
   }
 
   .language-item {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.4rem;
   }
 
   .language-name {
@@ -360,9 +365,12 @@ const StyledWrapper = styled.div`
     .resume-container {
       width: 210mm;
       height: 297mm;
+      max-height: 297mm;
       margin: 0;
-      padding: 3rem;
+      padding: 2rem 2.5rem;
       box-shadow: none;
+      overflow: hidden;
+      page-break-after: always;
     }
   }
 `;
@@ -371,29 +379,33 @@ export const T34Css = `
   .resume-container {
     background-color: white;
     width: 210mm;
-    min-height: 297mm;
-    padding: 3rem;
+    height: 297mm;
+    max-height: 297mm;
+    padding: 2rem 2.5rem;
     color: #1f2937;
     font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     box-sizing: border-box;
+    overflow: hidden;
+    page-break-after: always;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
 
   .header {
-    margin-bottom: 2rem;
+    margin-bottom: 1.25rem;
     border-bottom: 0;
   }
 
   .name {
-    font-size: 2.25rem;
+    font-size: 2rem;
     font-weight: 700;
     color: #312e81;
     margin: 0;
+    line-height: 1.2;
   }
 
   .job-title-inline {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     font-weight: 400;
     font-style: italic;
     color: #4f46e5;
@@ -403,16 +415,16 @@ export const T34Css = `
   .contact-info {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.5rem;
-    margin-top: 1rem;
-    font-size: 0.875rem;
+    gap: 1rem;
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
     color: #374151;
   }
 
   .contact-item {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
   }
 
   .contact-item svg {
@@ -424,16 +436,16 @@ export const T34Css = `
   }
 
   .section {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
   }
 
   .section-header {
     background-color: #eef2ff !important;
-    padding: 0.25rem 0;
+    padding: 0.2rem 0;
     text-align: center;
     border-top: 1px solid #e0e7ff;
     border-bottom: 1px solid #e0e7ff;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
@@ -443,20 +455,20 @@ export const T34Css = `
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    font-size: 0.875rem;
+    font-size: 0.8rem;
     margin: 0;
   }
 
   .profile-text {
-    font-size: 0.875rem;
-    line-height: 1.625;
+    font-size: 0.8rem;
+    line-height: 1.4;
     text-align: justify;
-    margin-top: 0.75rem;
+    margin-top: 0.5rem;
   }
 
   .experience-item {
-    margin-top: 0.75rem;
-    margin-bottom: 1.25rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.75rem;
   }
 
   .experience-header {
@@ -465,7 +477,7 @@ export const T34Css = `
     align-items: baseline;
     font-weight: 700;
     color: #111827;
-    font-size: 0.875rem;
+    font-size: 0.8rem;
   }
 
   .experience-title {
@@ -473,7 +485,7 @@ export const T34Css = `
   }
 
   .experience-date {
-    font-size: 0.875rem;
+    font-size: 0.75rem;
   }
 
   .experience-subheader {
@@ -482,27 +494,28 @@ export const T34Css = `
     align-items: baseline;
     font-style: italic;
     color: #4b5563;
-    font-size: 0.875rem;
-    margin-bottom: 0.5rem;
+    font-size: 0.75rem;
+    margin-bottom: 0.3rem;
   }
 
   .experience-description {
-    font-size: 0.875rem;
-    line-height: 1.5;
+    font-size: 0.75rem;
+    line-height: 1.3;
   }
 
   .experience-description ul {
     list-style-type: disc;
-    margin-left: 1.25rem;
-    margin-top: 0.25rem;
+    margin-left: 1rem;
+    margin-top: 0.2rem;
   }
 
   .experience-description li {
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.15rem;
   }
 
   .education-item {
-    margin-top: 0.75rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
   }
 
   .education-header {
@@ -511,7 +524,7 @@ export const T34Css = `
     align-items: baseline;
     font-weight: 700;
     color: #111827;
-    font-size: 0.875rem;
+    font-size: 0.8rem;
   }
 
   .education-degree {
@@ -519,37 +532,37 @@ export const T34Css = `
   }
 
   .education-date {
-    font-size: 0.875rem;
+    font-size: 0.75rem;
   }
 
   .education-institution {
     font-style: italic;
     color: #4b5563;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     margin: 0;
   }
 
   .skills-list {
     list-style-type: disc;
-    margin-left: 1.25rem;
-    font-size: 0.875rem;
+    margin-left: 1rem;
+    font-size: 0.75rem;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    margin-top: 0.75rem;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
   }
 
   .languages-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-    margin-top: 0.75rem;
-    font-size: 0.875rem;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
   }
 
   .language-item {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.4rem;
   }
 
   .language-name {
@@ -566,9 +579,12 @@ export const T34Css = `
     .resume-container {
       width: 210mm;
       height: 297mm;
+      max-height: 297mm;
       margin: 0;
-      padding: 3rem;
+      padding: 2rem 2.5rem;
       box-shadow: none;
+      overflow: hidden;
+      page-break-after: always;
       -webkit-print-color-adjust: exact !important;
       print-color-adjust: exact !important;
     }

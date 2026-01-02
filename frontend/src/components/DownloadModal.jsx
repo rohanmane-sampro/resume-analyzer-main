@@ -227,6 +227,52 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate, resumeId
     <title>${userName}</title>
     <!-- RESUME_DATA: ${JSON.stringify(embeddedData).replace(/-->/g, '--&gt;')} -->
     <style>
+      /* Global A4 Page Setup */
+      * {
+        box-sizing: border-box;
+      }
+      
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 210mm;
+      }
+      
+      body {
+        position: relative;
+      }
+      
+      /* Resume container */
+      .resume-container,
+      .resume,
+      .container,
+      [class*="resume"],
+      [class*="cv"] {
+        width: 210mm !important;
+        max-width: 210mm !important;
+      }
+      
+      /* Ensure print colors work */
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      
+      /* Print-specific rules */
+      @media print {
+        @page {
+          size: A4;
+          margin: 0;
+        }
+        
+        html, body {
+          width: 210mm;
+          margin: 0;
+          padding: 0;
+        }
+      }
+      
+      /* Template-specific CSS */
       ${templateCss}
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">

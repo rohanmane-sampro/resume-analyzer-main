@@ -14,6 +14,63 @@ import AIAnalysis from './AIAnalysis.jsx';
 import AISuggestions from './AISuggestions.jsx';
 import DownloadModal from './DownloadModal.jsx';
 import PricingModal from './PricingModal.jsx';
+import CharacterCounter, { ItemLimitWarning, OnePageTip } from './CharacterCounter.jsx';
+
+// One-Page Resume Data Limits
+// These limits ensure all content fits on a single A4 page (210mm x 297mm)
+export const ONE_PAGE_LIMITS = {
+  // Contact Info
+  fullName: 50,
+  jobTitle: 60,
+  emailAddress: 50,
+  phoneNumber: 20,
+  Location: 100,
+  linkedin: 100,
+  portfolio: 100,
+  Languages: 100, // Comma-separated, recommend max 3-4 languages
+
+  // Profile/Summary
+  UserDescription: 600, // ~100-120 words, 3-4 sentences
+
+  // Work Experience
+  maxWorkExperiences: 3, // Maximum 3 work experiences
+  workExperience: {
+    jobTitle: 60,
+    companyName: 60,
+    Location: 50,
+    WorkDuration: 30,
+    keyAchievements: 400 // ~60-80 words, 3-4 bullet points
+  },
+
+  // Projects
+  maxProjects: 2, // Maximum 2 projects
+  projects: {
+    projectName: 60,
+    projectDuration: 30,
+    projectDescription: 300 // ~50 words, 2-3 bullet points
+  },
+
+  // Education
+  maxEducation: 2, // Maximum 2 education entries
+  education: {
+    degreeName: 80,
+    institutionName: 80,
+    location: 50,
+    graduationYear: 20
+  },
+
+  // Certificates
+  maxCertificates: 3, // Maximum 3 certificates
+  certificates: {
+    certificateName: 80,
+    providerName: 60,
+    courseDuration: 30
+  },
+
+  // Skills
+  hardSkills: 200, // Comma-separated, recommend max 8-10 skills
+  softSkills: 150  // Comma-separated, recommend max 6-8 skills
+};
 
 const GetInfo = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -28,7 +85,7 @@ const GetInfo = () => {
   const hasLoadedDataRef = useRef(false);
 
   // Available templates state
-  const [availableTemplateNumbers, setAvailableTemplateNumbers] = useState([1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34]);
+  const [availableTemplateNumbers, setAvailableTemplateNumbers] = useState([5, 6, 7, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34]);
   const [loadingTemplates, setLoadingTemplates] = useState(true);
 
   // AI-related state
@@ -224,23 +281,23 @@ const GetInfo = () => {
 
           // Set all templates for rendering (locked/unlocked)
           if (data.all_templates) {
-            setAllTemplateNumbers(data.all_templates.filter(num => num !== 8));
+            setAllTemplateNumbers(data.all_templates.filter(num => num !== 8 && num !== 1 && num !== 2 && num !== 3 && num !== 4 && num !== 14));
           } else {
             // Fallback if backend doesn't send all_templates yet
-            setAllTemplateNumbers([1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]);
+            setAllTemplateNumbers([5, 6, 7, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34]);
           }
           console.log(`User can access ${data.total} of ${data.total_system_templates} templates`);
         } else {
           console.error('Failed to fetch templates:', data);
           // Fallback
-          const fallback = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32];
+          const fallback = [5, 6, 7, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34];
           setAvailableTemplateNumbers(fallback);
           setAllTemplateNumbers(fallback);
         }
       } catch (error) {
         console.error('Error fetching available templates:', error);
         // Fallback
-        const fallback = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30];
+        const fallback = [5, 6, 7, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34];
         setAvailableTemplateNumbers(fallback);
         setAllTemplateNumbers(fallback);
       } finally {

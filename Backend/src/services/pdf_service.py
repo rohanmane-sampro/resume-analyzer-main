@@ -22,9 +22,21 @@ except (ImportError, OSError) as e:
 
 def html_to_pdf_weasyprint(html_content, output_filename):
     """Convert HTML to PDF using WeasyPrint (best quality, preserves CSS)"""
-    from weasyprint import HTML
+    from weasyprint import HTML, CSS
+    
+    # Inject @page CSS to enforce A4 size
+    page_css = CSS(string='''
+        @page {
+            size: A4;
+            margin: 0;
+        }
+    ''')
+    
     # WeasyPrint handles CSS beautifully - write directly to file
-    HTML(string=html_content, base_url=".").write_pdf(output_filename)
+    HTML(string=html_content, base_url=".").write_pdf(
+        output_filename,
+        stylesheets=[page_css]
+    )
 
 def html_to_pdf_xhtml2pdf(html_content, output_filename):
     """Convert HTML to PDF using xhtml2pdf"""

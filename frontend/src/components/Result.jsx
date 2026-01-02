@@ -74,6 +74,52 @@ const Result = () => {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Designed by BRAVERS</title>
             <style>
+              /* Global A4 Page Setup */
+              * {
+                box-sizing: border-box;
+              }
+              
+              html, body {
+                margin: 0;
+                padding: 0;
+                width: 210mm;
+              }
+              
+              body {
+                position: relative;
+              }
+              
+              /* Resume container */
+              .resume-container,
+              .resume,
+              .container,
+              [class*="resume"],
+              [class*="cv"] {
+                width: 210mm !important;
+                max-width: 210mm !important;
+              }
+              
+              /* Ensure print colors work */
+              * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+              }
+              
+              /* Print-specific rules */
+              @media print {
+                @page {
+                  size: A4;
+                  margin: 0;
+                }
+                
+                html, body {
+                  width: 210mm;
+                  margin: 0;
+                  padding: 0;
+                }
+              }
+              
+              /* Template-specific CSS */
               ${Css}
             </style>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -236,6 +282,22 @@ const Result = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen w-full bg-gray-100 dark:bg-slate-800 px-4 py-8 transition-colors duration-300">
       {/* Always render the template but keep it visible with proper sizing */}
+      <style>
+        {`
+          /* Remove page breaks for Result preview only */
+          #capture-content * {
+            page-break-before: auto !important;
+            page-break-after: auto !important;
+            page-break-inside: auto !important;
+          }
+          
+          #capture-content {
+            height: auto !important;
+            max-height: none !important;
+            overflow: visible !important;
+          }
+        `}
+      </style>
       <div
         id="capture-content"
         className={`text-left transition-all duration-300 bg-white rounded-lg shadow-2xl p-8 ${status === 'completed' ? 'relative visible' : 'absolute invisible'}`}

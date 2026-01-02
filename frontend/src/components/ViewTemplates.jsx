@@ -91,30 +91,10 @@ export default function ViewTemplates() {
   ];
 
   const items = [
-    {
-      img: `${import.meta.env.BASE_URL}Temp/cv1.png`,
-      title: titles[1],
-      codeLink: "https://github.com/PrashantPKP/cv-templates/blob/main/cv1.html",
-      templateLink: `${import.meta.env.BASE_URL}my-templates/cv1.html`,
-    },
-    {
-      img: `${import.meta.env.BASE_URL}Temp/cv2.png`,
-      title: titles[2],
-      codeLink: "https://github.com/PrashantPKP/cv-templates/blob/main/cv2.html",
-      templateLink: `${import.meta.env.BASE_URL}my-templates/cv2.html`,
-    },
-    {
-      img: `${import.meta.env.BASE_URL}Temp/cv3.png`,
-      title: titles[3],
-      codeLink: "https://github.com/PrashantPKP/cv-templates/blob/main/cv3.html",
-      templateLink: `${import.meta.env.BASE_URL}my-templates/cv3.html`,
-    },
-    {
-      img: `${import.meta.env.BASE_URL}Temp/cv4.png`,
-      title: titles[4],
-      codeLink: "https://github.com/PrashantPKP/cv-templates/blob/main/cv4.html",
-      templateLink: `${import.meta.env.BASE_URL}my-templates/cv4.html`,
-    },
+    // Template 1 - REMOVED
+    // Template 2 - REMOVED
+    // Template 3 - REMOVED
+    // Template 4 - REMOVED
     {
       img: `${import.meta.env.BASE_URL}Temp/cv5.png`,
       title: titles[5],
@@ -162,12 +142,6 @@ export default function ViewTemplates() {
       title: titles[12],
       codeLink: "https://github.com/PrashantPKP/cv-templates/blob/main/cv12.html",
       templateLink: `${import.meta.env.BASE_URL}my-templates/cv12.html`,
-    },
-    {
-      img: `${import.meta.env.BASE_URL}Temp/cv13.png`,
-      title: titles[13],
-      codeLink: "#/template/13",
-      templateLink: "#/template/13",
     },
     {
       img: `${import.meta.env.BASE_URL}Temp/cv15.png`,
