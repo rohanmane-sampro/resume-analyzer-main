@@ -28,7 +28,7 @@ const GetInfo = () => {
   const hasLoadedDataRef = useRef(false);
 
   // Available templates state
-  const [availableTemplateNumbers, setAvailableTemplateNumbers] = useState([1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34]);
+  const [availableTemplateNumbers, setAvailableTemplateNumbers] = useState([3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34]);
   const [loadingTemplates, setLoadingTemplates] = useState(true);
 
   // AI-related state
@@ -229,23 +229,23 @@ const GetInfo = () => {
 
           // Set all templates for rendering (locked/unlocked)
           if (data.all_templates) {
-            setAllTemplateNumbers(data.all_templates.filter(num => num !== 8));
+            setAllTemplateNumbers(data.all_templates.filter(num => num !== 8 && num !== 1 && num !== 2 && num !== 14));
           } else {
             // Fallback if backend doesn't send all_templates yet
-            setAllTemplateNumbers([1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]);
+            setAllTemplateNumbers([3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34]);
           }
           console.log(`User can access ${data.total} of ${data.total_system_templates} templates`);
         } else {
           console.error('Failed to fetch templates:', data);
           // Fallback
-          const fallback = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32];
+          const fallback = [3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34];
           setAvailableTemplateNumbers(fallback);
           setAllTemplateNumbers(fallback);
         }
       } catch (error) {
         console.error('Error fetching available templates:', error);
         // Fallback
-        const fallback = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30];
+        const fallback = [3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34];
         setAvailableTemplateNumbers(fallback);
         setAllTemplateNumbers(fallback);
       } finally {
@@ -1020,22 +1020,27 @@ const GetInfo = () => {
                   </div>
 
                   <div className="space-y-2">
+                    <label className="block text-sm font-medium dark:text-slate-300">Description (Max 500 characters)</label>
                     <div className="peer">
-                      <Suggestions
-                        label="Description"
-                        placeholder='Built a full-stack web application with user authentication and real-time features'
+                      <textarea
+                        placeholder='Built a full-stack web application with user authentication and real-time features using React and Node.js'
+                        className="w-full sm:px-6 sm:p-2 border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600 min-h-[100px]"
                         value={project.toolsTechUsed}
-                        onChange={(val) => {
-                          handleInputChange('projects', 'toolsTechUsed', val, index)
+                        onChange={(e) => {
+                          handleInputChange('projects', 'toolsTechUsed', e.target.value, index);
                           if (i === 12 && index === 2) {
                             setI(13);
                             return;
-                          };
+                          }
                         }}
-                        suggestions={['.NET Core', 'A3C', "API's Integration", 'ASP.NET MVC', 'AWS', 'AWS CDK', 'AWS Lambda', 'Actix', 'Adobe XD', 'AdonisJS', 'Agile', 'Airflow', 'Alpine.js', 'Angular', 'Ansible', 'Ant Design', 'Apache', 'Apache Airflow', 'Apollo Server', 'Appgyver', 'Arduino', 'Astro', 'Aurora', 'AutoML', 'Autoencoders', 'Azure', 'BLAST', 'Babylon.js', 'Beego', 'BioPerl', 'Bioconductor', 'Biopython', 'Bitbucket', 'Blockchain', 'Bootstrap', 'Brownie', 'Bubble', 'Bulma', 'Burp Suite', 'C', 'C++', "CNN's", 'CSS', 'Capsule Networks', 'Cassandra', 'CatBoost', 'CentOS', 'Chakra UI', 'ChromaDB', 'CircleCI', 'Cirq', 'Cocos2d', 'CodeIgniter', 'Computer Vision', 'Contentful', 'Cosmos DB', 'Cybersecurity', 'Cypress', 'DDPG', 'DQN', 'Dagster', 'Dask', 'Data Engineering', 'Design Patterns', 'DevSecOps', 'Django', 'Docker', 'Docker Compose', 'Dropwizard', 'ELK Stack', 'ETL Pipelines', 'Echo', 'Edge Computing', 'EfficientNet', 'Electron.js', 'Embedded Systems', 'Ethers.js', 'Express', 'Express.js', 'FAISS', 'FastAPI', 'Faster R-CNN', 'Fedora', 'Fiber', 'Figma', 'Firebase', 'Firebase Functions', 'Flask', 'Flutter', 'Flutter (Web)', 'Foundation', 'Foundry', 'Framer Motion', 'GANs', 'GCP', 'GNNs', 'GRUs', 'GSAP', 'Galaxy', 'Gatsby', 'Gin', 'Git', 'GitHub', 'GitHub Actions', 'GitLab', 'Go', 'Godot', 'Grafana', 'GraphQL', 'HTML', 'Hadoop', 'Hapi', 'Hardhat', 'Helm', 'Hive', 'HubSpot', 'Hugging Face', 'IAM', 'IPFS', 'IoT Systems', 'Ionic', 'JAX', 'JUnit', 'JWT', 'Java', 'JavaScript', 'Jenkins', 'Jest', 'Jetpack Compose', 'Kafka', 'Kanban', 'Kedro', 'Keras', 'Kivy', 'Koa', 'Kotlin', 'Kotlin (Android)', 'Kubernetes', "LLM's", 'LSTMs', 'LangChain', 'LangSmith', 'Laravel', 'LightGBM', 'Linux', 'LoopBack', 'LottieFiles', 'Luigi', 'MATLAB', 'MLPs', 'MQTT', 'Mailchimp', 'Mantine', 'Mask R-CNN', 'Material UI', 'Matplotlib', 'Mbed OS', 'Metasploit', 'Micronaut', 'Microservices', 'Mocha', 'Modin', 'MongoDB', 'MySQL', 'NLP', 'NativeScript', 'NestJS', 'New Relic', 'Next.js', 'Nginx', 'Nmap', 'NoSQL', 'Node.js', 'NumPy', 'Nuxt', 'Nuxt.js', 'OAuth 2.0', 'OCR', 'OOP', 'OWASP', 'OpenCV', 'OpenVAS', 'OutSystems', 'PHP', 'PPO', 'Pandas', 'PayPal APIs', 'Penetration Testing', 'Phoenix (Elixir)', 'Pinecone', 'PixiJS', 'PlatformIO', 'Playwright', 'Plotly', 'Polars', 'PostgreSQL', 'Postman', 'Power BI', 'Preact', 'Prefect', 'PrimeReact', 'Prometheus', 'Prompt Engineering', 'Pulumi', 'PyQt', 'PyTest', 'PyTorch', 'Pygame', 'Pyramid', 'Pytest', 'Python', 'Qiskit', 'Qt', 'Quarkus', 'Qwik', 'RAG', 'REST API', 'RLlib', "RNN's", 'ROS (Robot Operating System)', 'Radix UI', 'React', 'React Native', 'React.js', 'Redis', 'Remix', 'ResNet', 'Retool', 'Rocket', 'Ruby', 'Ruby on Rails', 'Rust', 'SAC', 'SOLID Principles', 'SQL', 'SQLite', 'SageMaker', 'Sails.js', 'Scikit-learn', 'Scrum', 'Seaborn', 'Selenium', 'Semantic Search', 'Seqtk', 'Serverless', 'Serverless Framework', 'ShadCN/UI', 'Shell Scripting', 'Shopify APIs', 'Sinatra', 'Smart Contracts', 'Snort', 'Socket.IO', 'SolidJS', 'Solidity', 'Spark', 'Speech Recognition', 'Spring Boot', 'Stable Diffusion', 'Stripe APIs', 'Supabase', 'Svelte', 'SvelteKit', 'Swagger', 'Swift', 'Swift (iOS)', 'SwiftUI', 'Swin Transformer', 'Symfony', 'System Design', 'Tableau', 'Tailwind CSS', 'TailwindCSS', 'Tauri', 'TensorFlow', 'Terraform', 'Three.js', 'Tkinter', 'Tornado', 'Truffle', 'TypeScript', 'UNet', 'Ubuntu', 'Unity', 'Unity 3D', 'Unreal 5', 'Unreal Engine', 'VAEs', 'Vaex', 'Vector Databases', 'Vertex AI', 'Vision Transformer (ViT)', 'Vue', 'Vue.js', 'WPF', 'Warp', 'Web3.js', 'WebGL', 'WebSocket', 'WebXR', 'Webflow', 'Wireshark', 'WooCommerce APIs', 'WordPress', 'XGBoost', 'Xamarin', 'YOLO', 'Zapier', 'Zend Framework', 'dbt', 'gRPC', 'i18n']}
+                        maxLength={500}
+                        rows={4}
                       />
                     </div>
                     <div className="ml-4 w-0 h-1 rounded-full bg-blue-500 transition-all duration-300 peer-hover:w-[60%] peer-focus:w-[88%] sm:peer-focus:w-[94%]"></div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {project.toolsTechUsed ? project.toolsTechUsed.length : 0}/500 characters
+                    </p>
                   </div>
                 </div>
               ))}
@@ -1075,22 +1080,27 @@ const GetInfo = () => {
                   </div>
 
                   <div className="space-y-2">
+                    <label className="block text-sm font-medium dark:text-slate-300">Description (Max 500 characters)</label>
                     <div className="peer w-full">
-                      <Suggestions
-                        label="Description"
-                        placeholder='Developed a machine learning model for image classification with 95% accuracy'
+                      <textarea
+                        placeholder='Developed a machine learning model for image classification achieving 95% accuracy using TensorFlow and Python'
+                        className="w-full sm:px-6 sm:p-2 border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600 min-h-[100px]"
                         value={project.toolsTechUsed}
-                        onChange={(val) => {
-                          handleInputChange('projects', 'toolsTechUsed', val, index)
+                        onChange={(e) => {
+                          handleInputChange('projects', 'toolsTechUsed', e.target.value, index);
                           if (i === 12 && index === 2) {
                             setI(13);
                             return;
-                          };
+                          }
                         }}
-                        suggestions={["TensorFlow", "WeasyPrint", "WebSocket (Live Rendering Protocol)", "LLM's", "HTML/CSS", "Keras", "PyTorch", "Scikit-learn", "XGBoost", "LightGBM", "CatBoost", "FastAI", "NumPy", "Pandas", "Matplotlib", "Seaborn", "Plotly", "Altair", "Statsmodels", "SciPy", "NLTK", "SpaCy", "Transformers", "Gensim", "BERT", "GPT", "Word2Vec", "TF-IDF", "Llama", "OpenCV", "Pillow", "Albumentations", "MMDetection", "Detectron2", "YOLO", "MediaPipe", "MNIST Dataset", "CIFAR-10", "CIFAR-100", "ImageNet", "COCO Dataset", "Multi30k Dataset", "Human Parsing Dataset", "HuggingFace Datasets", "UCI Repository", "Transfer Learning", "Model Subclassing", "Data Augmentation", "Feature Engineering", "Ensemble Learning", "Hyperparameter Tuning", "Cross Validation", "Grid Search", "Early Stopping", "Apache Spark", "Hadoop", "Airflow", "Kafka", "Snowflake", "BigQuery", "ETL Pipelines", "AWS", "Azure", "Google Cloud Platform", "IBM Cloud", "Oracle Cloud", "Firebase", "Docker", "Kubernetes", "Terraform", "Jenkins", "GitHub Actions", "Prometheus", "Grafana", "MySQL", "PostgreSQL", "MongoDB", "Redis", "SQLite", "Elasticsearch", "Cassandra", "Django", "Flask", "FastAPI", "Express.js", "Spring Boot", "Node.js", "React", "Vue.js", "Angular", "Next.js", "Tailwind CSS", "Bootstrap", "SASS", "Material UI", "Python", "Java", "Advanced C++", "C++", "C", "JavaScript", "TypeScript", "Go", "Rust", "R", "Julia", "SQL", "Git", "GitHub", "GitLab", "Bitbucket", "Tableau", "Power BI", "Looker", "Google Data Studio", "Jupyter Notebook", "Google Colab", "VS Code", "Anaconda", "PyCharm", "Postman", "REST API", "GraphQL", "gRPC", "NGINX", "Apache", "PyTest", "Selenium", "Cypress", "JUnit", "Postman", "BeautifulSoup", "Scrapy", "LangChain", "Streamlit", "Gradio", "Dash", "MLflow", "Weights & Biases", "HuggingFace Hub", "OpenAI API", "Google API", "Cloud Functions"]}
+                        maxLength={500}
+                        rows={4}
                       />
                     </div>
                     <div className="ml-4 w-0 h-1 rounded-full bg-blue-500 transition-all duration-300 peer-hover:w-[60%] peer-focus:w-[88%] sm:peer-focus:w-[94%]"></div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {project.toolsTechUsed ? project.toolsTechUsed.length : 0}/500 characters
+                    </p>
                   </div>
                 </div>
               ))}

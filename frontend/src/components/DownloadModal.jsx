@@ -227,7 +227,77 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate, resumeId
     <title>${userName}</title>
     <!-- RESUME_DATA: ${JSON.stringify(embeddedData).replace(/-->/g, '--&gt;')} -->
     <style>
+      /* Template-specific CSS (Loaded first) */
       ${templateCss}
+
+      /* Global A4 Page Setup & Overrides (Loaded last to enforce layout) */
+      * {
+        box-sizing: border-box;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      
+      html {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 210mm !important;
+        min-height: 297mm !important;
+        background-color: white !important;
+      }
+      
+      body {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 210mm !important;
+        min-height: 297mm !important;
+        background-color: white !important;
+        position: relative;
+      }
+      
+      /* Resume page container - enforce A4 but preserve internal layout */
+      .resume-page {
+        width: 210mm !important;
+        max-width: 210mm !important;
+        min-height: 297mm !important;
+        margin: 0 auto !important;
+        box-shadow: none !important;
+        /* Preserve display: grid and other layout properties from template */
+      }
+      
+      /* For other templates */
+      .resume-container,
+      .resume,
+      .container {
+        width: 210mm !important;
+        max-width: 210mm !important;
+        margin: 0 auto !important;
+        box-shadow: none !important;
+      }
+
+      /* Strict Print Rules */
+      @media print {
+        @page {
+          size: A4 portrait;
+          margin: 0 !important;
+        }
+        
+        html, body {
+          width: 210mm !important;
+          height: 297mm !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          overflow: visible !important;
+        }
+        
+        .resume-page,
+        .resume-container,
+        .resume,
+        .container {
+          box-shadow: none !important;
+          page-break-after: avoid !important;
+          page-break-inside: avoid !important;
+        }
+      }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="icon" href="https://prashantparshuramkar.host20.uk/cv-templates/resume-icon.png">

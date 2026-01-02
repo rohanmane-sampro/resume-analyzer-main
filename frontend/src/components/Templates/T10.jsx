@@ -1,7 +1,7 @@
-
 import React from 'react';
 import styled from "styled-components";
 
+// --- Helper: Markdown Parser ---
 const parseMarkdown = (text) => {
   if (!text || typeof text !== 'string') return '';
   return text
@@ -10,490 +10,671 @@ const parseMarkdown = (text) => {
     .replace(/\n/g, '<br/>');
 };
 
-const StyledWrapper = styled.div`
-@media print {
-  body {
-    font-family: 'Times New Roman', serif;
-    margin: 0;
-    padding: 0;
-    background-color: white !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+// --- Styled Components ---
+
+const PageWrapper = styled.div`
+  /* Print Optimization */
+  @media print {
+    body { 
+      -webkit-print-color-adjust: exact; 
+      print-color-adjust: exact; 
+    }
+    @page { 
+      size: A4; 
+      margin: 0; 
+    }
+    .resume-page {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      border: none;
+      box-shadow: none;
+    }
   }
-  @page {
-   size: A4;
-   margin: 0;
+
+  /* Screen Display */
+  background: #e0e0e0;
+  padding: 20px;
+  font-family: 'Roboto', 'Segoe UI', Helvetica, sans-serif;
+
+  .resume-page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto;
+    background: white;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    display: grid;
+    grid-template-columns: 32% 68%; /* Sidebar vs Main Content Split */
   }
-  .resume {
-    width: 100%;
-    border: none !important;
-    box-shadow: none !important;
-  }
-}
+`;
 
-body {
-  font-family: 'Times New Roman', serif;
-  background-color: #f5f5f5;
-}
-
-.resume {
-  width: 210mm;
-  min-height: 297mm;
-  overflow: hidden;
-  background: white;
-  margin: 20px auto;
-  padding: 40px 60px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-  line-height: 1.3;
-}
-
-.header {
-  text-align: center;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
-}
-
-.name {
-  font-size: 18px;
-  font-weight: bold;
-  margin: 0 0 8px 0;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-}
-
-.contact-info {
-  font-size: 11px;
-  color: #333;
-}
-
-.contact-info a {
-  color: #0066cc;
-  text-decoration: none;
-  margin: 0 3px;
-}
-
-.contact-info a:hover {
-  text-decoration: underline;
-}
-
-.section {
-  margin-bottom: 18px;
-}
-
-.section-title {
-  font-size: 11px;
-  font-weight: bold;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-  padding-bottom: 2px;
-  border-bottom: 1px solid #000;
-  letter-spacing: 1px;
-}
-
-.project-item {
-  margin-bottom: 12px;
-}
-
-.project-header {
-  font-size: 11px;
-  margin-bottom: 3px;
-}
-
-.project-title {
-  font-weight: bold;
-  color: #000;
-}
-
-.project-tech {
-  color: #0066cc;
-  font-style: italic;
-}
-
-.project-description {
-  font-size: 10px;
-  line-height: 1.4;
-  margin-left: 15px;
-}
-
-.project-description ul {
-  margin: 2px 0;
-  padding-left: 20px;
-}
-
-.project-description li {
-  margin-bottom: 2px;
-}
-
-.skills-grid {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 8px 15px;
-  font-size: 11px;
-}
-
-.skill-label {
-  font-weight: bold;
-  min-width: 100px;
-}
-
-.skill-value {
-  color: #333;
-}
-
-.education-item, .work-item {
-  margin-bottom: 8px;
-  font-size: 11px;
-}
-
-.item-row {
+const LeftColumn = styled.div`
+  background-color: #2c3e50 !important; /* Professional Dark Slate */
+  color: white !important;
+  padding: 30px 20px;
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-}
+  flex-direction: column;
+  gap: 25px;
 
-.item-title {
-  font-weight: bold;
-  color: #000;
-}
+  /* Maximum strength - override everything */
+  &&& {
+    color: white !important;
+  }
 
-.item-date {
-  color: #000;
-  font-weight: normal;
-}
+  /* Ensure all text is white - strongest enforcement */
+  *, *::before, *::after {
+    color: white !important;
+  }
 
-.item-subtitle {
-  color: #0066cc;
-  font-style: italic;
-  margin-left: 15px;
-}
+  /* Specific targeting for all headings with multiple selectors */
+  h1, h2, h3, h4, h5, h6,
+  & h1, & h2, & h3, & h4, & h5, & h6 {
+    color: #ecf0f1 !important;
+  }
 
-.item-location {
-  font-size: 10px;
-  color: #666;
-  margin-left: 15px;
-}
+  /* Triple ampersand for maximum specificity */
+  &&& h3 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+    padding-bottom: 8px;
+    margin-bottom: 15px;
+    color: #ecf0f1 !important;
+  }
+
+  h3 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+    padding-bottom: 8px;
+    margin-bottom: 15px;
+    color: #ecf0f1 !important;
+  }
+
+  /* All divs inside should have white text */
+  div, span, p, a, li, ul,
+  & div, & span, & p, & a, & li, & ul {
+    color: white !important;
+  }
+
+  .left-item {
+    margin-bottom: 15px;
+  }
+
+  .left-title {
+    font-weight: bold;
+    font-size: 13px;
+    color: #fff !important;
+  }
+
+  .left-subtitle {
+    font-size: 11px;
+    color: #bdc3c7 !important; /* Light Grey */
+    font-style: italic;
+    margin-bottom: 2px;
+  }
+
+  .left-date {
+    font-size: 10px;
+    color: #95a5a6 !important;
+  }
+
+  .contact-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    margin-bottom: 8px;
+    color: #ecf0f1 !important;
+    word-break: break-all;
+  }
+  
+  .contact-row a {
+    color: #fff !important;
+    text-decoration: none;
+  }
+
+  .skill-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.1);
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    margin: 0 5px 5px 0;
+    color: white !important;
+  }
+
+  /* Language Specific Styles */
+  .lang-item {
+    font-size: 11px;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: white !important;
+  }
+  
+  .lang-dot {
+    width: 4px;
+    height: 4px;
+    background-color: #3498db;
+    border-radius: 50%;
+  }
+`;
+
+const RightColumn = styled.div`
+  padding: 30px;
+  color: #333;
+
+  /* Name Header */
+  .header-name {
+    font-size: 32px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #2c3e50;
+    line-height: 1;
+    margin-bottom: 5px;
+  }
+
+  .header-role {
+    font-size: 16px;
+    color: #7f8c8d;
+    font-weight: 500;
+    margin-bottom: 10px; 
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  /* Section Styling */
+  .section-head {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    margin-top: 20px;
+  }
+
+  .section-head h3 {
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #2c3e50;
+    margin: 0;
+    padding-right: 15px;
+    white-space: nowrap;
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    background: #ecf0f1;
+    position: relative;
+  }
+  
+  /* Adds a blue accent to the start of the line */
+  .line::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 40px;
+    background: #3498db; 
+  }
+
+  .content-block {
+    margin-bottom: 18px;
+  }
+
+  .block-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 3px;
+  }
+
+  .role-title {
+    font-weight: 700;
+    font-size: 13px;
+    color: #000;
+  }
+
+  .date-span {
+    font-size: 11px;
+    font-weight: 600;
+    color: #3498db; /* Professional Blue */
+  }
+
+  .company-name {
+    font-size: 12px;
+    font-style: italic;
+    color: #666;
+    margin-bottom: 5px;
+  }
+
+  .main-desc {
+    font-size: 11px;
+    line-height: 1.5;
+    color: #444;
+  }
+
+  .main-desc ul {
+    margin: 0;
+    padding-left: 18px;
+  }
+  
+  .main-desc li {
+    margin-bottom: 3px;
+  }
 `;
 
 export const T10 = ({ jsonData }) => {
-  // Process projects
-  const projectsList = jsonData.projects && jsonData.projects.length > 0
-    ? jsonData.projects.map((proj, index) => (
-      <div key={`proj-${index}`} className="project-item">
-        <div className="project-header">
-          <span className="project-title">{proj.projectTitle || `Project ${index + 1}`}</span>
-          {' '}
-          <span className="project-tech">
-            {proj.toolsTechUsed || 'Technologies'}
-          </span>
-        </div>
-        <div className="project-description">
-          <ul>
-            {proj.projectDescription ? (
-              <li>{proj.projectDescription}</li>
-            ) : (
-              <>
-                <li>Created a XYZ feature to accomplish ABC;</li>
-                <li>Retrieved data from XYZ for ABC;</li>
-                <li>Implemented XYZ library for ABC;</li>
-                <li>Utilized XYZ that increased A by B%;</li>
-              </>
-            )}
-          </ul>
-        </div>
-      </div>
-    ))
-    : null;
+  const {
+    contactInfo = {},
+    education = [],
+    workExperience = [],
+    projects = [],
+    certificates = [],
+    skills = {},
+    Description = {}
+  } = jsonData;
 
-  // Process skills
-  const hardSkills = jsonData.skills?.hardSkills
-    ? jsonData.skills.hardSkills.split(',').map(s => s.trim()).filter(s => s !== '')
+  // Process Arrays
+  const hardSkills = skills.hardSkills ? skills.hardSkills.split(',').map(s => s.trim()) : [];
+  const softSkills = skills.softSkills ? skills.softSkills.split(',').map(s => s.trim()) : [];
+  const allSkills = [...hardSkills, ...softSkills];
+
+  // Process Languages (New)
+  const languages = contactInfo.Languages
+    ? contactInfo.Languages.split(',').map(lang => lang.trim()).filter(lang => lang !== '')
     : [];
-
-  const softSkills = jsonData.skills?.softSkills
-    ? jsonData.skills.softSkills.split(',').map(s => s.trim()).filter(s => s !== '')
-    : [];
-
-  // Process education
-  const educationList = jsonData.education && jsonData.education.length > 0
-    ? jsonData.education.map((edu, index) => (
-      <div key={`edu-${index}`} className="education-item">
-        <div className="item-row">
-          <div className="item-title">
-            {edu.degreeName || 'Degree'}, {edu.fieldOfStudy || 'Major'}
-          </div>
-          <div className="item-date">{edu.graduationYear || 'Month Year'}</div>
-        </div>
-        <div className="item-subtitle">{edu.institutionName || 'University'}</div>
-      </div>
-    ))
-    : null;
-
-  // Process work experience
-  const workExpList = jsonData.workExperience && jsonData.workExperience.length > 0
-    ? jsonData.workExperience.map((we, index) => (
-      <div key={`work-${index}`} className="work-item">
-        <div className="item-row">
-          <div className="item-title">{we.jobTitle || 'Job Title'}</div>
-          <div className="item-date">{we.WorkDuration || 'Month Year - Month Year'}</div>
-        </div>
-        <div className="item-subtitle">{we.companyName || 'Company'}</div>
-      </div>
-    ))
-    : null;
 
   return (
-    <StyledWrapper>
-      <div className="resume" id="capture-content">
-        {/* Header */}
-        <div className="header">
-          <div className="name">
-            {jsonData.contactInfo?.fullName || 'FIRSTNAME LASTNAME'}
-          </div>
-          <div className="contact-info">
-            {jsonData.contactInfo?.phoneNumber && (
-              <>1 | (123) 456-7890 ◆ </>
+    <PageWrapper>
+      <div className="resume-page" id="capture-content">
+
+        {/* --- LEFT COLUMN (Sidebar) --- */}
+        <LeftColumn>
+
+          {/* Contact Section */}
+          <div>
+            <h3 style={{ color: '#ecf0f1' }}>Contact</h3>
+            {contactInfo.phoneNumber && <div className="contact-row">📱 {contactInfo.phoneNumber}</div>}
+            {contactInfo.emailAddress && <div className="contact-row">✉️ {contactInfo.emailAddress}</div>}
+            {contactInfo.Location && <div className="contact-row">📍 {contactInfo.Location}</div>}
+            {contactInfo.linkedin && (
+              <div className="contact-row">
+                🔗 <a href={`https://linkedin.com/in/${contactInfo.linkedin}`} target="_blank" rel="noreferrer">LinkedIn</a>
+              </div>
             )}
-            <a href={`mailto:${jsonData.contactInfo?.emailAddress || 'your.email@email.com'}`}>
-              {jsonData.contactInfo?.emailAddress || 'your.email@email.com'}
-            </a>
-            {' ◆ '}
-            <a href={`https://linkedin.com/in/${jsonData.contactInfo?.linkedin || 'linkedin'}`} target="_blank" rel="noreferrer">
-              linkedin.com/in/{jsonData.contactInfo?.linkedin || 'linkedin'}
-            </a>
-            {' ◆ '}
-            <a href={jsonData.contactInfo?.portfolio || 'www.yourwebsite.com'} target="_blank" rel="noreferrer">
-              {jsonData.contactInfo?.portfolio?.replace('https://', '').replace('http://', '') || 'www.yourwebsite.com'}
-            </a>
-            {jsonData.contactInfo?.Location && (
-              <> ◆ San Francisco, CA</>
+            {contactInfo.portfolio && (
+              <div className="contact-row">
+                🌐 <a href={contactInfo.portfolio} target="_blank" rel="noreferrer">Portfolio</a>
+              </div>
             )}
           </div>
-        </div>
 
-        {/* Projects */}
-        {projectsList && projectsList.length > 0 && (
-          <div className="section">
-            <div className="section-title">Projects</div>
-            {projectsList}
-          </div>
-        )}
-
-        {/* Skills */}
-        {(hardSkills.length > 0 || softSkills.length > 0) && (
-          <div className="section">
-            <div className="section-title">Skills</div>
-            <div className="skills-grid">
-              {hardSkills.length > 0 && (
-                <>
-                  <div className="skill-label">Languages:</div>
-                  <div className="skill-value">{hardSkills.join(', ')}</div>
-                </>
-              )}
-              <div className="skill-label">Frameworks:</div>
-              <div className="skill-value">React, Ruby on Rails, Express, Django, Mocha</div>
-
-              <div className="skill-label">Tools:</div>
-              <div className="skill-value">Git, Docker, TravisCI, Kubernetes, AWS</div>
-
-              {softSkills.length > 0 && (
-                <>
-                  <div className="skill-label">Soft Skills:</div>
-                  <div className="skill-value">{softSkills.join(', ')}</div>
-                </>
-              )}
+          {/* Education Section */}
+          {education.length > 0 && (
+            <div>
+              <h3 style={{ color: '#ecf0f1' }}>Education</h3>
+              {education.map((edu, index) => (
+                <div key={index} className="left-item">
+                  <div className="left-title">{edu.degreeName}</div>
+                  <div className="left-subtitle">{edu.institutionName}</div>
+                  <div className="left-date">
+                    {edu.graduationDuration || edu.graduationYear}
+                    {edu.currentCGPA && ` | CGPA: ${edu.currentCGPA}`}
+                  </div>
+                  {edu.location && <div className="left-date">{edu.location}</div>}
+                </div>
+              ))}
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Education */}
-        {educationList && educationList.length > 0 && (
-          <div className="section">
-            <div className="section-title">Education</div>
-            {educationList}
-          </div>
-        )}
+          {/* Certificates Section */}
+          {certificates.length > 0 && (
+            <div>
+              <h3 style={{ color: '#ecf0f1' }}>Certificates</h3>
+              {certificates.map((cert, index) => (
+                <div key={index} className="left-item">
+                  <div className="left-title">{cert.certificateName}</div>
+                  <div className="left-subtitle">{cert.providerName}</div>
+                  <div className="left-date">{cert.courseDuration}</div>
+                </div>
+              ))}
+            </div>
+          )}
 
-        {/* Work Experience */}
-        {workExpList && workExpList.length > 0 && (
-          <div className="section">
-            <div className="section-title">Work Experience</div>
-            {workExpList}
-          </div>
-        )}
+          {/* Skills Section */}
+          {allSkills.length > 0 && (
+            <div>
+              <h3 style={{ color: '#ecf0f1' }}>Skills</h3>
+              <div>
+                {allSkills.map((skill, index) => (
+                  <span key={index} className="skill-tag">{skill}</span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Languages Section */}
+          {languages.length > 0 && (
+            <div>
+              <h3 style={{ color: '#ecf0f1' }}>Languages</h3>
+              <div>
+                {languages.map((lang, index) => (
+                  <div key={index} className="lang-item">
+                    <span className="lang-dot"></span> {lang}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+        </LeftColumn>
+
+        {/* --- RIGHT COLUMN (Main Content) --- */}
+        <RightColumn>
+
+          {/* Header */}
+          <div className="header-name">{contactInfo.fullName || 'Your Name'}</div>
+          <div className="header-role">{contactInfo.jobTitle || 'Professional Title'}</div>
+
+          {/* Profile Summary */}
+          {Description.UserDescription && (
+            <section>
+              <div className="section-head">
+                <h3>Profile</h3>
+                <div className="line"></div>
+              </div>
+              <div className="content-block">
+                <p className="main-desc" style={{ textAlign: 'justify' }}>
+                  {Description.UserDescription}
+                </p>
+              </div>
+            </section>
+          )}
+
+          {/* Work Experience */}
+          {workExperience.length > 0 && (
+            <section>
+              <div className="section-head">
+                <h3>Experience</h3>
+                <div className="line"></div>
+              </div>
+
+              {workExperience.map((exp, index) => (
+                <div key={index} className="content-block">
+                  <div className="block-header">
+                    <span className="role-title">{exp.jobTitle}</span>
+                    <span className="date-span">{exp.WorkDuration || exp.duration}</span>
+                  </div>
+                  <div className="company-name">
+                    {exp.companyName} {exp.Location ? `| ${exp.Location}` : ''}
+                  </div>
+                  <div className="main-desc">
+                    <span dangerouslySetInnerHTML={{ __html: parseMarkdown(exp.keyAchievements || exp.description) }} />
+                  </div>
+                </div>
+              ))}
+            </section>
+          )}
+
+          {/* Projects */}
+          {projects.length > 0 && (
+            <section>
+              <div className="section-head">
+                <h3>Projects</h3>
+                <div className="line"></div>
+              </div>
+
+              {projects.map((proj, index) => (
+                <div key={index} className="content-block">
+                  <div className="block-header">
+                    <span className="role-title">{proj.projectTitle}</span>
+                    {proj.duration && <span className="date-span">{proj.duration}</span>}
+                  </div>
+                  <div className="main-desc">
+                    {proj.projectDescription || proj.toolsTechUsed}
+                  </div>
+                </div>
+              ))}
+            </section>
+          )}
+
+        </RightColumn>
       </div>
-    </StyledWrapper>
+    </PageWrapper>
   );
 };
 
 export const T10Css = `
-@media print {
-  * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
+  /* Print Optimization */
+  @media print {
+    * {
+      -webkit-print-color-adjust: exact !important; 
+      print-color-adjust: exact !important;
+    }
+    @page { 
+      size: A4; 
+      margin: 0; 
+    }
+    .resume-page {
+      width: 210mm !important;
+      min-height: 297mm !important;
+      margin: 0 !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
   }
-  
+
+  /* Screen Display */
   body {
-    font-family: 'Times New Roman', serif;
+    background: #e0e0e0;
+    padding: 20px;
+    font-family: 'Roboto', 'Segoe UI', Helvetica, sans-serif;
+  }
+
+  .resume-page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto;
+    background: white;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    display: grid !important;
+    grid-template-columns: 32% 68% !important;
+  }
+
+  /* Left Column Styles (First child of grid) */
+  .resume-page > *:first-child {
+    background-color: #2c3e50 !important;
+    color: white !important;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .resume-page > *:first-child * {
+    color: white !important;
+  }
+
+  .resume-page > *:first-child h3 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+    padding-bottom: 8px;
+    margin-bottom: 15px;
+    color: #ecf0f1 !important;
+  }
+
+  .left-item {
+    margin-bottom: 15px;
+  }
+
+  .left-title {
+    font-weight: bold;
+    font-size: 13px;
+    color: #fff;
+  }
+
+  .left-subtitle {
+    font-size: 11px;
+    color: #bdc3c7;
+    font-style: italic;
+    margin-bottom: 2px;
+  }
+
+  .left-date {
+    font-size: 10px;
+    color: #95a5a6;
+  }
+
+  .contact-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    margin-bottom: 8px;
+    color: #ecf0f1;
+    word-break: break-all;
+  }
+  
+  .contact-row a {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .skill-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.1);
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    margin: 0 5px 5px 0;
+  }
+
+  .lang-item {
+    font-size: 11px;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .lang-dot {
+    width: 4px;
+    height: 4px;
+    background-color: #3498db;
+    border-radius: 50%;
+  }
+
+  /* Right Column Styles (Second child of grid) */
+  .resume-page > *:last-child {
+    padding: 30px;
+    color: #333;
+    background-color: white;
+  }
+
+  .header-name {
+    font-size: 32px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #2c3e50;
+    line-height: 1;
+    margin-bottom: 5px;
+  }
+
+  .header-role {
+    font-size: 16px;
+    color: #7f8c8d;
+    font-weight: 500;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .section-head {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    margin-top: 20px;
+  }
+
+  .section-head h3 {
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #2c3e50;
     margin: 0;
-    padding: 0;
-    background-color: white !important;
+    padding-right: 15px;
+    white-space: nowrap;
+  }
+
+  .line {
+    width: 100%;
+    height: 2px;
+    background: #ecf0f1;
+    position: relative;
   }
   
-  @page {
-   size: A4 portrait;
-   margin: 0;
+  .line::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 40px;
+    background: #3498db; 
+  }
+
+  .content-block {
+    margin-bottom: 18px;
+  }
+
+  .block-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 3px;
+  }
+
+  .role-title {
+    font-weight: 700;
+    font-size: 13px;
+    color: #000;
+  }
+
+  .date-span {
+    font-size: 11px;
+    font-weight: 600;
+    color: #3498db;
+  }
+
+  .company-name {
+    font-size: 12px;
+    font-style: italic;
+    color: #666;
+    margin-bottom: 5px;
+  }
+
+  .main-desc {
+    font-size: 11px;
+    line-height: 1.5;
+    color: #444;
+  }
+
+  .main-desc ul {
+    margin: 0;
+    padding-left: 18px;
   }
   
-  .resume {
-    width: 210mm !important;
-    max-width: 210mm !important;
-    min-height: 297mm !important;
-    margin: 0 !important;
-    border: none !important;
-    box-shadow: none !important;
-    overflow: hidden !important;
+  .main-desc li {
+    margin-bottom: 3px;
   }
-}
-
-body {
-  font-family: 'Times New Roman', serif;
-  background-color: #f5f5f5;
-}
-
-.resume {
-  width: 210mm;
-  min-height: 297mm;
-  overflow: hidden;
-  background: white;
-  margin: 20px auto;
-  padding: 40px 60px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-  line-height: 1.3;
-}
-
-.header {
-  text-align: center;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
-}
-
-.name {
-  font-size: 18px;
-  font-weight: bold;
-  margin: 0 0 8px 0;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-}
-
-.contact-info {
-  font-size: 11px;
-  color: #333;
-}
-
-.contact-info a {
-  color: #0066cc;
-  text-decoration: none;
-  margin: 0 3px;
-}
-
-.contact-info a:hover {
-  text-decoration: underline;
-}
-
-.section {
-  margin-bottom: 18px;
-}
-
-.section-title {
-  font-size: 11px;
-  font-weight: bold;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-  padding-bottom: 2px;
-  border-bottom: 1px solid #000;
-  letter-spacing: 1px;
-}
-
-.project-item {
-  margin-bottom: 12px;
-}
-
-.project-header {
-  font-size: 11px;
-  margin-bottom: 3px;
-}
-
-.project-title {
-  font-weight: bold;
-  color: #000;
-}
-
-.project-tech {
-  color: #0066cc;
-  font-style: italic;
-}
-
-.project-description {
-  font-size: 10px;
-  line-height: 1.4;
-  margin-left: 15px;
-}
-
-.project-description ul {
-  margin: 2px 0;
-  padding-left: 20px;
-}
-
-.project-description li {
-  margin-bottom: 2px;
-}
-
-.skills-grid {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 8px 15px;
-  font-size: 11px;
-}
-
-.skill-label {
-  font-weight: bold;
-  min-width: 100px;
-}
-
-.skill-value {
-  color: #333;
-}
-
-.education-item, .work-item {
-  margin-bottom: 8px;
-  font-size: 11px;
-}
-
-.item-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-}
-
-.item-title {
-  font-weight: bold;
-  color: #000;
-}
-
-.item-date {
-  color: #000;
-  font-weight: normal;
-}
-
-.item-subtitle {
-  color: #0066cc;
-  font-style: italic;
-  margin-left: 15px;
-}
-
-.item-location {
-  font-size: 10px;
-  color: #666;
-  margin-left: 15px;
-}
 `;

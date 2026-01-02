@@ -91,18 +91,8 @@ export default function ViewTemplates() {
   ];
 
   const items = [
-    {
-      img: `${import.meta.env.BASE_URL}Temp/cv1.png`,
-      title: titles[1],
-      codeLink: "https://github.com/PrashantPKP/cv-templates/blob/main/cv1.html",
-      templateLink: `${import.meta.env.BASE_URL}my-templates/cv1.html`,
-    },
-    {
-      img: `${import.meta.env.BASE_URL}Temp/cv2.png`,
-      title: titles[2],
-      codeLink: "https://github.com/PrashantPKP/cv-templates/blob/main/cv2.html",
-      templateLink: `${import.meta.env.BASE_URL}my-templates/cv2.html`,
-    },
+    // Template 1 - REMOVED
+    // Template 2 - REMOVED
     {
       img: `${import.meta.env.BASE_URL}Temp/cv3.png`,
       title: titles[3],
