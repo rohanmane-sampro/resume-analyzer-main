@@ -62,9 +62,93 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate, resumeId
 
   const downloadPDF = async () => {
     try {
-      const htmlContent = generateActualTemplateHTML();
+      // Collect ALL CSS from the current page, including styled-components
+      const allStyles = [];
+
+      // Get all style tags (includes styled-components dynamic styles)
+      document.querySelectorAll('style').forEach(style => {
+        allStyles.push(style.innerHTML);
+      });
+
+      // Get all external stylesheets
+      document.querySelectorAll('link[rel="stylesheet"]').forEach(link => {
+        allStyles.push(`@import url('${link.href}');`);
+      });
+
+      // Get the template content
+      const captureElement = document.getElementById('capture-content') || document.querySelector('.resume');
+      if (!captureElement) {
+        throw new Error('Resume content not found');
+      }
+
+      const templateHTML = captureElement.outerHTML;
       const userName = resumeData?.contactInfo?.fullName || 'Resume';
       const fileName = `${userName.replace(/[^a-zA-Z0-9]/g, '_')}_Resume`;
+
+      // Get the template-specific CSS
+      const getTemplateCss = () => {
+        const templateCssMap = {
+          '1': T1Css, '2': T2Css, '3': T3Css, '4': T4Css, '5': T5Css, '6': T6Css,
+          '7': T7Css, '9': T9Css, '10': T10Css, '11': T11Css, '12': T12Css,
+          '13': T13Css, '14': T14Css, '15': T15Css, '16': T16Css, '17': T17Css, '18': T18Css,
+          '19': T19Css, '20': T20Css, '21': T21Css, '22': T22Css, '23': T23Css, '24': T24Css,
+          '25': T25Css, '26': T26Css, '27': T27Css, '28': T28Css, '29': T29Css, '30': T30Css
+        };
+        return templateCssMap[selectedTemplate] || T1Css;
+      };
+
+      const templateCss = getTemplateCss();
+
+      // Create complete HTML with all styles
+      const completeHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${fileName}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+      /* Reset and base styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      
+      /* Captured styled-components and other dynamic styles */
+      ${allStyles.join('\n')}
+      
+      /* Template-specific CSS */
+      ${templateCss}
+      
+      /* Print optimizations */
+      @media print {
+        @page {
+          size: A4 portrait;
+          margin: 0;
+        }
+        body {
+          margin: 0;
+          padding: 0;
+          background-color: white !important;
+        }
+        .resume {
+          width: 210mm !important;
+          max-width: 210mm !important;
+          min-height: 297mm !important;
+          margin: 0 !important;
+          box-shadow: none !important;
+          page-break-after: avoid;
+        }
+      }
+    </style>
+</head>
+<body>
+    ${templateHTML}
+</body>
+</html>`;
 
       toast('Opening print dialog. Select "Save as PDF" to download.', {
         duration: 6000,
@@ -81,26 +165,14 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate, resumeId
 
       const iframeDoc = iframe.contentWindow.document;
       iframeDoc.open();
-      // Set the title so browsers suggest it as filename
-      iframeDoc.write(`<html><head><title>${fileName}</title></head><body>${htmlContent}</body></html>`);
+      iframeDoc.write(completeHTML);
       iframeDoc.close();
 
       let printTriggered = false;
-      iframe.contentWindow.onload = () => {
-        if (!printTriggered) {
-          printTriggered = true;
-          setTimeout(() => {
-            iframe.contentWindow.focus();
-            iframe.contentWindow.print();
-            setTimeout(() => {
-              if (iframe.parentNode) document.body.removeChild(iframe);
-            }, 1000);
-          }, 500);
-        }
-      };
 
-      setTimeout(() => {
-        if (!printTriggered && iframe.parentNode) {
+      // Wait longer for styles to load and render
+      const triggerPrint = () => {
+        if (!printTriggered) {
           printTriggered = true;
           iframe.contentWindow.focus();
           iframe.contentWindow.print();
@@ -108,7 +180,18 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate, resumeId
             if (iframe.parentNode) document.body.removeChild(iframe);
           }, 1000);
         }
-      }, 2000);
+      };
+
+      iframe.contentWindow.onload = () => {
+        setTimeout(triggerPrint, 1500);
+      };
+
+      // Fallback timeout
+      setTimeout(() => {
+        if (!printTriggered && iframe.parentNode) {
+          triggerPrint();
+        }
+      }, 3000);
 
     } catch (error) {
       console.error('PDF download error:', error);
