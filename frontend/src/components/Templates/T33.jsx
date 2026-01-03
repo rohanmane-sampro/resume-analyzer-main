@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
+// --- Helpers & Icons ---
+
 const parseMarkdown = (text) => {
     if (!text) return '';
     return text
@@ -27,17 +29,337 @@ const MainHeader = ({ title }) => (
     </div>
 );
 
-const RatingDots = ({ count }) => {
-    return (
-        <div className="rating-dots">
-            {[...Array(5)].map((_, i) => (
-                <div key={i} className={`dot ${i < count ? 'filled' : 'empty'}`} />
-            ))}
-        </div>
-    );
-};
+// --- CSS Styles ---
+export const T33Css = `
+  .resume-container {
+    background-color: white;
+    width: 210mm;
+    min-height: 297mm;
+    display: flex;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #1f2937;
+    box-sizing: border-box;
+  }
 
+  /* SIDEBAR STYLES */
+  .sidebar {
+    width: 35%;
+    background-color: #E8E8E8;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .header-section {
+    margin-bottom: 0.5rem;
+  }
+
+  .name {
+    font-size: 1.875rem;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.2;
+    margin: 0;
+    word-break: break-word;
+  }
+
+  .job-title {
+    font-size: 1.15rem;
+    font-weight: 400;
+    color: #4b5563;
+    margin-top: 0.5rem;
+    font-style: italic;
+  }
+
+  .profile-pic-container {
+    width: 9rem;
+    height: 9rem;
+    margin: 0.5rem auto;
+    border-radius: 9999px;
+    overflow: hidden;
+    border: 4px solid #d1d5db;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+
+  .profile-pic {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .contact-section {
+    font-size: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    word-break: break-all;
+  }
+
+  .sidebar-section {
+    margin-top: 0.5rem;
+  }
+
+  .sidebar-header {
+    background-color: #D1D5DB;
+    text-align: center;
+    padding: 0.25rem 0;
+    margin-bottom: 0.75rem;
+    margin-top: 0.25rem;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .sidebar-title {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight: 700;
+    color: #1f2937;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.85rem;
+    margin: 0;
+  }
+
+  .profile-text {
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: #374151;
+    text-align: justify;
+  }
+
+  .languages-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+  }
+
+  .language-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #374151;
+  }
+  
+  .language-item::before {
+    content: "•";
+    color: #6b7280;
+  }
+
+  .awards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    font-size: 0.75rem;
+  }
+
+  .award-item {
+    border-bottom: 1px dashed #d1d5db;
+    padding-bottom: 0.5rem;
+  }
+  
+  .award-item:last-child {
+    border-bottom: none;
+  }
+
+  .award-title {
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 0.2rem 0;
+    font-size: 0.85rem;
+  }
+
+  .award-detail {
+    color: #4b5563;
+    margin: 0;
+  }
+
+  /* MAIN CONTENT STYLES */
+  .main-content {
+    width: 65%;
+    background-color: white;
+    padding: 2.5rem;
+    padding-top: 3rem;
+  }
+
+  .main-section {
+    margin-bottom: 2rem;
+  }
+
+  .main-header {
+    background-color: #F3F4F6;
+    text-align: center;
+    padding: 0.25rem 0;
+    margin-bottom: 1rem;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .main-title {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight: 700;
+    color: #1f2937;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.95rem;
+    margin: 0;
+  }
+
+  /* Experience & Projects */
+  .experience-item, .project-item {
+    margin-bottom: 1.25rem;
+  }
+
+  .item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.25rem;
+  }
+
+  .company-name, .project-name {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: #111827;
+    margin: 0;
+  }
+
+  .date-location {
+    font-size: 0.75rem;
+    color: #6b7280;
+    font-weight: 600;
+    white-space: nowrap;
+    margin-left: 0.5rem;
+  }
+
+  .position-title {
+    color: #374151;
+    font-weight: 600;
+    font-style: italic;
+    margin: 0 0 0.35rem 0;
+    font-size: 0.85rem;
+  }
+  
+  .tech-stack {
+    font-size: 0.75rem;
+    color: #4b5563;
+    margin-bottom: 0.35rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+
+  .experience-description {
+    font-size: 0.85rem;
+    color: #374151;
+    line-height: 1.5;
+    text-align: justify;
+  }
+
+  .experience-description ul {
+    list-style-type: disc;
+    margin-left: 1.25rem;
+    margin-top: 0.25rem;
+  }
+
+  .experience-description li {
+    margin-bottom: 0.25rem;
+  }
+
+  /* Education */
+  .education-item {
+    margin-bottom: 1rem;
+    border-left: 3px solid #F3F4F6;
+    padding-left: 0.75rem;
+  }
+
+  .degree-name {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #111827;
+    margin: 0 0 0.25rem 0;
+  }
+
+  .institution-name {
+    font-size: 0.85rem;
+    color: #374151;
+    margin: 0 0 0.25rem 0;
+  }
+  
+  .edu-meta {
+     font-size: 0.75rem;
+     color: #6b7280;
+  }
+
+  /* Skills - Chip Design */
+  .skills-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .skill-chip {
+    background-color: #f3f4f6;
+    color: #1f2937;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px; /* Pill shape */
+    border: 1px solid #e5e7eb;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  svg {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  
+  .shrink-0 {
+    flex-shrink: 0;
+  }
+
+  @media print {
+    body { margin: 0; padding: 0; }
+    .resume-container {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0;
+      box-shadow: none;
+    }
+  }
+`;
+
+// --- Styled Components Wrapper ---
+const StyledWrapper = styled.div`
+  ${T33Css}
+`;
+
+// --- Component ---
 export const T33 = ({ jsonData }) => {
+    // Data Preparation with CORRECT field mappings
+    const languages = jsonData.contactInfo?.Languages
+        ? jsonData.contactInfo.Languages.split(',').map(l => l.trim()).filter(Boolean)
+        : [];
+
+    // Combining hard and soft skills for a unified chip view
+    const hardSkills = jsonData.skills?.hardSkills
+        ? jsonData.skills.hardSkills.split(',').map(s => s.trim()).filter(Boolean)
+        : [];
+    const softSkills = jsonData.skills?.softSkills
+        ? jsonData.skills.softSkills.split(',').map(s => s.trim()).filter(Boolean)
+        : [];
+    const allSkills = [...hardSkills, ...softSkills];
+
     return (
         <StyledWrapper>
             <div className="resume-container">
@@ -104,30 +426,30 @@ export const T33 = ({ jsonData }) => {
                         </div>
                     )}
 
-                    {/* Languages Section */}
-                    {jsonData?.languages && jsonData.languages.length > 0 && (
+                    {/* Languages Section (Fixed mapping) */}
+                    {languages.length > 0 && (
                         <div className="sidebar-section">
                             <SidebarHeader title="Languages" />
                             <div className="languages-list">
-                                {jsonData.languages.map((lang, index) => (
+                                {languages.map((lang, index) => (
                                     <div key={index} className="language-item">
-                                        <span>{lang.name || lang}</span>
-                                        <RatingDots count={lang.proficiency || 5} />
+                                        {lang}
                                     </div>
                                 ))}
                             </div>
                         </div>
                     )}
 
-                    {/* Certificates/Awards Section */}
+                    {/* Certifications (Renamed from Awards) */}
                     {jsonData?.certificates && jsonData.certificates.length > 0 && (
                         <div className="sidebar-section">
-                            <SidebarHeader title="Awards" />
+                            <SidebarHeader title="Certifications" />
                             <div className="awards-list">
                                 {jsonData.certificates.map((cert, index) => (
                                     <div key={index} className="award-item">
                                         <h4 className="award-title">{cert.certificateName}</h4>
-                                        <p className="award-detail">{cert.providerName}, {cert.courseDuration}</p>
+                                        <p className="award-detail">{cert.providerName}</p>
+                                        {cert.courseDuration && <p className="award-detail" style={{ fontSize: '0.7rem', color: '#666' }}>{cert.courseDuration}</p>}
                                     </div>
                                 ))}
                             </div>
@@ -146,9 +468,11 @@ export const T33 = ({ jsonData }) => {
 
                             {jsonData.workExperience.map((exp, index) => (
                                 <div key={index} className="experience-item">
-                                    <h3 className="company-name">{exp.companyName}</h3>
+                                    <div className="item-header">
+                                        <h3 className="company-name">{exp.companyName}</h3>
+                                        <span className="date-location">{exp.WorkDuration}</span>
+                                    </div>
                                     <p className="position-title">{exp.jobTitle}</p>
-                                    <p className="date-location">{exp.WorkDuration} | {exp.Location || ''}</p>
                                     {exp.keyAchievements && (
                                         <div className="experience-description" dangerouslySetInnerHTML={{ __html: parseMarkdown(exp.keyAchievements) }} />
                                     )}
@@ -157,33 +481,50 @@ export const T33 = ({ jsonData }) => {
                         </section>
                     )}
 
-                    {/* Education */}
+                    {/* Projects (Added) */}
+                    {jsonData?.projects && jsonData.projects.length > 0 && (
+                        <section className="main-section">
+                            <MainHeader title="Projects" />
+                            {jsonData.projects.map((proj, index) => (
+                                <div key={index} className="project-item">
+                                    <div className="item-header">
+                                        <h3 className="project-name">{proj.projectTitle}</h3>
+                                    </div>
+                                    {proj.toolsTechUsed && (
+                                        <div className="experience-description" dangerouslySetInnerHTML={{ __html: parseMarkdown(proj.toolsTechUsed) }} />
+                                    )}
+                                </div>
+                            ))}
+                        </section>
+                    )}
+
+                    {/* Education (Fixed fields) */}
                     {jsonData?.education && jsonData.education.length > 0 && (
                         <section className="main-section">
                             <MainHeader title="Education" />
 
                             {jsonData.education.map((edu, index) => (
                                 <div key={index} className="education-item">
-                                    <h3 className="degree-name">{edu.degreeName}</h3>
+                                    <div className="item-header">
+                                        <h3 className="degree-name">{edu.degreeName}</h3>
+                                        <span className="date-location">{edu.graduationYear}</span>
+                                    </div>
                                     <p className="institution-name">{edu.institutionName}</p>
-                                    <p className="edu-date-location">{edu.graduationYear} | {edu.location || ''}</p>
+                                    {edu.currentCGPA && <div className="edu-meta">CGPA/Score: {edu.currentCGPA}</div>}
                                 </div>
                             ))}
                         </section>
                     )}
 
-                    {/* Skills */}
-                    {jsonData?.skills && (jsonData.skills.hardSkills || jsonData.skills.softSkills) && (
+                    {/* Skills (Redesigned as Chips) */}
+                    {allSkills.length > 0 && (
                         <section className="main-section">
                             <MainHeader title="Skills" />
-                            <ul className="skills-list">
-                                {jsonData.skills.hardSkills && jsonData.skills.hardSkills.split(',').map((skill, index) => (
-                                    <li key={`hard-${index}`}>{skill.trim()}</li>
+                            <div className="skills-container">
+                                {allSkills.map((skill, index) => (
+                                    <span key={index} className="skill-chip">{skill}</span>
                                 ))}
-                                {jsonData.skills.softSkills && jsonData.skills.softSkills.split(',').map((skill, index) => (
-                                    <li key={`soft-${index}`}>{skill.trim()}</li>
-                                ))}
-                            </ul>
+                            </div>
                         </section>
                     )}
 
@@ -192,613 +533,3 @@ export const T33 = ({ jsonData }) => {
         </StyledWrapper>
     );
 };
-
-const StyledWrapper = styled.div`
-  .resume-container {
-    background-color: white;
-    width: 210mm;
-    min-height: 297mm;
-    display: flex;
-    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    color: #1f2937;
-    box-sizing: border-box;
-  }
-
-  .sidebar {
-    width: 35%;
-    background-color: #E8E8E8;
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .header-section {
-    margin-bottom: 1rem;
-  }
-
-  .name {
-    font-size: 1.875rem;
-    font-family: Georgia, 'Times New Roman', serif;
-    font-weight: 700;
-    color: #111827;
-    line-height: 1.2;
-    margin: 0;
-  }
-
-  .job-title {
-    font-size: 1.25rem;
-    font-weight: 300;
-    color: #4b5563;
-    margin-top: 0.5rem;
-  }
-
-  .profile-pic-container {
-    width: 10rem;
-    height: 10rem;
-    margin: 0 auto;
-    border-radius: 9999px;
-    overflow: hidden;
-    border: 4px solid #d1d5db;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  }
-
-  .profile-pic {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .contact-section {
-    font-size: 0.875rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    margin-top: 0.5rem;
-  }
-
-  .contact-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .contact-item svg {
-    flex-shrink: 0;
-  }
-
-  .sidebar-section {
-    margin-top: 0.25rem;
-  }
-
-  .sidebar-header {
-    background-color: #D1D5DB;
-    text-align: center;
-    padding: 0.25rem 0;
-    margin-bottom: 0.75rem;
-    margin-top: 0.25rem;
-  }
-
-  .sidebar-title {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-weight: 700;
-    color: #1f2937;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-size: 0.875rem;
-    margin: 0;
-  }
-
-  .profile-text {
-    font-size: 0.75rem;
-    line-height: 1.625;
-    color: #374151;
-    text-align: justify;
-  }
-
-  .languages-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-  }
-
-  .language-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .rating-dots {
-    display: flex;
-    gap: 0.25rem;
-  }
-
-  .dot {
-    width: 0.625rem;
-    height: 0.625rem;
-    border-radius: 9999px;
-  }
-
-  .dot.filled {
-    background-color: #374151;
-  }
-
-  .dot.empty {
-    background-color: #d1d5db;
-  }
-
-  .awards-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    font-size: 0.75rem;
-  }
-
-  .award-title {
-    font-weight: 700;
-    color: #111827;
-    margin: 0 0 0.25rem 0;
-  }
-
-  .award-detail {
-    color: #4b5563;
-    margin: 0;
-  }
-
-  .main-content {
-    width: 65%;
-    background-color: white;
-    padding: 2.5rem;
-    padding-top: 3rem;
-  }
-
-  .main-section {
-    margin-bottom: 2rem;
-  }
-
-  .main-header {
-    background-color: #F3F4F6;
-    text-align: center;
-    padding: 0.25rem 0;
-    margin-bottom: 1.25rem;
-  }
-
-  .main-title {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-weight: 700;
-    color: #1f2937;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-size: 1rem;
-    margin: 0;
-  }
-
-  .experience-item {
-    margin-bottom: 1.5rem;
-  }
-
-  .company-name {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-weight: 700;
-    font-size: 1.125rem;
-    color: #111827;
-    margin: 0 0 0.25rem 0;
-  }
-
-  .position-title {
-    color: #374151;
-    margin: 0 0 0.25rem 0;
-    font-size: 0.875rem;
-  }
-
-  .date-location {
-    font-size: 0.75rem;
-    color: #6b7280;
-    margin: 0 0 0.5rem 0;
-  }
-
-  .experience-description {
-    font-size: 0.875rem;
-    color: #374151;
-    line-height: 1.5;
-  }
-
-  .experience-description ul {
-    list-style-type: disc;
-    margin-left: 1rem;
-    margin-top: 0.25rem;
-  }
-
-  .experience-description li {
-    margin-bottom: 0.25rem;
-  }
-
-  .experience-description li::marker {
-    color: #9ca3af;
-  }
-
-  .education-item {
-    margin-bottom: 1rem;
-  }
-
-  .degree-name {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-weight: 700;
-    font-size: 1rem;
-    color: #111827;
-    margin: 0 0 0.25rem 0;
-  }
-
-  .institution-name {
-    font-size: 0.875rem;
-    color: #374151;
-    margin: 0 0 0.25rem 0;
-  }
-
-  .edu-date-location {
-    font-size: 0.75rem;
-    color: #6b7280;
-    margin: 0;
-  }
-
-  .skills-list {
-    list-style-type: disc;
-    margin-left: 1rem;
-    font-size: 0.875rem;
-    color: #374151;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-top: 0.75rem;
-  }
-
-  .skills-list li::marker {
-    color: #9ca3af;
-  }
-
-  svg {
-    display: inline-block;
-    vertical-align: middle;
-  }
-
-  .shrink-0 {
-    flex-shrink: 0;
-  }
-
-  @media print {
-    .resume-container {
-      width: 210mm;
-      height: 297mm;
-      margin: 0;
-      box-shadow: none;
-    }
-  }
-`;
-
-export const T33Css = `
-  .resume-container {
-    background-color: white;
-    width: 210mm;
-    min-height: 297mm;
-    display: flex;
-    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    color: #1f2937;
-    box-sizing: border-box;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  .sidebar {
-    width: 35%;
-    background-color: #E8E8E8 !important;
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  .header-section {
-    margin-bottom: 1rem;
-  }
-
-  .name {
-    font-size: 1.875rem;
-    font-family: Georgia, 'Times New Roman', serif;
-    font-weight: 700;
-    color: #111827;
-    line-height: 1.2;
-    margin: 0;
-  }
-
-  .job-title {
-    font-size: 1.25rem;
-    font-weight: 300;
-    color: #4b5563;
-    margin-top: 0.5rem;
-  }
-
-  .profile-pic-container {
-    width: 10rem;
-    height: 10rem;
-    margin: 0 auto;
-    border-radius: 9999px;
-    overflow: hidden;
-    border: 4px solid #d1d5db;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  }
-
-  .profile-pic {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .contact-section {
-    font-size: 0.875rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    margin-top: 0.5rem;
-  }
-
-  .contact-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .contact-item svg {
-    flex-shrink: 0;
-  }
-
-  .sidebar-section {
-    margin-top: 0.25rem;
-  }
-
-  .sidebar-header {
-    background-color: #D1D5DB !important;
-    text-align: center;
-    padding: 0.25rem 0;
-    margin-bottom: 0.75rem;
-    margin-top: 0.25rem;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  .sidebar-title {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-weight: 700;
-    color: #1f2937;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-size: 0.875rem;
-    margin: 0;
-  }
-
-  .profile-text {
-    font-size: 0.75rem;
-    line-height: 1.625;
-    color: #374151;
-    text-align: justify;
-  }
-
-  .languages-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-  }
-
-  .language-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .rating-dots {
-    display: flex;
-    gap: 0.25rem;
-  }
-
-  .dot {
-    width: 0.625rem;
-    height: 0.625rem;
-    border-radius: 9999px;
-  }
-
-  .dot.filled {
-    background-color: #374151 !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  .dot.empty {
-    background-color: #d1d5db !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  .awards-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    font-size: 0.75rem;
-  }
-
-  .award-title {
-    font-weight: 700;
-    color: #111827;
-    margin: 0 0 0.25rem 0;
-  }
-
-  .award-detail {
-    color: #4b5563;
-    margin: 0;
-  }
-
-  .main-content {
-    width: 65%;
-    background-color: white;
-    padding: 2.5rem;
-    padding-top: 3rem;
-  }
-
-  .main-section {
-    margin-bottom: 2rem;
-  }
-
-  .main-header {
-    background-color: #F3F4F6 !important;
-    text-align: center;
-    padding: 0.25rem 0;
-    margin-bottom: 1.25rem;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  .main-title {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-weight: 700;
-    color: #1f2937;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-size: 1rem;
-    margin: 0;
-  }
-
-  .experience-item {
-    margin-bottom: 1.5rem;
-  }
-
-  .company-name {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-weight: 700;
-    font-size: 1.125rem;
-    color: #111827;
-    margin: 0 0 0.25rem 0;
-  }
-
-  .position-title {
-    color: #374151;
-    margin: 0 0 0.25rem 0;
-    font-size: 0.875rem;
-  }
-
-  .date-location {
-    font-size: 0.75rem;
-    color: #6b7280;
-    margin: 0 0 0.5rem 0;
-  }
-
-  .experience-description {
-    font-size: 0.875rem;
-    color: #374151;
-    line-height: 1.5;
-  }
-
-  .experience-description ul {
-    list-style-type: disc;
-    margin-left: 1rem;
-    margin-top: 0.25rem;
-  }
-
-  .experience-description li {
-    margin-bottom: 0.25rem;
-  }
-
-  .experience-description li::marker {
-    color: #9ca3af;
-  }
-
-  .education-item {
-    margin-bottom: 1rem;
-  }
-
-  .degree-name {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-weight: 700;
-    font-size: 1rem;
-    color: #111827;
-    margin: 0 0 0.25rem 0;
-  }
-
-  .institution-name {
-    font-size: 0.875rem;
-    color: #374151;
-    margin: 0 0 0.25rem 0;
-  }
-
-  .edu-date-location {
-    font-size: 0.75rem;
-    color: #6b7280;
-    margin: 0;
-  }
-
-  .skills-list {
-    list-style-type: disc;
-    margin-left: 1rem;
-    font-size: 0.875rem;
-    color: #374151;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-top: 0.75rem;
-  }
-
-  .skills-list li::marker {
-    color: #9ca3af;
-  }
-
-  svg {
-    display: inline-block;
-    vertical-align: middle;
-  }
-
-  .shrink-0 {
-    flex-shrink: 0;
-  }
-
-  @media print {
-    .resume-container {
-      width: 210mm;
-      height: 297mm;
-      margin: 0;
-      box-shadow: none;
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
-    }
-    
-    .sidebar {
-      background-color: #E8E8E8 !important;
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
-    }
-    
-    .sidebar-header {
-      background-color: #D1D5DB !important;
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
-    }
-    
-    .main-header {
-      background-color: #F3F4F6 !important;
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
-    }
-    
-    .dot.filled {
-      background-color: #374151 !important;
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
-    }
-    
-    .dot.empty {
-      background-color: #d1d5db !important;
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
-    }
-  }
-`;

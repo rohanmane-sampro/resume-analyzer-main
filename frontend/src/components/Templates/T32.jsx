@@ -479,12 +479,45 @@ export const T32Css = `
   }
 
   @media print {
-    .resume-container {
-      width: 210mm;
-      height: 297mm;
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    
+    html {
+      margin: 0 !important;
+      padding: 0 !important;
+      background: white !important;
+    }
+    
+    body {
+      margin: 0 !important;
+      padding: 0 !important;
+      background: white !important;
+    }
+    
+    @page {
+      size: A4 portrait;
       margin: 0;
-      padding: 3rem;
-      box-shadow: none;
+    }
+    
+    .resume-container {
+      width: 210mm !important;
+      height: auto !important;
+      min-height: auto !important;
+      margin: 0 !important;
+      padding: 2.5rem !important;
+      box-shadow: none !important;
+      background: white !important;
+      page-break-inside: avoid !important;
+    }
+    
+    .section {
+      page-break-inside: avoid !important;
+    }
+    
+    .work-item, .edu-item {
+      page-break-inside: avoid !important;
     }
   }
 `;
