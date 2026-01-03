@@ -198,8 +198,14 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate, resumeId
     }
 
     if (captureElement) {
-      // Get the inner content of the template
-      const templateHTML = captureElement.innerHTML;
+      // For templates with styled-components wrapper, find the actual resume container
+      const resumeContainer = captureElement.querySelector('.resume-container') ||
+        captureElement.querySelector('.resume-page') ||
+        captureElement.querySelector('.resume') ||
+        captureElement;
+
+      // Get the outer HTML of the resume container (not the styled wrapper)
+      const templateHTML = resumeContainer.outerHTML;
       const templateCss = getTemplateCss();
 
       // Get the user's name for the title
@@ -251,27 +257,29 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate, resumeId
         width: 210mm !important;
         min-height: 297mm !important;
         background-color: white !important;
+        background: white !important;
         position: relative;
       }
-      
-      /* Resume page container - enforce A4 but preserve internal layout */
-      .resume-page {
-        width: 210mm !important;
-        max-width: 210mm !important;
-        min-height: 297mm !important;
-        margin: 0 auto !important;
-        box-shadow: none !important;
-        /* Preserve display: grid and other layout properties from template */
+
+      /* Remove any wrapper div styling (StyledWrapper, etc.) */
+      body > div {
+        background: none !important;
+        background-color: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
       }
       
-      /* For other templates */
+      /* Resume containers - enforce A4 but preserve internal layout */
+      .resume-page,
       .resume-container,
       .resume,
       .container {
         width: 210mm !important;
         max-width: 210mm !important;
-        margin: 0 auto !important;
+        min-height: 297mm !important;
+        margin: 0 !important;
         box-shadow: none !important;
+        /* Preserve display: grid, display: flex, etc. from template CSS */
       }
 
       /* Strict Print Rules */
@@ -283,7 +291,8 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate, resumeId
         
         html, body {
           width: 210mm !important;
-          height: 297mm !important;
+          min-height: 297mm !important;
+          height: auto !important;
           margin: 0 !important;
           padding: 0 !important;
           overflow: visible !important;
@@ -296,6 +305,9 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate, resumeId
           box-shadow: none !important;
           page-break-after: avoid !important;
           page-break-inside: avoid !important;
+          width: 210mm !important;
+          min-height: 297mm !important;
+          height: auto !important;
         }
       }
     </style>

@@ -238,8 +238,8 @@ const Result = () => {
       {/* Always render the template but keep it visible with proper sizing */}
       <div
         id="capture-content"
-        className={`text-left transition-all duration-300 bg-white rounded-lg shadow-2xl p-8 ${status === 'completed' ? 'relative visible' : 'absolute invisible'}`}
-        style={{ width: '950px', maxWidth: '95%' }}
+        className={`text-left transition-all duration-300 ${status === 'completed' ? 'relative visible' : 'absolute invisible'}`}
+        style={{ width: '210mm', maxWidth: '210mm', margin: '0 auto' }}
       >
         {jsonData && renderSelectedTemplate()}
       </div>
