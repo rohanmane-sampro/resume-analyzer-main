@@ -530,6 +530,37 @@ const PreviewPage = () => {
           .resume-preview-content [class*="color"] {
             opacity: 1 !important;
           }
+          
+          /* Exception for T15 sidebar - keep white text on navy background */
+          .resume-preview-content .sidebar,
+          .resume-preview-content .sidebar *,
+          .resume-preview-content .sidebar h1,
+          .resume-preview-content .sidebar h2,
+          .resume-preview-content .sidebar h3,
+          .resume-preview-content .sidebar p,
+          .resume-preview-content .sidebar div,
+          .resume-preview-content .sidebar span,
+          .resume-preview-content .sidebar li,
+          .resume-preview-content .sidebar a {
+            color: #ffffff !important;
+          }
+          
+          .resume-preview-content .sidebar .job-title {
+            color: #bdc3c7 !important;
+          }
+          
+          .resume-preview-content .sidebar .edu-school,
+          .resume-preview-content .sidebar .edu-gpa {
+            color: #bdc3c7 !important;
+          }
+          
+          .resume-preview-content .sidebar .edu-year {
+            color: #ef6e6e !important;
+          }
+          
+          .resume-preview-content .sidebar svg {
+            color: #ef6e6e !important;
+          }
         `
       }} />
 
