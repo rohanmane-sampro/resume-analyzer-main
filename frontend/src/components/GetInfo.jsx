@@ -39,7 +39,7 @@ const GetInfo = () => {
   const [enhancedResumeData, setEnhancedResumeData] = useState(null);
   // console.log('ReceiveData',ExampleJsonData.skills.hardSkills)
   const [formData, setFormData] = useState({
-    selectedTemplate: "",
+    selectedTemplate: "3",
     contactInfo: {
       fullName: '',
       phoneNumber: '',
@@ -2031,7 +2031,7 @@ const GetInfo = () => {
           <h1 className="text-2xl font-bold pt-20 md:pt-4 text-center bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-amber-400 dark:to-orange-400 bg-clip-text text-transparent cursor-pointer" title="Live preview. how your resume looks">Preview</h1>
           <div className="w-[25%] h-1 bg-gradient-to-r from-purple-600 to-indigo-600 mb-4 mx-auto mt-1 rounded-full shadow-lg dark:from-amber-400 dark:to-orange-400"></div>
           <div className="px-2 w-[340px] ml-3 h-[calc(100vh-120px)] overflow-hidden bg-white dark:bg-slate-800">
-            <div className="scale-[0.35] origin-top-left flex">
+            <div className="scale-[0.35] origin-top-left flex ml-8">
               {(() => {
                 const templateNum = isExampleProcessing ? ExampleJsonData.selectedTemplate : formData.selectedTemplate;
                 const data = isExampleProcessing ? ExampleJsonData : formData;

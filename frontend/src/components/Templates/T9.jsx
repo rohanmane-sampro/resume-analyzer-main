@@ -362,7 +362,7 @@ export const T9 = ({ jsonData }) => {
         {/* Activities */}
         {languages.length > 0 && (
           <div className="section">
-            <div className="section-title">Activities</div>
+            <div className="section-title">Language</div>
             {languages.map((lang, index) => (
               <div key={`activity-${index}`} className="activity-item">
                 <div className="activity-name">{lang}</div>

@@ -293,7 +293,7 @@ const Result = () => {
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center gap-2"
                 onClick={() => setShowDownloadModal(true)}
               >
-                📄 Choose Download Format
+                📄 Download Resume
               </button>
               <button
                 className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
