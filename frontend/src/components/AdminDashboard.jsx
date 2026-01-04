@@ -79,9 +79,8 @@ const AdminDashboard = () => {
             case 'all-users': return <UserTable users={usersList} />;
             case 'manage-users': return <ManageUsers users={usersList} setUsers={setUsersList} />;
             case 'resume-analytics': return <ResumeAnalyticsTab trends={trends} templateAnalytics={templateAnalytics} metrics={metrics} />;
-            case 'limits': return <LimitsSettingsTab settings={systemSettings} setSettings={setSystemSettings} />;
-            case 'settings': return <SystemSettingsTab settings={systemSettings} setSettings={setSystemSettings} />;
-            case 'future': return <FutureIntegrationsTab />;
+
+
             default: return <OverviewTab metrics={metrics} trends={trends} templateAnalytics={templateAnalytics} />;
         }
     };
@@ -107,9 +106,8 @@ const AdminDashboard = () => {
                     <SidebarItem icon={<Users />} label="All Users" active={activeTab === 'all-users'} onClick={() => setActiveTab('all-users')} collapsed={isSidebarCollapsed} />
                     <SidebarItem icon={<Shield />} label="Manage Users" active={activeTab === 'manage-users'} onClick={() => setActiveTab('manage-users')} collapsed={isSidebarCollapsed} />
                     <SidebarItem icon={<Activity />} label="Resume Analytics" active={activeTab === 'resume-analytics'} onClick={() => setActiveTab('resume-analytics')} collapsed={isSidebarCollapsed} />
-                    <SidebarItem icon={<Database />} label="Template & Limits" active={activeTab === 'limits'} onClick={() => setActiveTab('limits')} collapsed={isSidebarCollapsed} />
-                    <SidebarItem icon={<Settings />} label="System Settings" active={activeTab === 'settings'} onClick={() => setActiveTab('settings')} collapsed={isSidebarCollapsed} />
-                    <SidebarItem icon={<Layers />} label="Future Integrations" active={activeTab === 'future'} onClick={() => setActiveTab('future')} collapsed={isSidebarCollapsed} />
+
+
                 </nav>
 
                 <div className="absolute bottom-4 left-0 right-0 p-4">
@@ -294,170 +292,6 @@ const ResumeAnalyticsTab = ({ trends, templateAnalytics, metrics }) => {
     );
 };
 
-const LimitsSettingsTab = ({ settings, setSettings }) => {
-    const handleSave = async (data) => {
-        try {
-            const response = await fetch(ENDPOINTS.ADMIN.SETTINGS, {
-                method: 'POST',
-                headers: getAuthHeaders(),
-                body: JSON.stringify({ ...settings, ...data })
-            });
-            if (response.ok) {
-                setSettings({ ...settings, ...data });
-                toast.success('System parameters synchronized');
-            }
-        } catch (error) { toast.error('I/O Persistence Error'); }
-    };
-
-    return (
-        <div className="max-w-4xl space-y-8">
-            <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
-                <h3 className="text-xl font-bold mb-8 flex items-center gap-3">
-                    <Database className="text-teal-500" />
-                    Global Limitation Architecture
-                </h3>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 ring-1 ring-slate-100 dark:ring-slate-800 p-8 rounded-2xl">
-                    <div className="space-y-4">
-                        <label className="block">
-                            <span className="text-sm font-bold text-slate-500 uppercase tracking-widest text-[10px]">Default Download Limit</span>
-                            <div className="mt-1 flex items-center gap-3">
-                                <input
-                                    type="number"
-                                    className="flex-1 bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-3 focus:ring-2 focus:ring-teal-500 outline-none font-bold"
-                                    value={settings?.default_download_limit}
-                                    onChange={(e) => setSettings({ ...settings, default_download_limit: parseInt(e.target.value) })}
-                                />
-                                <button onClick={() => handleSave({ default_download_limit: settings.default_download_limit })} className="p-3 bg-teal-500 text-white rounded-xl shadow-lg shadow-teal-500/20"><Save size={18} /></button>
-                            </div>
-                        </label>
-                        <p className="text-xs text-slate-400">Assigned to all new standard user registrations.</p>
-                    </div>
-
-                    <div className="space-y-4">
-                        <label className="block">
-                            <span className="text-sm font-bold text-slate-500 uppercase tracking-widest text-[10px]">Default Template Quota</span>
-                            <div className="mt-1 flex items-center gap-3">
-                                <input
-                                    type="number"
-                                    className="flex-1 bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-3 focus:ring-2 focus:ring-teal-500 outline-none font-bold"
-                                    value={settings?.default_template_limit}
-                                    onChange={(e) => setSettings({ ...settings, default_template_limit: parseInt(e.target.value) })}
-                                />
-                                <button onClick={() => handleSave({ default_template_limit: settings.default_template_limit })} className="p-3 bg-teal-500 text-white rounded-xl shadow-lg shadow-teal-500/20"><Save size={18} /></button>
-                            </div>
-                        </label>
-                        <p className="text-xs text-slate-400">Restricts visual variation capacity globally.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-const SystemSettingsTab = ({ settings, setSettings }) => {
-    const handleToggle = async (key, val) => {
-        try {
-            const response = await fetch(ENDPOINTS.ADMIN.SETTINGS, {
-                method: 'POST',
-                headers: getAuthHeaders(),
-                body: JSON.stringify({ ...settings, [key]: val })
-            });
-            if (response.ok) {
-                setSettings({ ...settings, [key]: val });
-                toast.success(`System ${key.replace('_', ' ')} logic updated`);
-            }
-        } catch (error) { toast.error('State persistence failure'); }
-    };
-
-    return (
-        <div className="max-w-4xl space-y-8">
-            <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
-                <h3 className="text-xl font-bold mb-8 flex items-center gap-3">
-                    <Settings className="text-teal-500" />
-                    State Machine Control
-                </h3>
-
-                <div className="space-y-6">
-                    <div className="flex items-center justify-between p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
-                        <div>
-                            <h4 className="font-bold text-lg">Global Download System</h4>
-                            <p className="text-sm text-slate-500">Enable or disable all file export logic system-wide</p>
-                        </div>
-                        <button
-                            onClick={() => handleToggle('downloads_enabled', !settings?.downloads_enabled)}
-                            className={`p-1 w-14 h-8 rounded-full transition-all flex items-center ${settings?.downloads_enabled ? 'bg-teal-500 justify-end' : 'bg-slate-300 dark:bg-slate-700 justify-start'}`}
-                        >
-                            <div className="bg-white w-6 h-6 rounded-full shadow-md"></div>
-                        </button>
-                    </div>
-
-                    <div className="flex items-center justify-between p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800 opacity-50 cursor-not-allowed">
-                        <div>
-                            <h4 className="font-bold text-lg">Maintenance Mode</h4>
-                            <p className="text-sm text-slate-500">Redirect all traffic to system offline terminal</p>
-                        </div>
-                        <button disabled className="p-1 w-14 h-8 bg-slate-200 dark:bg-slate-700 rounded-full flex items-center justify-start">
-                            <div className="bg-white/50 w-6 h-6 rounded-full shadow-md"></div>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div className="p-6 bg-yellow-500/10 border-l-4 border-yellow-500 rounded-r-2xl">
-                <p className="text-yellow-700 dark:text-yellow-500 text-sm font-medium">Changes made to these parameters affect live production services immediately. Exercise high administrative caution.</p>
-            </div>
-        </div>
-    );
-};
-
-const FutureIntegrationsTab = () => {
-    return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <IntegrationCard
-                title="Knowledge Hub Connection"
-                subtitle="Future Roadmap Phase 2"
-                description="Synchronize specialized knowledge bases for context-aware resume engineering."
-                icon={<Database size={32} className="text-blue-500" />}
-                tag="Knowledge Hub"
-            />
-            {/* <IntegrationCard
-                title="SAML / SSO Auth"
-                subtitle="Corporate Integration"
-                description="Enable enterprise-grade authentication and user source mapping."
-                icon={<Shield size={32} className="text-purple-500" />}
-                tag="Enterprise"
-            />
-            <IntegrationCard
-                title="Advanced NLP Hub"
-                subtitle="Content Intelligence"
-                description="Connect external LLM clusters for specialized semantic analysis."
-                icon={<Layers size={32} className="text-orange-500" />}
-                tag="AI Logic"
-            /> */}
-        </div>
-    );
-};
-
-// --- UTILS ---
 
 
 
-const IntegrationCard = ({ title, subtitle, description, icon, tag }) => (
-    <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm group hover:border-teal-500 transition-all cursor-not-allowed">
-        <div className="flex justify-between items-start mb-6">
-            <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-800">
-                {icon}
-            </div>
-            <span className="text-[10px] font-black uppercase bg-slate-100 dark:bg-slate-800 text-slate-500 px-3 py-1 rounded-full">{tag}</span>
-        </div>
-        <h4 className="text-slate-400 font-bold text-xs uppercase tracking-widest mb-1">{subtitle}</h4>
-        <h3 className="text-xl font-black mb-3">{title}</h3>
-        <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-6">{description}</p>
-        <div className="pt-6 border-t border-slate-100 dark:border-slate-800 flex items-center gap-2 text-slate-300 font-bold text-xs uppercase">
-            <Toggle /> Connection Unavailable
-        </div>
-    </div>
-);
-
-export default AdminDashboard;

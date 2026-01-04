@@ -87,6 +87,8 @@ def update_user_status(current_user, user_id):
     
     if 'download_limit' in data:
         update_data['download_limit'] = data['download_limit']
+    if 'resume_download_limit' in data:
+        update_data['resume_download_limit'] = data['resume_download_limit']
     if 'template_limit' in data:
         update_data['template_limit'] = data['template_limit']
     if 'status' in data:

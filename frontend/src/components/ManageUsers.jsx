@@ -6,25 +6,30 @@ import toast from 'react-hot-toast';
 const ManageUsers = ({ users, setUsers }) => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [editMode, setEditMode] = useState(false);
-    const [formData, setFormData] = useState({ download_limit: 0, template_limit: 0, status: 'active' });
+    const [formData, setFormData] = useState({ download_limit: 0, template_limit: 0, resume_download_limit: 2, status: 'active' });
     const [search, setSearch] = useState('');
     const [planFilter, setPlanFilter] = useState('all');
 
     // Knowledge Hub Modal State
     const [showKnowledgeHubModal, setShowKnowledgeHubModal] = useState(false);
     const [knowledgeHubLimits, setKnowledgeHubLimits] = useState({
-        basic: 3,
-        standard: 7,
-        enterprise: 12,
-        premium: 20
+        basic: { templates: 3, downloads: 2 },
+        standard: { templates: 7, downloads: 5 },
+        enterprise: { templates: 15, downloads: 10 },
+        premium: { templates: 30, downloads: 20 }
     });
 
     // Bulk Update States
-    const [guestLimit, setGuestLimit] = useState(3);
+    const [guestLimit, setGuestLimit] = useState({ templates: 3, downloads: 2 });
 
     const handleEdit = (u) => {
         setSelectedUser(u);
-        setFormData({ download_limit: u.download_limit, template_limit: u.template_limit, status: u.status });
+        setFormData({
+            download_limit: u.download_limit,
+            template_limit: u.template_limit,
+            resume_download_limit: u.resume_download_limit || 2,
+            status: u.status
+        });
         setEditMode(true);
     };
 
@@ -48,15 +53,25 @@ const ManageUsers = ({ users, setUsers }) => {
         }
     };
 
-    const handleBulkUpdate = async (type, limit, plan = null) => {
-        const confirmMsg = `Set template limit to ${limit} for ALL ${plan ? `Knowledge Hub ${plan}` : type.replace('_', ' ')} users?`;
+    const handleBulkUpdate = async (type, limits, plan = null) => {
+        const confirmMsg = `Update limits for ALL ${plan ? `Knowledge Hub ${plan}` : type.replace('_', ' ')} users?`;
 
         if (!confirm(confirmMsg)) return;
 
         try {
+            // limits can be a single value (for guest) or object (for plans)
+            const updateData = {};
+
+            if (typeof limits === 'object') {
+                if (limits.templates) updateData.template_limit = parseInt(limits.templates);
+                if (limits.downloads) updateData.resume_download_limit = parseInt(limits.downloads);
+            } else {
+                updateData.template_limit = parseInt(limits);
+            }
+
             const payload = {
                 user_type: type,
-                update_data: { template_limit: parseInt(limit) }
+                update_data: updateData
             };
 
             if (plan) payload.subscription_plan = plan.toLowerCase();
@@ -73,10 +88,13 @@ const ManageUsers = ({ users, setUsers }) => {
                 // Refresh local user list
                 setUsers(users.map(u => {
                     if (u.type === type) {
-                        if (plan && u.subscription_plan === plan.toLowerCase()) {
-                            return { ...u, template_limit: parseInt(limit) };
-                        } else if (!plan) {
-                            return { ...u, template_limit: parseInt(limit) };
+                        const matchPlan = !plan || (u.subscription_plan === plan.toLowerCase());
+                        if (matchPlan) {
+                            return {
+                                ...u,
+                                ...(updateData.template_limit && { template_limit: updateData.template_limit }),
+                                ...(updateData.resume_download_limit && { resume_download_limit: updateData.resume_download_limit })
+                            };
                         }
                     }
                     return u;
@@ -91,7 +109,18 @@ const ManageUsers = ({ users, setUsers }) => {
 
     const filteredUsers = users.filter(u => {
         const matchesSearch = u.name?.toLowerCase().includes(search.toLowerCase()) || u.email?.toLowerCase().includes(search.toLowerCase());
-        const matchesPlan = planFilter === 'all' || u.subscription_plan === planFilter;
+
+        let matchesPlan = true;
+        if (planFilter === 'all') {
+            matchesPlan = true;
+        } else if (planFilter === 'guest') {
+            // Guest users are those NOT in knowledge_hub
+            matchesPlan = u.type !== 'knowledge_hub';
+        } else {
+            // Specific KH plans must match type='knowledge_hub' AND the specific plan
+            matchesPlan = u.type === 'knowledge_hub' && u.subscription_plan === planFilter;
+        }
+
         return matchesSearch && matchesPlan;
     });
 
@@ -142,23 +171,41 @@ const ManageUsers = ({ users, setUsers }) => {
                             </button>
                         </div>
                         <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {Object.entries(knowledgeHubLimits).map(([plan, limit]) => (
+                            {Object.entries(knowledgeHubLimits).map(([plan, limits]) => (
                                 <div key={plan} className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-purple-500/30 transition-all bg-slate-50 dark:bg-slate-800/20">
                                     <div className="flex justify-between items-start mb-2">
                                         <span className="capitalize font-bold text-slate-700 dark:text-slate-300">{plan}</span>
                                     </div>
-                                    <div className="flex items-center gap-2 mt-4">
-                                        <input
-                                            type="number"
-                                            className="w-20 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2 text-center font-bold focus:ring-2 focus:ring-purple-500 outline-none"
-                                            value={limit}
-                                            onChange={(e) => setKnowledgeHubLimits({ ...knowledgeHubLimits, [plan]: e.target.value })}
-                                        />
+                                    <div className="space-y-3 mt-4">
+                                        <div>
+                                            <label className="text-[10px] uppercase font-bold text-slate-400 block mb-1">Templates</label>
+                                            <input
+                                                type="number"
+                                                className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2 font-bold focus:ring-2 focus:ring-purple-500 outline-none"
+                                                value={limits.templates}
+                                                onChange={(e) => setKnowledgeHubLimits({
+                                                    ...knowledgeHubLimits,
+                                                    [plan]: { ...limits, templates: e.target.value }
+                                                })}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-[10px] uppercase font-bold text-slate-400 block mb-1">Downloads / Resume</label>
+                                            <input
+                                                type="number"
+                                                className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2 font-bold focus:ring-2 focus:ring-purple-500 outline-none"
+                                                value={limits.downloads}
+                                                onChange={(e) => setKnowledgeHubLimits({
+                                                    ...knowledgeHubLimits,
+                                                    [plan]: { ...limits, downloads: e.target.value }
+                                                })}
+                                            />
+                                        </div>
                                         <button
-                                            onClick={() => handleBulkUpdate('knowledge_hub', limit, plan.charAt(0).toUpperCase() + plan.slice(1))}
-                                            className="flex-1 bg-purple-500 text-white p-2 rounded-lg font-bold text-sm hover:bg-purple-600 transition-colors"
+                                            onClick={() => handleBulkUpdate('knowledge_hub', limits, plan.charAt(0).toUpperCase() + plan.slice(1))}
+                                            className="w-full bg-purple-500 text-white p-2 rounded-lg font-bold text-sm hover:bg-purple-600 transition-colors mt-2"
                                         >
-                                            Set Limit
+                                            Set Limits
                                         </button>
                                     </div>
                                 </div>
@@ -194,11 +241,13 @@ const ManageUsers = ({ users, setUsers }) => {
                                     value={planFilter}
                                     onChange={(e) => setPlanFilter(e.target.value)}
                                 >
-                                    <option value="all">All Plans</option>
-                                    <option value="basic">Basic</option>
-                                    <option value="standard">Standard</option>
-                                    <option value="enterprise">Enterprise</option>
-                                    <option value="premium">Premium</option>
+                                    <option value="all">All Users</option>
+                                    <option value="guest">Guest Users</option>
+                                    <option disabled>──────────</option>
+                                    <option value="basic">KH Basic</option>
+                                    <option value="standard">KH Standard</option>
+                                    <option value="enterprise">KH Enterprise</option>
+                                    <option value="premium">KH Premium</option>
                                 </select>
                             </div>
                         </div>
@@ -226,7 +275,7 @@ const ManageUsers = ({ users, setUsers }) => {
                                 </div>
                                 <div className="text-right">
                                     <div className={`text-[10px] font-black uppercase tracking-widest mb-1 ${u.status === 'active' ? 'text-green-500' : 'text-red-500'}`}>{u.status}</div>
-                                    <div className="text-sm font-bold text-teal-600 dark:text-teal-400">DL: {u.download_limit} | TPL: {u.template_limit}</div>
+                                    <div className="text-sm font-bold text-teal-600 dark:text-teal-400">Downloads: {u.download_limit} | Templates: {u.template_limit}</div>
                                 </div>
                             </div>
                         ))}
@@ -248,12 +297,21 @@ const ManageUsers = ({ users, setUsers }) => {
 
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Download Limit</label>
+                                    <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Total Account Download Limit</label>
                                     <input
                                         type="number"
                                         className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-3 focus:ring-2 focus:ring-teal-500 outline-none text-slate-900 dark:text-white font-bold"
                                         value={formData.download_limit}
                                         onChange={(e) => setFormData({ ...formData, download_limit: parseInt(e.target.value) })}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Per-Resume Download Limit</label>
+                                    <input
+                                        type="number"
+                                        className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-3 focus:ring-2 focus:ring-teal-500 outline-none text-slate-900 dark:text-white font-bold"
+                                        value={formData.resume_download_limit}
+                                        onChange={(e) => setFormData({ ...formData, resume_download_limit: parseInt(e.target.value) })}
                                     />
                                 </div>
                                 <div>
@@ -302,9 +360,9 @@ const ManageUsers = ({ users, setUsers }) => {
 };
 
 const PolicyCard = ({ title, icon, currentLimit, onUpdate, onChange, description }) => (
-    <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-teal-500/50 transition-all">
+    <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-teal-500/50 transition-all group h-full flex flex-col">
         <div className="flex items-center gap-4 mb-4">
-            <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-2xl">
+            <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-2xl group-hover:bg-teal-500 group-hover:text-white transition-colors">
                 {icon}
             </div>
             <div>
@@ -312,18 +370,32 @@ const PolicyCard = ({ title, icon, currentLimit, onUpdate, onChange, description
                 <p className="text-xs text-slate-500">Group Policy</p>
             </div>
         </div>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mb-6 h-10">{description}</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mb-6 flex-grow">{description}</p>
 
-        <div className="flex items-center gap-2">
-            <input
-                type="number"
-                className="w-20 bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-2 text-center font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-teal-500 outline-none"
-                value={currentLimit}
-                onChange={(e) => onChange(e.target.value)}
-            />
+        <div className="space-y-4 mt-auto">
+            <div className="flex gap-4">
+                <div className="flex-1">
+                    <label className="text-[10px] uppercase font-bold text-slate-400 block mb-1">Templates Limit</label>
+                    <input
+                        type="number"
+                        className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-3 text-center font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-teal-500 outline-none"
+                        value={currentLimit.templates}
+                        onChange={(e) => onChange({ ...currentLimit, templates: e.target.value })}
+                    />
+                </div>
+                <div className="flex-1">
+                    <label className="text-[10px] uppercase font-bold text-slate-400 block mb-1">Downloads / Resume</label>
+                    <input
+                        type="number"
+                        className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-3 text-center font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-teal-500 outline-none"
+                        value={currentLimit.downloads}
+                        onChange={(e) => onChange({ ...currentLimit, downloads: e.target.value })}
+                    />
+                </div>
+            </div>
             <button
                 onClick={() => onUpdate(currentLimit)}
-                className="flex-1 bg-slate-900 dark:bg-white text-white dark:text-slate-900 p-2 rounded-xl font-bold text-sm hover:opacity-90 transition-opacity"
+                className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 p-3 rounded-xl font-bold text-sm hover:opacity-90 transition-opacity"
             >
                 Apply to All
             </button>

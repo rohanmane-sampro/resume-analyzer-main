@@ -34,28 +34,31 @@ def track_download(current_user, resume_id):
         )
         return jsonify({'message': 'Download tracked (Admin Bypass)'}), 200
 
-    # 1. Fetch user's aggregate usage
-    user_resumes = list(resumes_collection.find({'user_id': current_user['_id']}))
-    total_downloads_used = sum(r.get('download_count', 0) for r in user_resumes)
-    
-    # 2. Get user's limit (default to 5 if not set)
+    # 1. Fetch resume to check current count
+    resume = resumes_collection.find_one({'_id': ObjectId(resume_id), 'user_id': current_user['_id']})
+    if not resume:
+        return jsonify({'message': 'Resume not found'}), 404
+
+    current_downloads = resume.get('download_count', 0)
+
+    # 2. Get user's per-resume download limit (default to 2 if not set)
     user_doc = users_collection.find_one({'_id': ObjectId(current_user['_id'])})
-    download_limit = user_doc.get('download_limit', 5)
+    resume_download_limit = user_doc.get('resume_download_limit', 2)
     
     # 3. Enforce limit
-    if total_downloads_used >= download_limit:
+    if current_downloads >= resume_download_limit:
         return jsonify({
-            'message': 'Download limit reached!',
-            'limit': download_limit,
-            'used': total_downloads_used
+            'message': 'Download limit reached for this resume!',
+            'limit': resume_download_limit,
+            'used': current_downloads
         }), 403
         
     # 4. Success - Increment
     resumes_collection.update_one(
-        {'_id': ObjectId(resume_id), 'user_id': current_user['_id']},
+        {'_id': ObjectId(resume_id)},
         {'$inc': {'download_count': 1}}
     )
-    return jsonify({'message': 'Download tracked'}), 200
+    return jsonify({'message': 'Download tracked', 'remaining': resume_download_limit - (current_downloads + 1)}), 200
 
 @resume_bp.route('/stats', methods=['GET'])
 @token_required
