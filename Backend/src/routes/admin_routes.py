@@ -15,10 +15,12 @@ def get_system_settings():
         settings = {
             'type': 'global_config',
             'default_template_limit': 0,
-            'limits': {
-                'knowledge_hub': 10,
-                'guest': 10,
-                'standard': 5
+            'guest_limits': {'templates': 0},
+            'knowledge_hub_limits': {
+                'basic': {'templates': 0},
+                'standard': {'templates': 0},
+                'enterprise': {'templates': 0},
+                'premium': {'templates': 0}
             },
             'downloads_enabled': True,
             'maintenance_mode': False,

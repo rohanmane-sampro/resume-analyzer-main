@@ -46,9 +46,8 @@ const UserTable = ({ users }) => {
                 <table className="w-full text-left">
                     <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider font-bold">
                         <tr>
-                            <th className="px-6 py-4">User Identity</th>
+                            <th className="px-6 py-4">User</th>
                             <th className="px-6 py-4">Role & Status</th>
-                            <th className="px-6 py-4 text-center">Resumes</th>
                             <th className="px-6 py-4 text-center">Templates Limit</th>
                             <th className="px-6 py-4 text-center">Downloads</th>
                             <th className="px-6 py-4">Joined At</th>
@@ -71,9 +70,6 @@ const UserTable = ({ users }) => {
                                         </span>
                                     </div>
                                     <div className="text-[10px] text-slate-400 mt-1 uppercase font-bold tracking-tighter">{u.type.replace('_', ' ')}</div>
-                                </td>
-                                <td className="px-6 py-4 text-center">
-                                    <span className="font-black text-lg">{u.resumes_created}</span>
                                 </td>
                                 <td className="px-6 py-4 text-center">
                                     <span className="font-bold text-slate-700 dark:text-slate-300">{u.template_limit}</span>

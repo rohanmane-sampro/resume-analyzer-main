@@ -73,6 +73,20 @@ const ManageUsers = ({ users, setUsers }) => {
         }
     };
 
+    const refreshUserList = async () => {
+        try {
+            const response = await fetch(ENDPOINTS.ADMIN.USERS, {
+                headers: getAuthHeaders()
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setUsers(data.users);
+            }
+        } catch (error) {
+            console.error('Failed to refresh user list:', error);
+        }
+    };
+
     const handleBulkUpdate = async (type, limits, plan = null) => {
         const confirmMsg = `Update limits for ALL ${plan ? `Knowledge Hub ${plan}` : type.replace('_', ' ')} users?`;
 
@@ -126,19 +140,8 @@ const ManageUsers = ({ users, setUsers }) => {
                     console.error('Failed to persist settings globally', err);
                 }
 
-                // Refresh local user list
-                setUsers(users.map(u => {
-                    if (u.type === type) {
-                        const matchPlan = !plan || (u.subscription_plan === plan.toLowerCase());
-                        if (matchPlan) {
-                            return {
-                                ...u,
-                                ...(updateData.template_limit && { template_limit: updateData.template_limit })
-                            };
-                        }
-                    }
-                    return u;
-                }));
+                // Refresh the entire user list from backend to get updated limits
+                await refreshUserList();
             } else {
                 toast.error('Bulk update failed');
             }
@@ -249,6 +252,7 @@ const ManageUsers = ({ users, setUsers }) => {
                                             body: JSON.stringify({ knowledge_hub_limits: knowledgeHubLimits })
                                         });
                                         toast.success("All Knowledge Hub limits updated globally");
+                                        await refreshUserList(); // Refresh to show updated limits
                                         setShowKnowledgeHubModal(false);
                                     } catch (err) {
                                         toast.error("Failed to update all limits");
