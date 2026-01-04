@@ -19,7 +19,7 @@ const PricingModal = ({ onClose, userType }) => {
             name: 'Standard',
             price: '$9.99',
             period: '/mo',
-            features: ['7 Resume Templates', 'Advanced Analysis', 'Priority Support', 'ATS Optimization'],
+            features: ['7 Resume Templates', 'Advanced Analysis', 'PDF Download','ATS Optimization'],
             color: 'bg-blue-50',
             btnColor: 'bg-blue-600',
             limit: 7,
@@ -29,7 +29,7 @@ const PricingModal = ({ onClose, userType }) => {
             name: 'Premium',
             price: '$19.99',
             period: '/mo',
-            features: ['20+ Resume Templates', 'Unlimited Analysis', '1-on-1 Consultation', 'Cover Letter Builder'],
+            features: ['20+ Resume Templates', 'Unlimited Analysis', 'PDF Download','ATS Optimization' , 'AI Enhancement'],
             color: 'bg-purple-50',
             btnColor: 'bg-purple-600',
             limit: 20

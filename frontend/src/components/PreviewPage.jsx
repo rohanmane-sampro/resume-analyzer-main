@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Brain, Download, Sparkles, RefreshCw } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLocation, useNavigate } from 'react-router-dom';
