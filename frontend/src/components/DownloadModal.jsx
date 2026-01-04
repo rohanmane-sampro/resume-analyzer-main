@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { getAuthHeaders, ENDPOINTS } from '../apiConfig';
 import { Download, FileText, X, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -9,6 +9,7 @@ import { T1Css, T2Css, T3Css, T4Css, T5Css, T6Css, T7Css, T9Css, T10Css, T11Css,
 const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate, resumeId }) => {
   const [downloading, setDownloading] = useState({});
   const [downloadedFormats, setDownloadedFormats] = useState({});
+  const hasTrackedRef = useRef(false);
 
   const downloadFormats = [
     {
@@ -45,12 +46,16 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate, resumeId
       setDownloadedFormats(prev => ({ ...prev, [format.id]: true }));
       toast.success(`${format.name} downloaded successfully!`);
 
-      // Track download if resumeId exists
-      if (resumeId) {
+      // Track download if resumeId exists and hasn't been tracked yet in this session
+      if (resumeId && !hasTrackedRef.current) {
+        hasTrackedRef.current = true;
         fetch(ENDPOINTS.RESUME.TRACK_DOWNLOAD(resumeId), {
           method: 'POST',
           headers: getAuthHeaders()
-        }).catch(err => console.error('Tracking failed:', err));
+        }).catch(err => {
+          console.error('Tracking failed:', err);
+          hasTrackedRef.current = false; // Reset on failure so they can try again
+        });
       }
     } catch (error) {
       console.error(`Download error for ${format.id}:`, error);

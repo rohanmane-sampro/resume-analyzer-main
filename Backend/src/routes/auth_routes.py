@@ -3,7 +3,7 @@ import bcrypt
 import jwt
 import datetime
 from src.config import Config
-from src.database import users_collection
+from src.database import users_collection, settings_collection
 from src.middleware.auth import token_required
 
 auth_bp = Blueprint('auth', __name__)
@@ -23,11 +23,33 @@ def register():
     # Automatically assign 'admin' role if the email matches ADMIN_EMAIL
     role = 'admin' if data['email'] == Config.ADMIN_EMAIL else 'user'
     
+    # Fetch global settings for default limits
+    settings = settings_collection.find_one({'type': 'global_config'})
+    
+    # Default limits
+    template_limit = 3  # Safe default if no settings
+    resume_download_limit = 2 # Safe default
+
+    if settings:
+        guest_limits = settings.get('guest_limits', {})
+        if guest_limits:
+            template_limit = int(guest_limits.get('templates', 3))
+            resume_download_limit = int(guest_limits.get('downloads', 2))
+        else:
+            # Fallback to older keys if guest_limits object doesn't exist
+            template_limit = settings.get('default_template_limit', 3)
+            resume_download_limit = settings.get('default_download_limit', 2)
+
     user_data = {
         'name': data['name'],
         'email': data['email'],
         'password': hashed_password,
         'role': role,
+        'type': 'guest', # Standard signup is guest/standard
+        'subscription_plan': 'basic',
+        'template_limit': template_limit,
+        'resume_download_limit': resume_download_limit,
+        'download_limit': resume_download_limit, # Keep legacy limit in sync with per-resume limit
         'created_at': datetime.datetime.utcnow()
     }
     
@@ -57,25 +79,9 @@ def login():
     if not data or not data.get('email') or not data.get('password'):
         return jsonify({'message': 'Missing email or password!'}), 400
     
-    # 1. Check for hardcoded Admin credentials
-    if data['email'] == Config.ADMIN_EMAIL and data['password'] == Config.ADMIN_PASSWORD:
-        token = jwt.encode({
-            'user_id': 'admin_hardcoded',
-            'role': 'admin',
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
-        }, Config.JWT_SECRET, algorithm="HS256")
-        
-        return jsonify({
-            'token': token,
-            'user': {
-                'id': 'admin_hardcoded',
-                'name': 'System Admin',
-                'email': Config.ADMIN_EMAIL,
-                'role': 'admin'
-            }
-        }), 200
-
-    # 2. Proceed with DB check for regular users
+    # 1. (Removed Hardcoded Admin Check for Security)
+    # To be an admin, register with the email in Config.ADMIN_EMAIL
+    # or manually update your user role in the database.
     user = users_collection.find_one({'email': data['email']})
     
     if not user or not bcrypt.checkpw(data['password'].encode('utf-8'), user['password']):

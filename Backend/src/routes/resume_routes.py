@@ -26,8 +26,8 @@ def track_create(current_user):
 @resume_bp.route('/track/download/<resume_id>', methods=['POST'])
 @token_required
 def track_download(current_user, resume_id):
-    # Allow hardcoded admin to bypass limit
-    if current_user['_id'] == 'admin_hardcoded':
+    # Allow admin role to bypass limit
+    if current_user.get('role') == 'admin':
         resumes_collection.update_one(
             {'_id': ObjectId(resume_id)},
             {'$inc': {'download_count': 1}}
@@ -105,7 +105,7 @@ TOTAL_SYSTEM_TEMPLATES = 30
 @token_required
 def get_available_templates(current_user):
     # Admin sees all templates
-    if current_user['_id'] == 'admin_hardcoded':
+    if current_user.get('role') == 'admin':
         all_templates = list(range(1, TOTAL_SYSTEM_TEMPLATES + 1))
         return jsonify({
             'is_admin': True, 

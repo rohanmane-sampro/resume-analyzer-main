@@ -20,6 +20,7 @@ client = MongoClient(MONGO_URI)
 # Use MAIN application database (same as the app uses)
 db = client['resume_analyzer']  # Changed from 'knowledge_hub' to 'resume_analyzer'
 users_collection = db['users']
+settings_collection = db['settings']
 
 # Test Users Configuration
 TEST_USERS = [
@@ -50,6 +51,34 @@ TEST_USERS = [
         'password': 'Premium@123',
         'subscription_plan': 'premium',
         'type': 'knowledge_hub'
+    },
+    {
+        'name': 'Basic 1 Plan User',
+        'email': 'basic1@knowledgehub.com',
+        'password': 'Basic@123',
+        'subscription_plan': 'basic',
+        'type': 'knowledge_hub'
+    },
+    {
+        'name': 'Standard 1 Plan User',
+        'email': 'standard1@knowledgehub.com',
+        'password': 'Standard@123',
+        'subscription_plan': 'standard',
+        'type': 'knowledge_hub'
+    },
+    {
+        'name': 'Enterprise 1 Plan User',
+        'email': 'enterprise1@knowledgehub.com',
+        'password': 'Enterprise@123',
+        'subscription_plan': 'enterprise',
+        'type': 'knowledge_hub'
+    },
+    {
+        'name': 'Premium 1Plan User',
+        'email': 'premium1@knowledgehub.com',
+        'password': 'Premium@123',
+        'subscription_plan': 'premium',
+        'type': 'knowledge_hub'
     }
 ]
 
@@ -61,7 +90,25 @@ def setup_knowledge_hub_users():
     print("Database: resume_analyzer (main app database)")
     print("=" * 60)
     print()
+
+    # Fetch global settings for limits
+    print("Fetching system settings for limits...")
+    global_settings = settings_collection.find_one({'type': 'global_config'})
+    kh_limits = {}
     
+    if global_settings and 'knowledge_hub_limits' in global_settings:
+        kh_limits = global_settings['knowledge_hub_limits']
+        print("✓ Loaded custom Knowledge Hub limits from Admin Settings")
+    else:
+        # Fallback defaults (Synced with Frontend ManageUsers.jsx defaults)
+        kh_limits = {
+            'basic': {'templates': 3, 'downloads': 2},
+            'standard': {'templates': 7, 'downloads': 3},
+            'enterprise': {'templates': 15, 'downloads': 4},
+            'premium': {'templates': 31, 'downloads': 5}
+        }
+        print("! Custom limits not found, using script defaults (synced with frontend)")
+
     # Clear existing test users (optional)
     print("Clearing existing test users...")
     users_collection.delete_many({
@@ -83,6 +130,13 @@ def setup_knowledge_hub_users():
             bcrypt.gensalt()
         )
         
+        # Get limits for this plan
+        plan = user_config['subscription_plan'].lower()
+        plan_limits = kh_limits.get(plan, {'templates': 3, 'downloads': 2}) # Default fallback
+        
+        t_limit = int(plan_limits.get('templates', 3))
+        d_limit = int(plan_limits.get('downloads', 2))
+
         # Create user document
         user_doc = {
             'name': user_config['name'],
@@ -91,6 +145,9 @@ def setup_knowledge_hub_users():
             'role': 'user',
             'type': user_config['type'],
             'subscription_plan': user_config['subscription_plan'],
+            'template_limit': t_limit,
+            'resume_download_limit': d_limit,
+            'download_limit': d_limit, # Sync legacy limit
             'status': 'active',
             'created_at': datetime.datetime.utcnow(),
             'last_login': None
@@ -108,7 +165,7 @@ def setup_knowledge_hub_users():
             'plan': user_config['subscription_plan']
         })
         
-        print(f"✓ Created: {user_config['name']}")
+        print(f"✓ Created: {user_config['name']} | Limits: T={t_limit}, D={d_limit}")
     
     print()
     print("=" * 60)
