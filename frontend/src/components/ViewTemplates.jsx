@@ -30,22 +30,39 @@ export default function ViewTemplates() {
       const data = await response.json();
 
       if (response.ok) {
-        // data.templates will be [1, 2, 3] for basic plan
-        // Convert to 0-indexed for items array: [0, 1, 2]
-        const indices = data.templates.map(num => num - 1);
-        setAvailableTemplateIndices(indices);
+        // Store actual template numbers [1, 2, 3, 4, 5, ...]
+        // The items array starts from template 3, so:
+        // items[0] = template 3, items[1] = template 4, etc.
+        // We need to convert item index to template number to check if it's available
+
+        const itemIndexToTemplateNumber = (itemIndex) => {
+          // items[0] = template 3
+          let templateNum = itemIndex + 3;
+
+          // Account for skipped template 8 (no template 8 exists)
+          if (templateNum >= 8) templateNum++;
+
+          // Account for skipped template 14 (removed)
+          if (templateNum >= 14) templateNum++;
+
+          return templateNum;
+        };
+
+        // Store the template numbers that are available
+        setAvailableTemplateIndices(data.templates || []);
         setUserType(data.user_type || 'standard');
 
-        console.log(`User can access ${data.total} templates:`, data.templates);
+        console.log(`✅ User can access ${data.total} templates:`, data.templates);
+        console.log(`📊 Template limit: ${data.template_limit}`);
       } else {
-        console.error('Failed to fetch templates:', data);
+        console.error('❌ Failed to fetch templates:', data);
         // Fallback: show all templates if API fails
-        setAvailableTemplateIndices(Array.from({ length: 30 }, (_, i) => i));
+        setAvailableTemplateIndices(Array.from({ length: 34 }, (_, i) => i + 1));
       }
     } catch (error) {
-      console.error('Error fetching available templates:', error);
+      console.error('❌ Error fetching available templates:', error);
       // Fallback: show all templates if API fails
-      setAvailableTemplateIndices(Array.from({ length: 30 }, (_, i) => i));
+      setAvailableTemplateIndices(Array.from({ length: 34 }, (_, i) => i + 1));
     } finally {
       setLoading(false);
     }
@@ -340,20 +357,25 @@ export default function ViewTemplates() {
           {/* Change grid-cols-1 to grid-cols-2 for mobile */}
           <div className="grid grid-cols-2 gap-14 sm:grid-cols-2 md:grid-cols-2 max-w-5xl mx-auto place-items-center">
             {items
-              .map((item, originalIndex) => {
-                // Find the actual index in the original items array
-                const actualIndex = items.indexOf(item);
-                const isLocked = !availableTemplateIndices.includes(actualIndex);
+              .map((item, itemIndex) => {
+                // Convert item index to template number
+                // items[0] = template 3, items[1] = template 4, etc.
+                let templateNum = itemIndex + 3;
+                if (templateNum >= 8) templateNum++; // Skip template 8
+                if (templateNum >= 14) templateNum++; // Skip template 14
+
+                // Check if this template number is in the available list
+                const isLocked = !availableTemplateIndices.includes(templateNum);
 
                 return (
                   <div
-                    key={actualIndex}
+                    key={itemIndex}
                     onClick={() => {
                       if (isLocked) {
                         setShowPricingModal(true);
                         return;
                       }
-                      handleTemplateClick(actualIndex);
+                      handleTemplateClick(itemIndex);
                     }}
                     className={`group relative mb-6 bg-white dark:bg-slate-700 hover:shadow-2xl hover:scale-105 transition-transform duration-[250ms] border-2 dark:shadow-[0_-4px_10px_rgba(0,0,0,0.1)] border-gray-300 dark:border-gray-700 dark:shadow-gray-800 dark:hover:shadow-gray-600/50 rounded-lg overflow-hidden w-40 sm:w-44 md:w-48 lg:w-64 xl:w-72 flex flex-col items-center cursor-pointer ${isLocked ? 'opacity-90' : ''}`}
                   >

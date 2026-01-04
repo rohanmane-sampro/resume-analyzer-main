@@ -110,10 +110,11 @@ def get_available_templates(current_user):
     limits = get_effective_limits(user_doc)
     template_limit = limits['template_limit']
     
-    # Return sequential templates from 1
-    # Ensure limit doesn't exceed total system templates
-    safe_limit = min(template_limit, TOTAL_SYSTEM_TEMPLATES)
-    available_templates = list(range(1, safe_limit + 1))
+    # Define all available template numbers (excluding 1, 2, 8, 14 which don't exist)
+    all_available_templates = [3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34]
+    
+    # Return the first N templates based on user's limit
+    available_templates = all_available_templates[:template_limit]
     
     return jsonify({
         'templates': available_templates, # The ones user CAN access
@@ -121,6 +122,6 @@ def get_available_templates(current_user):
         'template_limit': template_limit,
         'user_type': user_doc.get('type', 'standard'),
         'subscription_plan': user_doc.get('subscription_plan', 'basic'),
-        'total_system_templates': TOTAL_SYSTEM_TEMPLATES, # Total in existence
-        'all_templates': list(range(1, TOTAL_SYSTEM_TEMPLATES + 1)) # Full list for UI rendering
+        'total_system_templates': len(all_available_templates), # Total in existence
+        'all_templates': all_available_templates # Full list for UI rendering
     }), 200
