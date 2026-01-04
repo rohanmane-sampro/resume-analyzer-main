@@ -5,13 +5,14 @@ import { Check } from 'lucide-react';
 
 const BASE_URL = import.meta.env.BASE_URL || '/';
 
-// Generate list of all available template images with IDs
+// Generate list of all available template images with IDs (3-7, 9-34)
 const allImages = [
-  'cv1.png', 'cv2.png', 'cv3.png', 'cv4.png', 'cv5.png',
-  'cv6.png', 'cv7.png', 'cv8.png', 'cv9.png', 'cv10.png',
-  'cv11.png', 'cv12.png', 'cv13.png',
+  'cv3.png', 'cv4.png', 'cv5.png', 'cv6.png', 'cv7.png',
+  'cv9.png', 'cv10.png', 'cv11.png', 'cv12.png', 'cv13.png',
   'cv15.png', 'cv16.png', 'cv17.png', 'cv18.png', 'cv19.png', 'cv20.png',
-  'cv21.png', 'cv22.png', 'cv23.png', 'cv24.png', 'cv25.png', 'cv26.png', 'cv27.png'
+  'cv21.png', 'cv22.png', 'cv23.png', 'cv24.png', 'cv25.png', 'cv26.png',
+  'cv27.png', 'cv28.png', 'cv29.png', 'cv30.png', 'cv31.png', 'cv32.png',
+  'cv33.png', 'cv34.png'
 ].map(name => ({
   id: name.replace('cv', '').replace('.png', ''),
   src: `${BASE_URL}Temp/${name}`

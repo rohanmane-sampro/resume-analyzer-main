@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Check, Plus, ChevronRight, Menu, X, Eye, FileText, Trash2, Minus } from 'lucide-react';
+import { Check, Plus, ChevronRight, Menu, X, Eye, FileText, Trash2, Minus, Home, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Typed from "typed.js";
 import toast from "react-hot-toast";
@@ -1967,6 +1967,18 @@ const GetInfo = () => {
 
       {/* Main Content */}
       <div className={`flex-1 pt-20 pr-3 px-4 lg:py-8 transition-all duration-300 lg:ml-0`}>
+        {/* Back to Home Button */}
+        <div className="md:max-w-[600px] md:mr-96 lg:ml-64 lg:max-w-[650px] xl:max-w-[750px] xl:px-12 2xl:max-w-4xl mx-auto mb-4">
+          <button
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40 rounded-lg transition-all duration-300 hover:scale-105 shadow-sm hover:shadow-md border border-blue-200/50 dark:border-blue-700/50"
+            title="Go back to home page"
+          >
+            <Home size={16} />
+            <span>Back to Home</span>
+          </button>
+        </div>
+
         <div className="md:max-w-[600px] md:mr-96 lg:ml-64 lg:max-w-[650px] xl:max-w-[750px] xl:px-12 2xl:max-w-4xl mx-auto">
           {renderFormSection()}
 
