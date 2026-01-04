@@ -77,7 +77,6 @@ const GetInfo = () => {
       courseDuration: '',
       providerName: ''
     }],
-    hobbies: '',
     Description: {
       UserDescription: ""
     }
@@ -322,7 +321,6 @@ const GetInfo = () => {
     { title: 'Highlight your top projects', key: 'Projects' },
     { title: 'Demonstrate your knowledge', key: 'Education' },
     { title: 'Add your achieved certifications', key: 'Certificates' },
-    { title: 'Share your hobbies', key: 'Hobbies' },
     { title: 'Summary', key: 'Description' }
   ];
 
@@ -571,7 +569,7 @@ const GetInfo = () => {
         { i == 2 && setI(3) }
         return (
           <div className="space-y-4">
-            <h2 className="text-xl sm:text-2xl mb-4 pb-1 font-bold border-b-4 border-blue-900 text-blue-800 dark:border-blue-500 dark:text-blue-400">Contact Information</h2>
+            <h2 className="text-2xl sm:text-3xl mb-6 pb-3 font-bold border-b-4 border-gradient-to-r from-blue-600 to-indigo-600 bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent dark:border-blue-500">Contact Information</h2>
             <div className="space-y-2">
               <div className="peer w-full">
                 <Suggestions
@@ -1655,28 +1653,6 @@ const GetInfo = () => {
         }
 
       case 7:
-        return (
-          <div className="space-y-4">
-            <h2 className="text-xl sm:text-2xl font-bold border-b-4 pb-1 border-blue-900 mb-4 text-blue-800 dark:border-blue-500 dark:text-blue-400">Hobbies (Optional)</h2>
-            <div className="space-y-2">
-              <div className="peer">
-                <Suggestions
-                  label="Share your hobbies"
-                  placeholder="Coding, Reading, Gaming, Traveling"
-                  value={isExampleProcessing ? ExampleJsonData.hobbies : formData.hobbies}
-                  onChange={(val) => {
-                    handleInputChange("hobbies", null, val);
-                  }}
-                  suggestions={['Coding', 'Reading', 'Gaming', 'Traveling', 'Music', 'Photography', 'Writing', 'Drawing', 'Cooking', 'Hiking', 'Cycling', 'Swimming', 'Running', 'Dancing', 'Singing', 'Acting', 'Volunteering', 'Mentoring', 'Public Speaking', 'Blogging', 'Vlogging', 'Podcasting']}
-                />
-              </div>
-              <div className="ml-4 w-0 h-1 rounded-full bg-blue-500 transition-all duration-300 peer-hover:w-[60%] peer-focus:w-[88%] sm:peer-focus:w-[94%]"></div>
-            </div>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Separate multiple hobbies with commas.</p>
-          </div>
-        );
-
-      case 8:
         if (!isExampleProcessing) {
           if (i === 18 || i === 19) {
             setI(20);
@@ -1904,11 +1880,11 @@ const GetInfo = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100 dark:bg-slate-900">
+    <div className="flex min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
       {/* Left Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full bg-white border-r shadow-md hover:shadow-xl p-0 lg:p-4 transition-all duration-300 ease-in-out
-        ${isOpen ? "w-64" : "w-0"} lg:w-64 dark:border-r-slate-800 dark:bg-slate-800 z-50`}
+        className={`fixed top-0 left-0 h-full bg-white/80 backdrop-blur-xl border-r border-white/20 shadow-2xl shadow-blue-100/50 hover:shadow-blue-200/60 p-0 lg:p-4 transition-all duration-300 ease-in-out
+        ${isOpen ? "w-64" : "w-0"} lg:w-64 dark:border-r-slate-700/50 dark:bg-slate-800/90 dark:shadow-slate-900/50 z-50`}
       >
         <button
           onClick={() => {
@@ -1917,22 +1893,22 @@ const GetInfo = () => {
               setIsPreviewOpen(!isPreviewOpen);
             }
           }}
-          className="absolute top-6 pl-7 lg:hidden p-3 rounded-r-full bg-gray-200 dark:bg-gray-600 dark:text-cyan-300"
+          className="absolute top-6 pl-7 lg:hidden p-3 rounded-r-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 dark:from-indigo-600 dark:to-purple-600"
         >
           {isOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
 
         <div className={`${isOpen || "hidden lg:block"}`}>
-          <h1 className="text-2xl font-bold pt-20 lg:pt-4 text-center text-blue-800 dark:text-amber-300 cursor-pointer" title="Details user have to fill">Sections</h1>
-          <div className="w-[30%] h-1 bg-blue-900 mb-6 mx-auto mt-1 rounded dark:bg-amber-400"></div>
+          <h1 className="text-2xl font-bold pt-20 lg:pt-4 text-center bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-amber-400 dark:to-orange-400 bg-clip-text text-transparent cursor-pointer" title="Details user have to fill">Sections</h1>
+          <div className="w-[30%] h-1 bg-gradient-to-r from-blue-600 to-indigo-600 mb-6 mx-auto mt-1 rounded-full shadow-lg dark:from-amber-400 dark:to-orange-400"></div>
           <div className="space-y-4 px-2">
             {steps.map((step, index) => (
               <div
                 key={index}
                 onClick={() => setCurrentStep(index)}
                 title={step.title}
-                className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-transform duration-400 hover:scale-105
-                  ${currentStep === index ? "bg-blue-50 text-blue-600 dark:bg-slate-700" : ""}
+                className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-md
+                  ${currentStep === index ? "bg-gradient-to-r from-blue-500/10 to-indigo-500/10 text-blue-600 shadow-sm border border-blue-200/50 dark:from-indigo-500/20 dark:to-purple-500/20 dark:bg-slate-700/50 dark:border-indigo-500/30" : ""}
                   ${completedSteps.has(index) ? "text-green-600 dark:text-amber-200" : "text-gray-600 dark:text-zinc-200"}
                 `}
               >
@@ -1956,7 +1932,7 @@ const GetInfo = () => {
           </div>
           <div>
             <h2
-              className="space-y-3 mx-4 md:mx-0 mt-4 p-2 flex items-center justify-center gap-3 rounded-lg cursor-pointer transition-transform duration-400 bg-blue-50 hover:bg-blue-100 text-blue-600 dark:text-zinc-300 dark:bg-slate-700/50 dark:hover:bg-slate-700/95"
+              className="space-y-3 mx-4 md:mx-0 mt-4 p-3 flex items-center justify-center gap-3 rounded-xl cursor-pointer transition-all duration-300 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 hover:from-blue-500/20 hover:to-indigo-500/20 text-blue-600 shadow-sm hover:shadow-md border border-blue-200/50 dark:text-zinc-300 dark:from-indigo-500/20 dark:to-purple-500/20 dark:hover:from-indigo-500/30 dark:hover:to-purple-500/30 dark:border-indigo-500/30"
               title="It is only for Test & Present purpose. with authorized access"
               onClick={() => {
                 if (showInput) {
@@ -2001,9 +1977,9 @@ const GetInfo = () => {
                 : "Fill all details and continue to next page"
               }
               onClick={handleNext}
-              className={`flex items-center gap-2 px-6 py-2 mt-5 text-white rounded-full transition-all duration-300 ${NextError
-                ? "bg-red-500 hover:bg-red-600 scale-105 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700"
+              className={`flex items-center gap-2 px-8 py-3 mt-5 text-white rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl ${NextError
+                ? "bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 scale-105 cursor-not-allowed animate-pulse"
+                : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
                 }`}
             >
               {currentStep === steps.length - 1 ? "Submit" : "Next"}
@@ -2021,8 +1997,8 @@ const GetInfo = () => {
 
       {/* Right Preview Templates Sidebar */}
       <div
-        className={`fixed top-0 right-0 h-full bg-white border-l shadow-md hover:shadow-xl p-0 md:p-4 transition-all duration-300 ease-in-out
-        ${isPreviewOpen ? "w-80" : "w-0"} md:w-96 dark:border-l-slate-800 dark:bg-slate-800`}
+        className={`fixed top-0 right-0 h-full bg-white/80 backdrop-blur-xl border-l border-white/20 shadow-2xl shadow-purple-100/50 hover:shadow-purple-200/60 p-0 md:p-4 transition-all duration-300 ease-in-out
+        ${isPreviewOpen ? "w-80" : "w-0"} md:w-96 dark:border-l-slate-700/50 dark:bg-slate-800/90 dark:shadow-slate-900/50`}
       >
         <button
           onClick={() => {
@@ -2031,15 +2007,15 @@ const GetInfo = () => {
               setIsOpen(!isOpen);
             }
           }}
-          className="absolute top-6 mr-0 right-0 pr-8 md:hidden p-3 rounded-l-full bg-gray-200 dark:bg-gray-600 dark:text-cyan-300"
+          className="absolute top-6 mr-0 right-0 pr-8 md:hidden p-3 rounded-l-full bg-gradient-to-l from-purple-500 to-indigo-600 text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 dark:from-purple-600 dark:to-indigo-700"
         >
           {isPreviewOpen ? <X size={20} /> : <Eye size={20} />}
         </button>
 
         <div className={`${isPreviewOpen || "hidden md:block"}`}>
-          <h1 className="text-2xl font-bold pt-20 md:pt-4 text-center text-blue-800 dark:text-amber-300 cursor-pointer" title="Live preview. how your resume looks">Preview</h1>
-          <div className="w-[25%] h-1 bg-blue-900 mb-4 mx-auto mt-1 rounded dark:bg-amber-400"></div>
-          <div className="px-2 w-[340px] ml-3 h-[calc(100vh-180px)] overflow-y-auto overflow-x-hidden bg-white dark:bg-slate-800">
+          <h1 className="text-2xl font-bold pt-20 md:pt-4 text-center bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-amber-400 dark:to-orange-400 bg-clip-text text-transparent cursor-pointer" title="Live preview. how your resume looks">Preview</h1>
+          <div className="w-[25%] h-1 bg-gradient-to-r from-purple-600 to-indigo-600 mb-4 mx-auto mt-1 rounded-full shadow-lg dark:from-amber-400 dark:to-orange-400"></div>
+          <div className="px-2 w-[340px] ml-3 h-[calc(100vh-120px)] overflow-hidden bg-white dark:bg-slate-800">
             <div className="scale-[0.35] origin-top-left flex">
               {(() => {
                 const templateNum = isExampleProcessing ? ExampleJsonData.selectedTemplate : formData.selectedTemplate;

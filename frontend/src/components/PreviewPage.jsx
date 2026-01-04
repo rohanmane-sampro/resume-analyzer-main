@@ -549,6 +549,39 @@ const PreviewPage = () => {
             color: #bdc3c7 !important;
           }
           
+          /* Exception for T4 left-col sidebar - keep white text on dark blue background */
+          .resume-preview-content .left-col,
+          .resume-preview-content .left-col *,
+          .resume-preview-content .left-col h1,
+          .resume-preview-content .left-col h2,
+          .resume-preview-content .left-col h3,
+          .resume-preview-content .left-col p,
+          .resume-preview-content .left-col div,
+          .resume-preview-content .left-col span,
+          .resume-preview-content .left-col li,
+          .resume-preview-content .left-col a {
+            color: #ecf0f1 !important;
+          }
+          
+          .resume-preview-content .left-col .sidebar-title {
+            color: #ffffff !important;
+          }
+          
+          .resume-preview-content .left-col .contact-item,
+          .resume-preview-content .left-col .edu-degree,
+          .resume-preview-content .left-col .sidebar-list li {
+            color: #bdc3c7 !important;
+          }
+          
+          .resume-preview-content .left-col .edu-year,
+          .resume-preview-content .left-col .contact-item i {
+            color: #3498db !important;
+          }
+          
+          .resume-preview-content .left-col .edu-school {
+            color: #ffffff !important;
+          }
+          
           .resume-preview-content .sidebar .edu-school,
           .resume-preview-content .sidebar .edu-gpa {
             color: #bdc3c7 !important;
