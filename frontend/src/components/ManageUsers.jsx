@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Shield, Save, Search, Users, Zap, Filter, X } from 'lucide-react';
 import { ENDPOINTS, getAuthHeaders } from '../apiConfig';
 import toast from 'react-hot-toast';
@@ -14,13 +14,35 @@ const ManageUsers = ({ users, setUsers }) => {
     const [showKnowledgeHubModal, setShowKnowledgeHubModal] = useState(false);
     const [knowledgeHubLimits, setKnowledgeHubLimits] = useState({
         basic: { templates: 3, downloads: 2 },
-        standard: { templates: 7, downloads: 5 },
-        enterprise: { templates: 15, downloads: 10 },
-        premium: { templates: 30, downloads: 20 }
+        standard: { templates: 7, downloads: 3 },
+        enterprise: { templates: 15, downloads: 4 },
+        premium: { templates: 31, downloads: 5 },
     });
 
     // Bulk Update States
     const [guestLimit, setGuestLimit] = useState({ templates: 3, downloads: 2 });
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const response = await fetch(ENDPOINTS.ADMIN.SETTINGS, {
+                    headers: getAuthHeaders()
+                });
+                if (response.ok) {
+                    const settings = await response.json();
+                    if (settings.knowledge_hub_limits) {
+                        setKnowledgeHubLimits(settings.knowledge_hub_limits);
+                    }
+                    if (settings.guest_limits) {
+                        setGuestLimit(settings.guest_limits);
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to fetch plan settings:', error);
+            }
+        };
+        fetchSettings();
+    }, []);
 
     const handleEdit = (u) => {
         setSelectedUser(u);
@@ -85,6 +107,30 @@ const ManageUsers = ({ users, setUsers }) => {
             if (response.ok) {
                 const data = await response.json();
                 toast.success(data.message);
+
+                // ALSO persist these new limits to the global settings so they stick
+                try {
+                    const settingsPayload = {};
+                    if (type === 'guest') {
+                        settingsPayload.guest_limits = limits;
+                    } else if (type === 'knowledge_hub' && plan) {
+                        // We need the full object to update specific keys, but for now we trust the state
+                        // Actually, better to send the current state with the updated specific plan
+                        const updatedLimits = { ...knowledgeHubLimits, [plan.toLowerCase()]: limits };
+                        settingsPayload.knowledge_hub_limits = updatedLimits;
+                    }
+
+                    if (Object.keys(settingsPayload).length > 0) {
+                        await fetch(ENDPOINTS.ADMIN.SETTINGS, {
+                            method: 'POST',
+                            headers: getAuthHeaders(),
+                            body: JSON.stringify(settingsPayload)
+                        });
+                    }
+                } catch (err) {
+                    console.error('Failed to persist settings globally', err);
+                }
+
                 // Refresh local user list
                 setUsers(users.map(u => {
                     if (u.type === type) {

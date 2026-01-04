@@ -79,8 +79,6 @@ const AdminDashboard = () => {
             case 'all-users': return <UserTable users={usersList} />;
             case 'manage-users': return <ManageUsers users={usersList} setUsers={setUsersList} />;
             case 'resume-analytics': return <ResumeAnalyticsTab trends={trends} templateAnalytics={templateAnalytics} metrics={metrics} />;
-
-
             default: return <OverviewTab metrics={metrics} trends={trends} templateAnalytics={templateAnalytics} />;
         }
     };
@@ -106,8 +104,6 @@ const AdminDashboard = () => {
                     <SidebarItem icon={<Users />} label="All Users" active={activeTab === 'all-users'} onClick={() => setActiveTab('all-users')} collapsed={isSidebarCollapsed} />
                     <SidebarItem icon={<Shield />} label="Manage Users" active={activeTab === 'manage-users'} onClick={() => setActiveTab('manage-users')} collapsed={isSidebarCollapsed} />
                     <SidebarItem icon={<Activity />} label="Resume Analytics" active={activeTab === 'resume-analytics'} onClick={() => setActiveTab('resume-analytics')} collapsed={isSidebarCollapsed} />
-
-
                 </nav>
 
                 <div className="absolute bottom-4 left-0 right-0 p-4">
@@ -235,10 +231,6 @@ const OverviewTab = ({ metrics, trends, templateAnalytics }) => {
     );
 };
 
-
-
-
-
 const ResumeAnalyticsTab = ({ trends, templateAnalytics, metrics }) => {
     return (
         <div className="space-y-8">
@@ -292,6 +284,4 @@ const ResumeAnalyticsTab = ({ trends, templateAnalytics, metrics }) => {
     );
 };
 
-
-
-
+export default AdminDashboard;

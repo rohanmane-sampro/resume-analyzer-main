@@ -71,6 +71,7 @@ def get_all_users(current_user):
             'resumes_created': resumes_created,
             'downloads_used': downloads_used,
             'download_limit': user.get('download_limit', 5),
+            'resume_download_limit': user.get('resume_download_limit', 2),
             'template_limit': user.get('template_limit', 10),
             'status': user.get('status', 'active'), # active or disabled
             'type': user.get('type', 'standard'), # standard, quest, knowledge_hub (placeholder)
@@ -186,6 +187,12 @@ def manage_settings(current_user):
         'maintenance_mode': data.get('maintenance_mode', False),
         'updated_at': datetime.datetime.utcnow()
     }
+
+    if 'knowledge_hub_limits' in data:
+        update_fields['knowledge_hub_limits'] = data['knowledge_hub_limits']
+    
+    if 'guest_limits' in data:
+        update_fields['guest_limits'] = data['guest_limits']
     
     settings_collection.update_one(
         {'type': 'global_config'},
