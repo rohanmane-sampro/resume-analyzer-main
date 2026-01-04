@@ -3,6 +3,7 @@ from src.database import resumes_collection, templates_collection, users_collect
 from src.middleware.auth import token_required, admin_required
 import datetime
 from bson import ObjectId
+from src.utils.limits import get_effective_limits
 
 resume_bp = Blueprint('resume', __name__)
 
@@ -41,9 +42,10 @@ def track_download(current_user, resume_id):
 
     current_downloads = resume.get('download_count', 0)
 
-    # 2. Get user's per-resume download limit (default to 2 if not set)
+    # 2. Get user's effective download limit
     user_doc = users_collection.find_one({'_id': ObjectId(current_user['_id'])})
-    resume_download_limit = user_doc.get('resume_download_limit', 2)
+    limits = get_effective_limits(user_doc)
+    resume_download_limit = limits['resume_download_limit']
     
     # 3. Enforce limit
     if current_downloads >= resume_download_limit:
@@ -121,7 +123,8 @@ def get_available_templates(current_user):
         return jsonify({'message': 'User not found'}), 404
     
     # Get template limit
-    template_limit = user_doc.get('template_limit', 3)
+    limits = get_effective_limits(user_doc)
+    template_limit = limits['template_limit']
     
     # Return sequential templates from 1
     # Ensure limit doesn't exceed total system templates

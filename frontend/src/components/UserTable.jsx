@@ -9,9 +9,8 @@ const UserTable = ({ users }) => {
         const matchesSearch = u.name?.toLowerCase().includes(search.toLowerCase()) || u.email?.toLowerCase().includes(search.toLowerCase());
 
         let typeMatch = true;
-        if (filter === 'Direct User') typeMatch = u.type === 'standard';
+        if (filter === 'Guest User') typeMatch = u.type === 'guest' || u.type === 'standard';
         if (filter === 'Knowledge Hub') typeMatch = u.type === 'knowledge_hub';
-        if (filter === 'Guest Users') typeMatch = u.type === 'guest'; // Keeping existing logic if needed
 
         return matchesSearch && typeMatch;
     });
@@ -37,7 +36,7 @@ const UserTable = ({ users }) => {
                         onChange={(e) => setFilter(e.target.value)}
                     >
                         <option>All Users</option>
-                        <option>Direct User</option>
+                        <option>Guest User</option>
                         <option>Knowledge Hub</option>
                     </select>
                 </div>

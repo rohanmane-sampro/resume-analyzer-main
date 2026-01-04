@@ -4,6 +4,7 @@ from src.middleware.auth import admin_required
 from bson import ObjectId
 import datetime
 from collections import Counter
+from src.utils.limits import get_effective_limits
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -62,6 +63,9 @@ def get_all_users(current_user):
         resumes_created = len(user_resumes)
         downloads_used = sum(r.get('download_count', 0) for r in user_resumes)
         
+        # Calculate effective limits using the centralized logic
+        limits = get_effective_limits(user)
+        
         user_list.append({
             'id': user_id,
             'name': user.get('name'),
@@ -70,12 +74,13 @@ def get_all_users(current_user):
             'created_at': user.get('created_at').isoformat() if isinstance(user.get('created_at'), datetime.datetime) else user.get('created_at'),
             'resumes_created': resumes_created,
             'downloads_used': downloads_used,
-            'download_limit': user.get('download_limit', 5),
-            'resume_download_limit': user.get('resume_download_limit', 2),
-            'template_limit': user.get('template_limit', 10),
+            'download_limit': limits['resume_download_limit'], # Show effective limit
+            'resume_download_limit': limits['resume_download_limit'],
+            'template_limit': limits['template_limit'],
             'status': user.get('status', 'active'), # active or disabled
             'type': user.get('type', 'standard'), # standard, quest, knowledge_hub (placeholder)
-            'subscription_plan': user.get('subscription_plan', 'basic') # basic, standard, enterprise, premium
+            'subscription_plan': user.get('subscription_plan', 'basic'), # basic, standard, enterprise, premium
+            'has_custom_limits': user.get('has_custom_limits', False)
         })
         
     return jsonify({'users': user_list}), 200
@@ -94,6 +99,10 @@ def update_user_status(current_user, user_id):
         update_data['template_limit'] = data['template_limit']
     if 'status' in data:
         update_data['status'] = data['status']
+        
+    # Mark as custom override if limits are being changed
+    if 'template_limit' in update_data or 'resume_download_limit' in update_data or 'download_limit' in update_data:
+        update_data['has_custom_limits'] = True
         
     if not update_data:
         return jsonify({'message': 'No data to update'}), 400
@@ -128,9 +137,15 @@ def bulk_update_users(current_user):
     if subscription_plan:
         query['subscription_plan'] = subscription_plan
         
+    # Force reset to group policy (remove override flag)
+    # The actual values in update_data will be written but ignored by get_effective_limits
+    # unless has_custom_limits is True. By setting it to False, we ensure they follow the global settings.
+    final_update_data = update_data.copy()
+    final_update_data['has_custom_limits'] = False
+        
     result = users_collection.update_many(
         query,
-        {'$set': update_data}
+        {'$set': final_update_data}
     )
     
     return jsonify({

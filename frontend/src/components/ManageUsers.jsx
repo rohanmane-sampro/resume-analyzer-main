@@ -257,6 +257,31 @@ const ManageUsers = ({ users, setUsers }) => {
                                 </div>
                             ))}
                         </div>
+                        <div className="p-6 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex justify-end">
+                            <button
+                                onClick={async () => {
+                                    try {
+                                        await fetch(ENDPOINTS.ADMIN.SETTINGS, {
+                                            method: 'POST',
+                                            headers: getAuthHeaders(),
+                                            body: JSON.stringify({ knowledge_hub_limits: knowledgeHubLimits })
+                                        });
+                                        toast.success("All Knowledge Hub limits updated globally");
+                                        setShowKnowledgeHubModal(false);
+                                        // Refresh users list to reflect changes immediately
+                                        // (Actually users refresh might be needed if they were shown in background, but the dynamic nature handles it next fetch)
+                                        // A hard page refresh isn't needed, but re-fetching users would be nice.
+                                        // We can trigger a re-mount or notify parent. Here we just close.
+                                    } catch (err) {
+                                        toast.error("Failed to update all limits");
+                                    }
+                                }}
+                                className="bg-purple-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-purple-700 transition-colors shadow-lg shadow-purple-600/30 flex items-center gap-2"
+                            >
+                                <Save size={18} />
+                                Save All Plans Globally
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
