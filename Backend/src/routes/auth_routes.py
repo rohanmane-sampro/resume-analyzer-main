@@ -27,18 +27,15 @@ def register():
     settings = settings_collection.find_one({'type': 'global_config'})
     
     # Default limits
-    template_limit = 3  # Safe default if no settings
-    resume_download_limit = 2 # Safe default
+    template_limit = 0  # Safe default if no settings
 
     if settings:
         guest_limits = settings.get('guest_limits', {})
         if guest_limits:
-            template_limit = int(guest_limits.get('templates', 3))
-            resume_download_limit = int(guest_limits.get('downloads', 2))
+            template_limit = int(guest_limits.get('templates', 0))
         else:
             # Fallback to older keys if guest_limits object doesn't exist
-            template_limit = settings.get('default_template_limit', 3)
-            resume_download_limit = settings.get('default_download_limit', 2)
+            template_limit = settings.get('default_template_limit', 0)
 
     user_data = {
         'name': data['name'],
@@ -48,8 +45,6 @@ def register():
         'type': 'guest', # Standard signup is guest/standard
         'subscription_plan': 'basic',
         'template_limit': template_limit,
-        'resume_download_limit': resume_download_limit,
-        'download_limit': resume_download_limit, # Keep legacy limit in sync with per-resume limit
         'created_at': datetime.datetime.utcnow()
     }
     

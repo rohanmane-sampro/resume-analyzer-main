@@ -27,40 +27,24 @@ def track_create(current_user):
 @resume_bp.route('/track/download/<resume_id>', methods=['POST'])
 @token_required
 def track_download(current_user, resume_id):
-    # Allow admin role to bypass limit
-    if current_user.get('role') == 'admin':
+    try:
+        # Increment download count for the specific resume
         resumes_collection.update_one(
-            {'_id': ObjectId(resume_id)},
+            {'_id': ObjectId(resume_id), 'user_id': current_user['_id']},
             {'$inc': {'download_count': 1}}
         )
-        return jsonify({'message': 'Download tracked (Admin Bypass)'}), 200
 
-    # 1. Fetch resume to check current count
-    resume = resumes_collection.find_one({'_id': ObjectId(resume_id), 'user_id': current_user['_id']})
-    if not resume:
-        return jsonify({'message': 'Resume not found'}), 404
-
-    current_downloads = resume.get('download_count', 0)
-
-    # 2. Get user's effective download limit
-    user_doc = users_collection.find_one({'_id': ObjectId(current_user['_id'])})
-    limits = get_effective_limits(user_doc)
-    resume_download_limit = limits['resume_download_limit']
-    
-    # 3. Enforce limit
-    if current_downloads >= resume_download_limit:
-        return jsonify({
-            'message': 'Download limit reached for this resume!',
-            'limit': resume_download_limit,
-            'used': current_downloads
-        }), 403
+        # Increment total downloads used for the user
+        users_collection.update_one(
+            {'_id': ObjectId(current_user['_id'])},
+            {'$inc': {'downloads_used': 1}}
+        )
         
-    # 4. Success - Increment
-    resumes_collection.update_one(
-        {'_id': ObjectId(resume_id)},
-        {'$inc': {'download_count': 1}}
-    )
-    return jsonify({'message': 'Download tracked', 'remaining': resume_download_limit - (current_downloads + 1)}), 200
+        return jsonify({'message': 'Download tracked'}), 200
+        
+    except Exception as e:
+        print(f"Error tracking download: {e}")
+        return jsonify({'error': str(e)}), 500
 
 @resume_bp.route('/stats', methods=['GET'])
 @token_required

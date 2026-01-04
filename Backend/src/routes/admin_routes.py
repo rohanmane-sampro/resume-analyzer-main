@@ -14,8 +14,7 @@ def get_system_settings():
         # Default settings if none exist
         settings = {
             'type': 'global_config',
-            'default_download_limit': 5,
-            'default_template_limit': 10,
+            'default_template_limit': 0,
             'limits': {
                 'knowledge_hub': 10,
                 'guest': 10,
@@ -74,8 +73,6 @@ def get_all_users(current_user):
             'created_at': user.get('created_at').isoformat() if isinstance(user.get('created_at'), datetime.datetime) else user.get('created_at'),
             'resumes_created': resumes_created,
             'downloads_used': downloads_used,
-            'download_limit': limits['resume_download_limit'], # Show effective limit
-            'resume_download_limit': limits['resume_download_limit'],
             'template_limit': limits['template_limit'],
             'status': user.get('status', 'active'), # active or disabled
             'type': user.get('type', 'standard'), # standard, quest, knowledge_hub (placeholder)
@@ -91,17 +88,13 @@ def update_user_status(current_user, user_id):
     data = request.get_json()
     update_data = {}
     
-    if 'download_limit' in data:
-        update_data['download_limit'] = data['download_limit']
-    if 'resume_download_limit' in data:
-        update_data['resume_download_limit'] = data['resume_download_limit']
     if 'template_limit' in data:
         update_data['template_limit'] = data['template_limit']
     if 'status' in data:
         update_data['status'] = data['status']
         
     # Mark as custom override if limits are being changed
-    if 'template_limit' in update_data or 'resume_download_limit' in update_data or 'download_limit' in update_data:
+    if 'template_limit' in update_data:
         update_data['has_custom_limits'] = True
         
     if not update_data:
@@ -196,8 +189,7 @@ def manage_settings(current_user):
     
     data = request.get_json()
     update_fields = {
-        'default_download_limit': data.get('default_download_limit', 5),
-        'default_template_limit': data.get('default_template_limit', 10),
+        'default_template_limit': data.get('default_template_limit', 0),
         'downloads_enabled': data.get('downloads_enabled', True),
         'maintenance_mode': data.get('maintenance_mode', False),
         'updated_at': datetime.datetime.utcnow()

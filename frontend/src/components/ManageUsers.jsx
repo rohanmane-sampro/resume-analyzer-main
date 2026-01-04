@@ -6,21 +6,21 @@ import toast from 'react-hot-toast';
 const ManageUsers = ({ users, setUsers }) => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [editMode, setEditMode] = useState(false);
-    const [formData, setFormData] = useState({ download_limit: 0, template_limit: 0, resume_download_limit: 2, status: 'active' });
+    const [formData, setFormData] = useState({ template_limit: 0, status: 'active' });
     const [search, setSearch] = useState('');
     const [planFilter, setPlanFilter] = useState('all');
 
     // Knowledge Hub Modal State
     const [showKnowledgeHubModal, setShowKnowledgeHubModal] = useState(false);
     const [knowledgeHubLimits, setKnowledgeHubLimits] = useState({
-        basic: { templates: 3, downloads: 2 },
-        standard: { templates: 7, downloads: 3 },
-        enterprise: { templates: 15, downloads: 4 },
-        premium: { templates: 31, downloads: 5 },
+        basic: { templates: 3 },
+        standard: { templates: 7 },
+        enterprise: { templates: 15 },
+        premium: { templates: 31 },
     });
 
     // Bulk Update States
-    const [guestLimit, setGuestLimit] = useState({ templates: 3, downloads: 2 });
+    const [guestLimit, setGuestLimit] = useState({ templates: 3 });
 
     useEffect(() => {
         const fetchSettings = async () => {
@@ -47,9 +47,7 @@ const ManageUsers = ({ users, setUsers }) => {
     const handleEdit = (u) => {
         setSelectedUser(u);
         setFormData({
-            download_limit: u.download_limit,
             template_limit: u.template_limit,
-            resume_download_limit: u.resume_download_limit || 2,
             status: u.status
         });
         setEditMode(true);
@@ -86,7 +84,6 @@ const ManageUsers = ({ users, setUsers }) => {
 
             if (typeof limits === 'object') {
                 if (limits.templates) updateData.template_limit = parseInt(limits.templates);
-                if (limits.downloads) updateData.resume_download_limit = parseInt(limits.downloads);
             } else {
                 updateData.template_limit = parseInt(limits);
             }
@@ -114,8 +111,6 @@ const ManageUsers = ({ users, setUsers }) => {
                     if (type === 'guest') {
                         settingsPayload.guest_limits = limits;
                     } else if (type === 'knowledge_hub' && plan) {
-                        // We need the full object to update specific keys, but for now we trust the state
-                        // Actually, better to send the current state with the updated specific plan
                         const updatedLimits = { ...knowledgeHubLimits, [plan.toLowerCase()]: limits };
                         settingsPayload.knowledge_hub_limits = updatedLimits;
                     }
@@ -138,8 +133,7 @@ const ManageUsers = ({ users, setUsers }) => {
                         if (matchPlan) {
                             return {
                                 ...u,
-                                ...(updateData.template_limit && { template_limit: updateData.template_limit }),
-                                ...(updateData.resume_download_limit && { resume_download_limit: updateData.resume_download_limit })
+                                ...(updateData.template_limit && { template_limit: updateData.template_limit })
                             };
                         }
                     }
@@ -235,23 +229,11 @@ const ManageUsers = ({ users, setUsers }) => {
                                                 })}
                                             />
                                         </div>
-                                        <div>
-                                            <label className="text-[10px] uppercase font-bold text-slate-400 block mb-1">Downloads / Resume</label>
-                                            <input
-                                                type="number"
-                                                className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2 font-bold focus:ring-2 focus:ring-purple-500 outline-none"
-                                                value={limits.downloads}
-                                                onChange={(e) => setKnowledgeHubLimits({
-                                                    ...knowledgeHubLimits,
-                                                    [plan]: { ...limits, downloads: e.target.value }
-                                                })}
-                                            />
-                                        </div>
                                         <button
                                             onClick={() => handleBulkUpdate('knowledge_hub', limits, plan.charAt(0).toUpperCase() + plan.slice(1))}
                                             className="w-full bg-purple-500 text-white p-2 rounded-lg font-bold text-sm hover:bg-purple-600 transition-colors mt-2"
                                         >
-                                            Set Limits
+                                            Set Limit
                                         </button>
                                     </div>
                                 </div>
@@ -268,10 +250,6 @@ const ManageUsers = ({ users, setUsers }) => {
                                         });
                                         toast.success("All Knowledge Hub limits updated globally");
                                         setShowKnowledgeHubModal(false);
-                                        // Refresh users list to reflect changes immediately
-                                        // (Actually users refresh might be needed if they were shown in background, but the dynamic nature handles it next fetch)
-                                        // A hard page refresh isn't needed, but re-fetching users would be nice.
-                                        // We can trigger a re-mount or notify parent. Here we just close.
                                     } catch (err) {
                                         toast.error("Failed to update all limits");
                                     }
@@ -346,7 +324,7 @@ const ManageUsers = ({ users, setUsers }) => {
                                 </div>
                                 <div className="text-right">
                                     <div className={`text-[10px] font-black uppercase tracking-widest mb-1 ${u.status === 'active' ? 'text-green-500' : 'text-red-500'}`}>{u.status}</div>
-                                    <div className="text-sm font-bold text-teal-600 dark:text-teal-400">Downloads: {u.download_limit} | Templates: {u.template_limit}</div>
+                                    <div className="text-sm font-bold text-teal-600 dark:text-teal-400">Templates: {u.template_limit}</div>
                                 </div>
                             </div>
                         ))}
@@ -367,24 +345,6 @@ const ManageUsers = ({ users, setUsers }) => {
                             </div>
 
                             <div className="space-y-4">
-                                <div>
-                                    <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Total Account Download Limit</label>
-                                    <input
-                                        type="number"
-                                        className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-3 focus:ring-2 focus:ring-teal-500 outline-none text-slate-900 dark:text-white font-bold"
-                                        value={formData.download_limit}
-                                        onChange={(e) => setFormData({ ...formData, download_limit: parseInt(e.target.value) })}
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Per-Resume Download Limit</label>
-                                    <input
-                                        type="number"
-                                        className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-3 focus:ring-2 focus:ring-teal-500 outline-none text-slate-900 dark:text-white font-bold"
-                                        value={formData.resume_download_limit}
-                                        onChange={(e) => setFormData({ ...formData, resume_download_limit: parseInt(e.target.value) })}
-                                    />
-                                </div>
                                 <div>
                                     <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Template Limit</label>
                                     <input
@@ -452,15 +412,6 @@ const PolicyCard = ({ title, icon, currentLimit, onUpdate, onChange, description
                         className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-3 text-center font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-teal-500 outline-none"
                         value={currentLimit.templates}
                         onChange={(e) => onChange({ ...currentLimit, templates: e.target.value })}
-                    />
-                </div>
-                <div className="flex-1">
-                    <label className="text-[10px] uppercase font-bold text-slate-400 block mb-1">Downloads / Resume</label>
-                    <input
-                        type="number"
-                        className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-3 text-center font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-teal-500 outline-none"
-                        value={currentLimit.downloads}
-                        onChange={(e) => onChange({ ...currentLimit, downloads: e.target.value })}
                     />
                 </div>
             </div>

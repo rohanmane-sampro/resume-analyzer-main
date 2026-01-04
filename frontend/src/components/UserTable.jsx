@@ -50,7 +50,7 @@ const UserTable = ({ users }) => {
                             <th className="px-6 py-4">Role & Status</th>
                             <th className="px-6 py-4 text-center">Resumes</th>
                             <th className="px-6 py-4 text-center">Templates Limit</th>
-                            <th className="px-6 py-4 text-center">Downloads (Used/Limit)</th>
+                            <th className="px-6 py-4 text-center">Downloads</th>
                             <th className="px-6 py-4">Joined At</th>
                         </tr>
                     </thead>
@@ -79,15 +79,7 @@ const UserTable = ({ users }) => {
                                     <span className="font-bold text-slate-700 dark:text-slate-300">{u.template_limit}</span>
                                 </td>
                                 <td className="px-6 py-4 text-center">
-                                    <div className="flex flex-col items-center">
-                                        <span className="font-bold text-slate-700 dark:text-slate-300">{u.downloads_used} / {u.resume_download_limit || 2}</span>
-                                        <div className="w-16 bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full mt-1 overflow-hidden">
-                                            <div
-                                                className="h-full bg-teal-500 rounded-full"
-                                                style={{ width: `${Math.min((u.downloads_used / (u.resume_download_limit || 2)) * 100, 100)}%` }}
-                                            ></div>
-                                        </div>
-                                    </div>
+                                    <span className="font-bold text-slate-700 dark:text-slate-300">{u.downloads_used || 0}</span>
                                 </td>
                                 <td className="px-6 py-4 text-slate-500 dark:text-slate-400 text-xs">
                                     {new Date(u.created_at).toLocaleDateString()}

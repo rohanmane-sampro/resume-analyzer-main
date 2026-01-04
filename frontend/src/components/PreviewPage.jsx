@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Brain, Download, Sparkles, RefreshCw } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -308,7 +307,8 @@ const PreviewPage = () => {
     let resumeId = null;
     if (user) {
       try {
-        const response = await fetch(ENDPOINTS.RESUME.TRACK_CREATE, {
+        // 1. Create the resume record first
+        const createResponse = await fetch(ENDPOINTS.RESUME.TRACK_CREATE, {
           method: 'POST',
           headers: getAuthHeaders(),
           body: JSON.stringify({
@@ -316,12 +316,19 @@ const PreviewPage = () => {
             metadata: { version: selectedVersion }
           })
         });
-        if (response.ok) {
-          const data = await response.json();
+
+        if (createResponse.ok) {
+          const data = await createResponse.json();
           resumeId = data.resume_id;
+
+          // 2. Track download usage (No limits enforced)
+          await fetch(ENDPOINTS.RESUME.TRACK_DOWNLOAD(resumeId), {
+            method: 'POST',
+            headers: getAuthHeaders()
+          });
         }
       } catch (error) {
-        console.error('Failed to track creation:', error);
+        console.error('Failed to track creation/download:', error);
       }
     }
 
@@ -459,7 +466,7 @@ const PreviewPage = () => {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Use regular CSS instead of styled-jsx */}
+      {/* ... styles ... */}
       <style dangerouslySetInnerHTML={{
         __html: `
           @media print {
@@ -473,7 +480,7 @@ const PreviewPage = () => {
               height: auto !important;
             }
           }
-          
+           /* ... existing styles ... */
           .resume {
             max-height: none;
             overflow: visible;
@@ -664,7 +671,7 @@ const PreviewPage = () => {
         </div>
       </div>
 
-      {/* ATS Score Modal */}
+      {/* Modals */}
       <ATSScoreModal />
     </div>
   );
