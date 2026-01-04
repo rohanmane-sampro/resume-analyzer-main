@@ -87,22 +87,16 @@ export default function ViewTemplates() {
     "ModernCV - Fresher",
     "RPI Graduate CV - Fresher",
     "Deedy Resume - Fresher",
-    "HowToTeX Minimal - Fresher"
+    "HowToTeX Minimal - Fresher",
+    "Modern Simple Photo",
+    "Classic Professional",
+    "Modern Sidebar",
+    "Clean Blue Professional"
   ];
 
   const items = [
-    {
-      img: `${import.meta.env.BASE_URL}Temp/cv1.png`,
-      title: titles[1],
-      codeLink: "https://github.com/PrashantPKP/cv-templates/blob/main/cv1.html",
-      templateLink: `${import.meta.env.BASE_URL}my-templates/cv1.html`,
-    },
-    {
-      img: `${import.meta.env.BASE_URL}Temp/cv2.png`,
-      title: titles[2],
-      codeLink: "https://github.com/PrashantPKP/cv-templates/blob/main/cv2.html",
-      templateLink: `${import.meta.env.BASE_URL}my-templates/cv2.html`,
-    },
+    // Template 1 - REMOVED
+    // Template 2 - REMOVED
     {
       img: `${import.meta.env.BASE_URL}Temp/cv3.png`,
       title: titles[3],
@@ -270,6 +264,30 @@ export default function ViewTemplates() {
       title: titles[30],
       codeLink: "#/template/30",
       templateLink: "#/template/30",
+    },
+    {
+      img: `${import.meta.env.BASE_URL}Temp/cv31.png`,
+      title: titles[30],
+      codeLink: "#/template/31",
+      templateLink: "#/template/31",
+    },
+    {
+      img: `${import.meta.env.BASE_URL}Temp/cv32.png`,
+      title: titles[31],
+      codeLink: "#/template/32",
+      templateLink: "#/template/32",
+    },
+    {
+      img: `${import.meta.env.BASE_URL}Temp/cv33.png`,
+      title: titles[32],
+      codeLink: "#/template/33",
+      templateLink: "#/template/33",
+    },
+    {
+      img: `${import.meta.env.BASE_URL}Temp/cv34.png`,
+      title: titles[33],
+      codeLink: "#/template/34",
+      templateLink: "#/template/34",
     },
   ];
 

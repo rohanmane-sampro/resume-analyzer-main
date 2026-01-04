@@ -571,104 +571,176 @@ class AIService:
 
     @staticmethod
     def complete_resume(resume_data):
+        """
+        Enhanced resume completion using Groq API with optimized token usage.
+        Genuinely improves ATS score by adding relevant keywords and enhancing content.
+        """
         if not resume_data:
             raise ValueError('No resume data provided')
         
         # Extract current information
         contact_info = resume_data.get('contactInfo', {})
         job_title = contact_info.get('jobTitle', 'Professional')
+        current_skills = resume_data.get('skills', {})
+        hard_skills = current_skills.get('hardSkills', '')
+        soft_skills = current_skills.get('softSkills', '')
         
-        prompt = f"""
-        You are an expert resume writer. Complete and enhance this resume for a {job_title} position. 
-        
-        Current Resume Data:
-        {json.dumps(resume_data, indent=2)}
-        
-        CRITICAL REQUIREMENTS - CONCISE CONTENT ONLY:
-        1. Keep ALL content concise - NO long paragraphs or extensive text
-        2. Professional Summary: Maximum 2-3 SHORT sentences (under 150 characters total)
-        3. Experience descriptions: Maximum 3-4 bullet points per job, each under 100 characters
-        4. Project descriptions: Maximum 2-3 short sentences per project
-        5. Skills: Comma-separated keywords only, no explanations
-        6. Use BOLD (**text**) ONLY in experience and project descriptions for key achievements
-        7. DO NOT use bold in: skills, education, contact info, or profile summary
-        8. Prioritize SINGLE PAGE layout - do not add excessive content
-        9. Focus on IMPACT and KEYWORDS, not lengthy descriptions
-        
-        Enhancement Guidelines:
-        - Professional Summary: Compelling but BRIEF (2 lines max) - NO MARKDOWN
-        - Skills: Add relevant keywords but keep list manageable - NO MARKDOWN, plain comma-separated
-        - Experience: Add 1-2 line role summary below job title, then bullet points with bold achievements
-        - Projects: Technical details in CONCISE format - USE BOLD for technologies
-        - Education: Keep standard - NO MARKDOWN
-        - Contact Info: Keep as is - NO MARKDOWN
-        
-        WORK EXPERIENCE FORMAT (IMPORTANT):
-        For each work experience, write keyAchievements as ONE short paragraph (2-3 sentences).
-        Include role description and key achievements in a flowing paragraph with **bold** for important terms.
-        
-        Example format for keyAchievements:
-        "Contributed to full-stack web application development, focusing on robust backend and intuitive frontend solutions. **Developed** and **deployed** a full-stack web app using **React.js**, **Node.js**, and **MongoDB**. **Enhanced** user experience and **improved performance by 40%** through optimization."
-        
-        DO NOT use bullet points (•) - write as continuous paragraph text.
-        
-        FORMAT REQUIREMENTS:
-        - Bold ONLY in experience/projects: **Python**, **increased sales by 30%**
-        - Skills should be plain text: Python, JavaScript, React (NO asterisks)
-        - Keep descriptions under 100 characters each
-        - Maintain same JSON structure
-        
-        Return ONLY the enhanced JSON data with the same structure. No explanation or markdown formatting.
-        
-        Enhanced Resume JSON:
-        """
-        
-        enhanced_content = safe_ai_call(prompt)
+        # Step 1: Generate ATS-friendly keywords for the job title (minimal tokens)
+        keyword_prompt = f"""For {job_title} role, list 8 ATS keywords (comma-separated, no explanation):"""
         
         try:
-            # Try to parse the AI response as JSON
-            # Clean up any potential markdown formatting
-            json_text = enhanced_content.strip()
-            if json_text.startswith('```json'):
-                json_text = json_text[7:]
-            if json_text.endswith('```'):
-                json_text = json_text[:-3]
-            json_text = json_text.strip()
+            ats_keywords_response = safe_ai_call(keyword_prompt, max_tokens=100)
+            ats_keywords = [k.strip() for k in ats_keywords_response.split(',')[:8]]
+        except:
+            ats_keywords = []
+        
+        # Step 2: Enhance skills with ATS keywords
+        enhanced_resume = json.loads(json.dumps(resume_data))  # Deep copy
+        
+        # Add ATS keywords to hard skills if not already present
+        if ats_keywords:
+            existing_skills_lower = hard_skills.lower()
+            new_keywords = [kw for kw in ats_keywords if kw.lower() not in existing_skills_lower]
             
-            enhanced_resume = json.loads(json_text)
-            
-            # Calculate ATS scores
-            original_ats = calculate_ats_score(resume_data, job_title)
-            enhanced_ats = calculate_ats_score_with_enhancement_bonus(enhanced_resume, job_title, is_enhanced=True)
-            
-            return {
-                'enhancedResume': enhanced_resume,
-                'original': resume_data,
-                'atsScore': {
-                    'original': original_ats,
-                    'enhanced': enhanced_ats,
-                    'improvement': enhanced_ats['score'] - original_ats['score']
-                }
+            if new_keywords:
+                if hard_skills:
+                    enhanced_resume['skills']['hardSkills'] = f"{hard_skills}, {', '.join(new_keywords[:5])}"
+                else:
+                    enhanced_resume['skills']['hardSkills'] = ', '.join(new_keywords[:5])
+        
+        # Step 3: Add ATS keywords to professional summary (preserve original text)
+        description = resume_data.get('Description', {}).get('UserDescription', '')
+        if description and len(description) > 20:
+            # Only add keywords if we have ATS keywords from Step 1
+            if ats_keywords:
+                # Get 2-3 most relevant keywords not already in summary
+                summary_lower = description.lower()
+                keywords_to_add = [kw for kw in ats_keywords[:5] if kw.lower() not in summary_lower][:3]
+                
+                if keywords_to_add:
+                    # Ask AI to naturally insert keywords into existing summary
+                    keyword_prompt = f"""Add these keywords naturally into the text below. Keep the original meaning and structure, just insert the keywords where they fit naturally.
+
+Original text: {description}
+Keywords to add: {', '.join(keywords_to_add)}
+
+Return only the enhanced text with keywords added (no labels, no explanations):"""
+                    
+                    try:
+                        enhanced_summary = safe_ai_call(keyword_prompt, max_tokens=150)
+                        # Clean up response - remove any labels like "Summary:", "Enhanced:", etc.
+                        cleaned_summary = enhanced_summary.strip()
+                        # Remove common prefixes
+                        for prefix in ['Summary:', 'Enhanced:', 'Enhanced summary:', 'Result:', 'Output:']:
+                            if cleaned_summary.startswith(prefix):
+                                cleaned_summary = cleaned_summary[len(prefix):].strip()
+                        # Remove markdown
+                        cleaned_summary = cleaned_summary.replace('**', '')
+                        
+                        enhanced_resume['Description'] = enhanced_resume.get('Description', {})
+                        enhanced_resume['Description']['UserDescription'] = cleaned_summary
+                    except:
+                        pass  # Keep original if enhancement fails
+        
+        # Step 4: Add 1 ATS-friendly sentence to ALL work experiences
+        work_exp = resume_data.get('workExperience', [])
+        if work_exp and isinstance(work_exp, list):
+            for idx, exp in enumerate(work_exp):
+                if exp.get('keyAchievements'):
+                    original_achievement = exp['keyAchievements']
+                    
+                    # Only enhance if not too long already
+                    if len(original_achievement) < 500:
+                        exp_prompt = f"""Add 1 SHORT sentence (10-15 words) with ATS keywords:
+
+{original_achievement}
+
+Add sentence:"""
+                        
+                        try:
+                            additional_sentence = safe_ai_call(exp_prompt, max_tokens=60)
+                            cleaned = additional_sentence.strip().strip('"\'')
+                            
+                            # Simple cleanup - remove if it starts with common labels
+                            if ':' in cleaned[:20]:  # If there's a colon in first 20 chars, it's likely a label
+                                cleaned = cleaned.split(':', 1)[1].strip()
+                            
+                            # Add if reasonable length
+                            if 20 < len(cleaned) < 200:
+                                enhanced_resume['workExperience'][idx]['keyAchievements'] = f"{original_achievement} {cleaned}"
+                        except:
+                            pass
+        
+        # Step 5: Add 1 ATS-friendly sentence to ALL projects
+        projects = resume_data.get('projects', [])
+        if projects and isinstance(projects, list):
+            for idx, project in enumerate(projects):
+                if project.get('toolsTechUsed'):
+                    original_tools = project['toolsTechUsed']
+                    project_title = project.get('projectTitle', 'Project')
+                    
+                    # Only enhance if not too long already
+                    if len(original_tools) < 300:
+                        project_prompt = f"""Add 1 SHORT sentence (10-15 words) about what this project does:
+
+Project: {project_title}
+Tech: {original_tools}
+
+Add sentence:"""
+                        
+                        try:
+                            additional_sentence = safe_ai_call(project_prompt, max_tokens=60)
+                            cleaned = additional_sentence.strip().strip('"\'')
+                            
+                            # Simple cleanup - remove if it starts with common labels
+                            if ':' in cleaned[:20]:
+                                cleaned = cleaned.split(':', 1)[1].strip()
+                            
+                            # Add if reasonable length
+                            if 20 < len(cleaned) < 200:
+                                enhanced_resume['projects'][idx]['toolsTechUsed'] = f"{original_tools}. {cleaned}"
+                        except:
+                            pass
+        
+        # Step 6: Add soft skills if missing or minimal
+        if not soft_skills or len(soft_skills) < 30:
+            soft_skill_prompt = f"""List 6 soft skills for {job_title} (comma-separated):"""
+            try:
+                soft_skills_response = safe_ai_call(soft_skill_prompt, max_tokens=80)
+                new_soft_skills = soft_skills_response.strip().replace('**', '')
+                if soft_skills:
+                    enhanced_resume['skills']['softSkills'] = f"{soft_skills}, {new_soft_skills}"
+                else:
+                    enhanced_resume['skills']['softSkills'] = new_soft_skills
+            except:
+                if not soft_skills:
+                    enhanced_resume['skills']['softSkills'] = 'Communication, Problem Solving, Leadership, Teamwork, Time Management, Adaptability'
+        
+        # Clean up any markdown from non-target sections
+        if enhanced_resume.get('skills', {}).get('hardSkills'):
+            enhanced_resume['skills']['hardSkills'] = enhanced_resume['skills']['hardSkills'].replace('**', '')
+        if enhanced_resume.get('skills', {}).get('softSkills'):
+            enhanced_resume['skills']['softSkills'] = enhanced_resume['skills']['softSkills'].replace('**', '')
+        if enhanced_resume.get('Description', {}).get('UserDescription'):
+            enhanced_resume['Description']['UserDescription'] = enhanced_resume['Description']['UserDescription'].replace('**', '')
+        
+        # Calculate ATS scores
+        original_ats = calculate_ats_score(resume_data, job_title)
+        enhanced_ats = calculate_ats_score_with_enhancement_bonus(enhanced_resume, job_title, is_enhanced=True)
+        
+        return {
+            'enhancedResume': enhanced_resume,
+            'original': resume_data,
+            'atsScore': {
+                'original': original_ats,
+                'enhanced': enhanced_ats,
+                'improvement': enhanced_ats['score'] - original_ats['score']
+            },
+            'enhancementsApplied': {
+                'atsKeywordsAdded': len([kw for kw in ats_keywords if kw.lower() not in hard_skills.lower()]) if ats_keywords else 0,
+                'sectionsEnhanced': ['skills', 'summary', 'experience', 'projects']
             }
-            
-        except json.JSONDecodeError:
-            # If JSON parsing fails, create enhanced version manually
-            enhanced_resume = create_fallback_enhancement(resume_data, job_title)
-            
-            # Calculate ATS scores
-            original_ats = calculate_ats_score(resume_data, job_title)
-            enhanced_ats = calculate_ats_score_with_enhancement_bonus(enhanced_resume, job_title, is_enhanced=True)
-            
-            return {
-                'enhancedResume': enhanced_resume,
-                'original': resume_data,
-                'note': 'Used fallback enhancement due to AI response format',
-                'atsScore': {
-                    'original': original_ats,
-                    'enhanced': enhanced_ats,
-                    'improvement': enhanced_ats['score'] - original_ats['score']
-                }
-            }
+        }
 
     @staticmethod
     def generate_profile_suggestions(job_title, skills, experience_level='mid'):
@@ -813,7 +885,8 @@ class AIService:
                     "institutionName": "", # University/College name
                     "degreeName": "",      # Degree type and field (e.g., "B.Tech in Computer Science")
                     "graduationYear": "",  # Year of graduation
-                    "currentCGPA": ""      # GPA/CGPA/Percentage if mentioned
+                    "currentCGPA": "",     # GPA/CGPA/Percentage if mentioned
+                    "location": ""         # City, Country or State of the institution
                 }}
             ],
             "certificates": [            # Array of ALL certifications

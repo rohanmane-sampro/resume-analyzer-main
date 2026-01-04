@@ -5,13 +5,14 @@ import { Check } from 'lucide-react';
 
 const BASE_URL = import.meta.env.BASE_URL || '/';
 
-// Generate list of all available template images with IDs
+// Generate list of all available template images with IDs (3-7, 9-34)
 const allImages = [
-  'cv1.png', 'cv2.png', 'cv3.png', 'cv4.png', 'cv5.png',
-  'cv6.png', 'cv7.png', 'cv8.png', 'cv9.png', 'cv10.png',
-  'cv11.png', 'cv12.png', 'cv13.png',
+  'cv3.png', 'cv4.png', 'cv5.png', 'cv6.png', 'cv7.png',
+  'cv9.png', 'cv10.png', 'cv11.png', 'cv12.png', 'cv13.png',
   'cv15.png', 'cv16.png', 'cv17.png', 'cv18.png', 'cv19.png', 'cv20.png',
-  'cv21.png', 'cv22.png', 'cv23.png', 'cv24.png', 'cv25.png', 'cv26.png', 'cv27.png'
+  'cv21.png', 'cv22.png', 'cv23.png', 'cv24.png', 'cv25.png', 'cv26.png',
+  'cv27.png', 'cv28.png', 'cv29.png', 'cv30.png', 'cv31.png', 'cv32.png',
+  'cv33.png', 'cv34.png'
 ].map(name => ({
   id: name.replace('cv', '').replace('.png', ''),
   src: `${BASE_URL}Temp/${name}`
@@ -31,69 +32,86 @@ const Examplepage = () => {
     }
   };
 
-  // Split images into two rows for a more dynamic look
-  const row1 = allImages.slice(0, Math.ceil(allImages.length / 2));
-  const row2 = allImages.slice(Math.ceil(allImages.length / 2));
-
-  // Double the rows for seamless looping
-  const fullRow1 = [...row1, ...row1];
-  const fullRow2 = [...row2, ...row2];
+  // Duplicate images for seamless looping
+  // We use a single large row for a clean, museum-like gallery feel
+  const galleryImages = [...allImages, ...allImages];
 
   const TemplateCard = ({ template }) => (
     <div
-      className="relative group w-[220px] h-[310px] md:w-[260px] md:h-[370px] rounded-xl bg-white dark:bg-slate-800 shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden cursor-pointer flex-shrink-0 mx-4"
+      className="relative group w-[280px] h-[400px] md:w-[320px] md:h-[450px] rounded-2xl bg-white dark:bg-slate-800 shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden cursor-pointer flex-shrink-0 mx-6 transition-all duration-500 hover:shadow-2xl hover:scale-105 hover:-translate-y-2 z-0 hover:z-10"
       onClick={() => handleTemplateClick(template)}
     >
-      <div className="w-full h-full overflow-hidden relative">
+      <div className="w-full h-full overflow-hidden relative bg-slate-100 dark:bg-slate-900">
+        {/* Image with slow scroll on hover */}
         <motion.img
           src={template.src}
           alt={`Template ${template.id}`}
           className="w-full object-cover absolute top-0 left-0"
           initial={{ top: 0 }}
           whileHover={{
-            top: "-100%",
+            top: "-100%", // Scroll to bottom
             transition: {
-              duration: 4,
+              duration: 8, // Slower, smoother scroll
               ease: "linear"
             }
           }}
           style={{ top: 0, minHeight: '100%' }}
         />
-      </div>
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
-        <span className="bg-white text-slate-900 px-4 py-2 rounded-full text-sm font-bold shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform">
-          Quick Preview
-        </span>
+
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+
+        {/* CTA Button */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-95 group-hover:scale-100">
+          <button className="bg-white/10 backdrop-blur-md border border-white/30 text-white px-6 py-3 rounded-full font-semibold tracking-wide hover:bg-white hover:text-slate-900 transition-colors shadow-2xl flex items-center gap-2">
+            <Check size={18} /> Use Template
+          </button>
+        </div>
+
+        {/* Template Label */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+          <div className="text-white text-center">
+            <p className="font-bold text-lg">Template {template.id}</p>
+            <p className="text-xs text-slate-300 uppercase tracking-widest mt-1">Professional Series</p>
+          </div>
+        </div>
       </div>
     </div>
   );
 
   return (
-    <div className="w-full flex flex-col items-center py-6 bg-transparent overflow-hidden">
+    <div className="w-full flex flex-col items-center py-10 overflow-hidden">
 
-      {/* Row 1: Left to Right */}
-      <div className="w-full relative py-4 mask-fade-custom">
-        <div className="animate-marquee">
-          {fullRow1.map((template, idx) => (
-            <TemplateCard key={`${template.id}-r1-${idx}`} template={template} />
+      {/* Modern Infinite Scroll Container */}
+      <div className="w-full relative group/track">
+
+        {/* The scrolling track */}
+        <div className="flex animate-marquee-infinite hover:pause-animation will-change-transform">
+          {galleryImages.map((template, idx) => (
+            <TemplateCard key={`${template.id}-${idx}`} template={template} />
           ))}
         </div>
+
+        {/* Left/Right Fade Masks */}
+        <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-slate-50 dark:from-slate-900 to-transparent z-10 pointer-events-none" />
+        <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-slate-50 dark:from-slate-900 to-transparent z-10 pointer-events-none" />
       </div>
 
-      {/* Row 2: Right to Left */}
-      <div className="w-full relative py-4 mask-fade-custom">
-        <div className="animate-marquee-reverse">
-          {fullRow2.map((template, idx) => (
-            <TemplateCard key={`${template.id}-r2-${idx}`} template={template} />
-          ))}
-        </div>
-      </div>
-
-      {/* Gradient Fades for the sides */}
       <style>{`
-        .mask-fade-custom {
-          mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-          -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        @keyframes marquee-infinite {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); } 
+        }
+        .animate-marquee-infinite {
+          animation: marquee-infinite 60s linear infinite;
+          width: max-content;
+        }
+        .hover\\:pause-animation:hover {
+          animation-play-state: paused;
+        }
+        /* Fix for dark mode bg match */
+        .dark .bg-gradient-to-r.from-slate-50 {
+            --tw-gradient-from: #0f172a; /* slate-900 */
         }
       `}</style>
 
@@ -104,63 +122,61 @@ const Examplepage = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-md p-4"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
             onClick={() => setSelectedTemplate(null)}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 30 }}
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 30 }}
-              className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden flex flex-col md:flex-row border border-white/10"
-              onClick={(e) => e.stopPropagation()}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col md:flex-row border border-slate-200 dark:border-slate-700"
+              onClick={e => e.stopPropagation()}
             >
-              {/* Preview Image Side */}
-              <div className="w-full md:w-[55%] h-[400px] md:h-auto bg-slate-100 dark:bg-slate-950 overflow-y-auto p-6 custom-scrollbar">
+              <div className="flex-1 bg-slate-100 dark:bg-slate-800 p-8 flex items-center justify-center overflow-hidden relative">
                 <img
                   src={selectedTemplate.src}
-                  alt={`Template ${selectedTemplate.id} Full Preview`}
-                  className="w-full h-auto rounded-xl shadow-2xl"
+                  alt={`Template ${selectedTemplate.id}`}
+                  className="w-full h-auto max-h-[70vh] object-contain shadow-lg rounded-lg"
                 />
               </div>
 
-              {/* Action Side */}
-              <div className="w-full md:w-[45%] p-8 md:p-12 flex flex-col justify-center bg-white dark:bg-slate-900">
-                <div className="mb-8">
-                  <div className="inline-block px-3 py-1 rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 text-xs font-bold mb-4 uppercase tracking-wider">
-                    Premium Layout
-                  </div>
-                  <h3 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-4">
-                    Template <span className="text-teal-500">#{selectedTemplate.id}</span>
+              <div className="w-full md:w-96 p-8 flex flex-col justify-between bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800">
+                <div>
+                  <h3 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
+                    Template {selectedTemplate.id}
                   </h3>
-                  <div className="space-y-4">
-                    {[
-                      "ATS Optimized Architecture",
-                      "Modern Professional Design",
-                      "Fully Customizable Sections",
-                      "Instant AI Content Analysis"
-                    ].map((feature, i) => (
-                      <div key={i} className="flex items-center gap-3 text-slate-600 dark:text-slate-400">
-                        <div className="w-5 h-5 rounded-full bg-teal-500/10 flex items-center justify-center">
-                          <Check size={14} className="text-teal-500" />
+                  <div className="flex items-center gap-2 mb-6">
+                    <span className="px-3 py-1 rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 text-xs font-bold uppercase">ATS Friendly</span>
+                    <span className="px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-bold uppercase">Premium</span>
+                  </div>
+                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
+                    This professionally designed template features a clean layout optimized for applicant tracking systems. Perfect for senior roles and creative professionals alike.
+                  </p>
+
+                  <div className="space-y-3">
+                    {['Clean & Modern Layout', 'Optimized for ATS Parsing', 'Easy to Read Typography', 'Professional Section Headers'].map((feature, i) => (
+                      <div key={i} className="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
+                        <div className="w-5 h-5 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400">
+                          <Check size={12} />
                         </div>
-                        <span className="text-sm font-medium">{feature}</span>
+                        {feature}
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-3 w-full mt-auto">
-                  <button
-                    onClick={handleUseTemplate}
-                    className="w-full bg-teal-600 hover:bg-teal-700 text-white py-4 px-8 rounded-2xl font-bold text-lg shadow-xl shadow-teal-500/20 transition-all transform hover:-translate-y-1 active:translate-y-0"
-                  >
-                    Use This Template
-                  </button>
+                <div className="flex gap-4 mt-8">
                   <button
                     onClick={() => setSelectedTemplate(null)}
-                    className="w-full py-4 px-8 border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 rounded-2xl font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                    className="flex-1 px-6 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                   >
-                    Browse Others
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleUseTemplate}
+                    className="flex-1 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-teal-500 text-white font-bold shadow-lg hover:shadow-blue-500/25 hover:scale-[1.02] transition-all"
+                  >
+                    Use Template
                   </button>
                 </div>
               </div>
@@ -171,5 +187,6 @@ const Examplepage = () => {
     </div>
   );
 };
+
 
 export default Examplepage;

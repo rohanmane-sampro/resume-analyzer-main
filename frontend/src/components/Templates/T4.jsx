@@ -1,695 +1,823 @@
-
-
 import React from 'react';
 import styled from "styled-components";
 
-// Helper function to convert markdown to HTML
+// --- Helper Functions ---
 const parseMarkdown = (text) => {
   if (!text || typeof text !== 'string') return '';
   return text
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>') // Bold
-    .replace(/\*(.+?)\*/g, '<em>$1</em>') // Italic
-    .replace(/\n/g, ' '); // Convert line breaks to spaces for continuous text
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/\n/g, '<br/>');
 };
 
-const StyledWrapper = styled.div`body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #d6cece;
+const removeSpace = (str) => str ? str.trim() : '';
+
+// --- Styled Components ---
+const StyledWrapper = styled.div`
+  /* Screen Preview Settings - Minimal styling to avoid PDF capture issues */
   display: flex;
   justify-content: center;
-  align-items: center;
-  align-items: center;
-  min-height: 1380px; /* (W/H) Ratio should be 0.7069 */
-}
+  font-family: 'Roboto', 'Segoe UI', Helvetica, Arial, sans-serif;
 
-  .resume {
-    width: 210mm;
-    min-height: 297mm;
-    max-height: 297mm;
-    background: #ffffff;
-    border: 1px solid #ddd;
-  border-radius: 15px;
-  margin-top: 100px;
-  padding: 0 30px 0 0;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.Underline{
-  width: 75px;
-  border:2px solid black;
-  margin-top: 10px;
-  border-radius: 20px;
-}
-
-.NoneDecoration a{
-  text-decoration: none;
-  color:#0363b1;
-}
-
-.header {
-  display: flex; 
-  align-items: center;
-}
-
-.header .left {
-  width: 35%;
-  display: flex;
-  justify-content: center;
-  padding: 20px;
-  background-color: #0363b1;
-  border-top-left-radius: 15px;
-}
-
-.left img{
-  width: 200px;
-  height: 200px;
-  background-color: #4c4fda;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.header .right {
-  width: 65%;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  margin-right: 40px;
-}
-
-.header .right .head {
-  padding-left: 40px;
-}
-
-.textGray{
-  color: #4e4e53;
-}
-
-.right h1 {
-  font-size: 40px;
-  margin-bottom: 5px;
-}
-
-.right h2 {
-  font-size: 16px;
-  color: #4d4b4b;
-}
-
-.section-title {
-  font-size: 18px;
-  color: #3e3e3f;
-  margin-bottom: 10px;
-  border-bottom: 1px solid #96a75a;
-  padding-bottom: 5px;
-}
-
-.SkillsSection-title {
-  font-size: 18px;
-  color: #3e3e3f;
-  border-bottom: 1px solid #96a75a;
-}
-
-.Lsection-title {
-  font-size: 18px;
-  color: #f5f5f5;
-  margin-bottom: 10px;
-  border-bottom: 1px solid #d4d4d2;
-  padding-bottom: 5px;
-}
-
-.content {
-  display: flex;
-  justify-content: center;
-  min-height: 100%;
-}
-
-.mtt-3 {
-  margin-top: 0.75rem /* 12px */;
-}
-
-.content .left {
-  width: 35%;
-  padding: 20px 10px;
-  background-color: #0363b1;
-  border-bottom-left-radius: 15px;
-  min-height: 100%;
-}
-
-.content .right {
-  width: 65%;
-  margin-left: 10px;
-}
-
-.Lsection,.Contact {
-  margin-bottom: 20px;
-  padding-left: 20px;
-  color: #e1ebf3;
-}
-
-.Contact div {
-  margin-bottom: 5px;
-}
-
-.content .Contact div a {
-  text-decoration: none;
-  color: #e1ebf3;
-}
-
-.subcont,.SkillSubCon {
-   display: flex;
-   justify-content: flex-start;
-   gap: 20px;
-   flex-wrap: wrap;
-}  
-
-.subcont ul {
-  flex: 1;
-  min-width: 120px;
-  margin: 0;
-  padding-left: 20px;
-}
-
-.section,.SUsection {
-  margin-bottom: 20px;
-  color: #141414;
-}
-
-.item {
-  margin-bottom: 10px;
-}
-
-.item-title {
-  font-weight: bold;
-}
-
-.content .right .item-title,
-.content .left .section-title,
-.Lsection-title {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-ul {
-  list-style-type: circle;
-  padding-left: 20px;
-  margin: 5px 0;
-}
-
-ul li {
-  margin-bottom: 5px;
-}
-
-.textLight{
-  font-weight: 500;
-  color: #626263;
-}
-
-.rotate-90 {
-  transform: rotate(90deg);
-}
-
-.content .right .section .Cont {
-  border-left: 2px solid #53677a;
-  margin-left: 5px;
-}
-
-.content .right .section .Cont .item {
-  margin-left: 10px;
-}`;
-
-
-export const T4 = ({ jsonData, desc }) => {
-  const isValidUrl = (url) => {
-    try {
-      new URL(url);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  };
-
-  const removeSpace = (skill) => {
-    return skill.trim();
-  };
-
-  const skills = (jsonData?.skills?.hardSkills || '').split(',').map(skill => skill.trim()).filter(skill => skill !== '');
-  const eachColumn = Math.floor(skills.length / 4);
-  let column1 = eachColumn;
-  let column2 = eachColumn;
-  let column3 = eachColumn;
-  let column4 = eachColumn;
-
-  if (skills.length % 4 === 1) {
-    column1 += 1;
-  } else if (skills.length % 4 === 2) {
-    column1 += 1;
-    column2 += 1;
-  } else if (skills.length % 4 === 3) {
-    column1 += 1;
-    column2 += 1;
-    column3 += 1;
+  /* Remove wrapper styling for print/PDF */
+  @media print {
+    background: none !important;
+    background-color: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
-  const skillColumn1 = skills.slice(0, column1);
-  const skillColumn2 = skills.slice(column1, column1 + column2);
-  const skillColumn3 = skills.slice(column1 + column2, column1 + column2 + column3);
-  const skillColumn4 = skills.slice(column1 + column2 + column3, column1 + column2 + column3 + column4);
+  .resume-container {
+    width: 210mm;
+    min-height: 297mm;
+    background: white;
+    display: flex;
+    overflow: hidden;
+  }
+
+  /* --- LEFT COLUMN (Sidebar) --- */
+  .left-col {
+    width: 32%;
+    background-color: #2c3e50; /* Dark Slate Blue */
+    color: #ecf0f1;
+    display: flex;
+    flex-direction: column;
+    padding: 30px 20px;
+    text-align: left;
+  }
+
+  .profile-img-container {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 20px auto;
+    border: 4px solid rgba(255,255,255,0.2);
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .sidebar-section {
+    width: 100%;
+    margin-bottom: 18px;
+  }
+
+  .sidebar-title {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  /* Contact Items */
+  .contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 11px;
+    margin-bottom: 8px;
+    word-break: break-all;
+    line-height: 1.3;
+    color: #bdc3c7;
+  }
+  
+  .contact-item i {
+    color: #3498db; /* Accent Blue */
+    width: 16px;
+    margin-top: 2px;
+  }
+  
+  .contact-item a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* Education in Sidebar */
+  .edu-block {
+    margin-bottom: 12px;
+    font-size: 11px;
+  }
+  
+  .edu-year {
+    color: #3498db;
+    font-weight: 700;
+    font-size: 11px;
+    margin-bottom: 2px;
+  }
+  
+  .edu-school {
+    font-weight: 600;
+    color: #fff;
+  }
+  
+  .edu-degree {
+    font-style: italic;
+    color: #bdc3c7;
+    margin-bottom: 2px;
+  }
+  
+  .edu-cgpa {
+     color: #95a5a6;
+     font-size: 11px;
+  }
+
+  /* Sidebar Lists (Languages/Soft Skills) */
+  .sidebar-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 12px;
+  }
+  
+  .sidebar-list li {
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #bdc3c7;
+  }
+
+  .bullet-point {
+    width: 4px;
+    height: 4px;
+    background: #3498db;
+    border-radius: 50%;
+  }
+
+  /* --- RIGHT COLUMN (Main) --- */
+  .right-col {
+    width: 68%;
+    padding: 30px 25px;
+    background-color: #ffffff;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Header */
+  .header-name {
+    font-size: 34px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #2c3e50;
+    margin: 0;
+    line-height: 1;
+    letter-spacing: -1px;
+  }
+
+  .header-role {
+    font-size: 16px;
+    color: #3498db; /* Accent Blue */
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 6px;
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+
+  /* Main Sections */
+  .main-section {
+    margin-bottom: 18px;
+  }
+
+  .main-title {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #2c3e50;
+    border-bottom: 2px solid #ecf0f1;
+    padding-bottom: 5px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .main-title i {
+    color: #3498db;
+    font-size: 14px;
+  }
+
+  .summary-text {
+    font-size: 12px;
+    line-height: 1.6;
+    color: #555;
+    text-align: justify;
+  }
+
+  /* Experience & Projects Items */
+  .entry-block {
+    margin-bottom: 14px;
+  }
+
+  .entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+  }
+
+  .entry-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #2c3e50;
+  }
+
+  .entry-date {
+    font-size: 11px;
+    font-weight: 600;
+    color: #3498db;
+    white-space: nowrap;
+  }
+
+  .entry-subtitle {
+    font-size: 11px;
+    font-style: italic;
+    color: #7f8c8d;
+    margin-bottom: 4px;
+  }
+
+  .entry-content {
+    font-size: 10px;
+    line-height: 1.4;
+    color: #444;
+  }
+
+  .entry-content ul {
+    margin: 4px 0 0 0;
+    padding-left: 18px;
+  }
+  
+  .entry-content li {
+    margin-bottom: 3px;
+  }
+
+  /* Skills Pills */
+  .skills-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .skill-pill {
+    background: #f1f5f9;
+    color: #2c3e50;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid #e2e8f0;
+  }
+
+  /* Print Styles injected via Styled Components */
+  @media print {
+    body {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .resume-container {
+      box-shadow: none;
+      margin: 0;
+      width: 100%;
+    }
+  }
+`;
+
+// --- Main Component ---
+export const T4 = ({ jsonData }) => {
+  // Safe Accessors with defaults
+  const contact = jsonData?.contactInfo || {};
+  const education = jsonData?.education || [];
+  const skills = jsonData?.skills || {};
+  const projects = jsonData?.projects || [];
+  const experience = jsonData?.workExperience || [];
+  const certificates = jsonData?.certificates || [];
+  const description = jsonData?.Description?.UserDescription || '';
+
+  // Process Arrays
+  const hardSkills = (skills.hardSkills || '').split(',').filter(s => s.trim());
+  const softSkills = (skills.softSkills || '').split(',').filter(s => s.trim());
+  const languages = (contact.Languages || '').split(',').filter(s => s.trim());
 
   return (
     <StyledWrapper>
-      <div className="resume" id="capture-content">
-        <div className="header">
-          <div className="left">
-            <img src={jsonData?.contactInfo?.profileImage || "https://www.skibalawchicago.com/wp-content/uploads/2024/06/profile-placeholder.jpg"} alt="Profile" />
+      <div className="resume-container" id="capture-content">
+
+        {/* --- LEFT SIDEBAR --- */}
+        <div className="left-col">
+          {/* Profile Image */}
+          <div className="profile-img-container">
+            <img
+              src={contact.profileImage || "https://www.skibalawchicago.com/wp-content/uploads/2024/06/profile-placeholder.jpg"}
+              alt="Profile"
+              className="profile-img"
+            />
           </div>
 
-          <div className="right">
-            <div className="head">
-              <h1>{jsonData?.contactInfo?.fullName || 'Your Name'}</h1>
-              <h2>{jsonData?.contactInfo?.jobTitle || 'Job Title'}</h2>
-              <div className="Underline"></div>
-            </div>
+          {/* Contact Info */}
+          <div className="sidebar-section">
+            <div className="sidebar-title">Contact</div>
+            {contact.phoneNumber && (
+              <div className="contact-item">
+                <i className="fas fa-phone"></i> {contact.phoneNumber}
+              </div>
+            )}
+            {contact.emailAddress && (
+              <div className="contact-item">
+                <i className="fas fa-envelope"></i>
+                <a href={`mailto:${contact.emailAddress}`}>{contact.emailAddress}</a>
+              </div>
+            )}
+            {contact.Location && (
+              <div className="contact-item">
+                <i className="fas fa-map-marker-alt"></i> {contact.Location}
+              </div>
+            )}
+            {contact.linkedin && (
+              <div className="contact-item">
+                <i className="fab fa-linkedin"></i>
+                <a href={`https://linkedin.com/in/${contact.linkedin}`} target="_blank" rel="noreferrer">LinkedIn</a>
+              </div>
+            )}
+            {contact.portfolio && (
+              <div className="contact-item">
+                <i className="fas fa-globe"></i>
+                <a href={contact.portfolio} target="_blank" rel="noreferrer">Portfolio</a>
+              </div>
+            )}
           </div>
+
+          {/* Education */}
+          {education.length > 0 && (
+            <div className="sidebar-section">
+              <div className="sidebar-title">Education</div>
+              {education.slice(0, 3).map((edu, index) => (
+                <div key={index} className="edu-block">
+                  <div className="edu-year">{edu.graduationYear}</div>
+                  <div className="edu-school">{edu.institutionName}</div>
+                  <div className="edu-degree">{edu.degreeName}</div>
+                  {edu.currentCGPA && <div className="edu-cgpa">CGPA: {edu.currentCGPA}</div>}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Languages */}
+          {languages.length > 0 && (
+            <div className="sidebar-section">
+              <div className="sidebar-title">Languages</div>
+              <ul className="sidebar-list">
+                {languages.map((lang, idx) => (
+                  <li key={idx}><span className="bullet-point"></span>{removeSpace(lang)}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Soft Skills */}
+          {softSkills.length > 0 && (
+            <div className="sidebar-section">
+              <div className="sidebar-title">Soft Skills</div>
+              <ul className="sidebar-list">
+                {softSkills.slice(0, 5).map((skill, idx) => (
+                  <li key={idx}><span className="bullet-point"></span>{removeSpace(skill)}</li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
-        <div className="content">
-          <div className="left">
-            <div className="Contact">
-              <div className="Lsection-title"><b>Contact</b> <i className="fas fa-address-card"></i></div> <br />
-              <div className="Litem"><i className="fa fa-phone"></i> {jsonData?.contactInfo?.phoneNumber || 'Phone'} </div>
-              <div className="Litem"><i className="fas fa-envelope"></i>
-                <a href={`mailto:${jsonData?.contactInfo?.emailAddress || ''}`}> {(jsonData?.contactInfo?.emailAddress || 'email@domain.com').split('@')[0]} </a>
-              </div>
-              <div className="Litem"><i className="fab fa-linkedin"></i>
-                <a href={`https://www.linkedin.com/in/${jsonData?.contactInfo?.linkedin || ''}`} target="_blank" rel="noreferrer"> {jsonData?.contactInfo?.linkedin || 'LinkedIn'}</a>
-              </div>
-              <div className="Litem"><i className="fas fa-globe"></i>
-                <a href={isValidUrl(jsonData.contactInfo.portfolio) ? jsonData.contactInfo.portfolio : `https://github.com/${jsonData.contactInfo.portfolio}`} target="_blank" rel="noreferrer"> {jsonData.contactInfo.portfolio.replace(/^https?:\/\//, '')} </a>
-              </div>
-              <div className="Litem"><i className="fa fa-map-marker"></i> {jsonData.contactInfo.Location}</div>
-            </div>
+        {/* --- RIGHT MAIN CONTENT --- */}
+        <div className="right-col">
 
-            <div className="Lsection">
-              <div className="Lsection-title"><b>Education </b><i className="fas fa-graduation-cap"></i></div><br />
-              <div className="Litem">
-                {jsonData.education.slice(0, 2).map((edu, index) => (
-                  <React.Fragment key={index}>
-                    {index > 0 && <React.Fragment><br /><br /></React.Fragment>}
-                    <div className="SubSec-title"><b>{edu.graduationYear}<br />{edu.institutionName}</b></div>
-                    {edu.degreeName} <br />
-                    CGPA: {edu.currentCGPA}
-                  </React.Fragment>
-                ))}
-                <br />
-              </div>
-            </div>
+          {/* Header */}
+          <h1 className="header-name">{contact.fullName || 'Your Name'}</h1>
+          <div className="header-role">{contact.jobTitle || 'Job Role'}</div>
 
-            <div className="Lsection">
-              <div className="Lsection-title"><b>Soft Skills </b><i className="fa fa-book"></i></div><br />
-              <ul>
-                {jsonData.skills.softSkills.split(',').map(skill => skill.trim()).filter(skill => skill !== '').slice(0, 4).map((skill, index) => (
-                  <li key={index}>{removeSpace(skill)}</li>
-                ))}
-              </ul>
+          {/* Profile Summary */}
+          {description && (
+            <div className="main-section">
+              <div className="main-title"><i className="fas fa-user"></i> Profile</div>
+              <p className="summary-text">{description}</p>
             </div>
+          )}
 
-            <div className="Lsection">
-              <div className="Lsection-title"><b>Languages </b><i className="fa fa-language"></i></div><br />
-              <ul>
-                {(jsonData?.contactInfo?.Languages || '').split(',').map(lang => lang.trim()).filter(lang => lang !== '').slice(0, 3).map((lang, index) => (
-                  <li key={index}>{removeSpace(lang)}: Fluent</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          <div className="right">
-            <div className="section">
-              <div className="section-title"><b>Profile Summary</b></div>
-              <p>{jsonData.Description.UserDescription}</p>
-            </div>
-
-            <div className="SUsection">
-              <div className="section-title"><b>Projects</b></div>
-              <ul>
-                {jsonData.projects.slice(0, 2).map((proj, index) => (
-                  <div key={index} className="Ritem" style={{ marginBottom: index < Math.min(jsonData.projects.length, 2) - 1 ? "15px" : "0px" }}>
-                    <li>
-                      <div className="item-title textGray">{proj.projectTitle} </div>
-                      <div dangerouslySetInnerHTML={{ __html: parseMarkdown(proj.toolsTechUsed) }} />
-                    </li>
+          {/* Work Experience */}
+          {experience.length > 0 && (
+            <div className="main-section">
+              <div className="main-title"><i className="fas fa-briefcase"></i> Experience</div>
+              {experience.slice(0, 3).map((exp, idx) => (
+                <div key={idx} className="entry-block">
+                  <div className="entry-header">
+                    <span className="entry-title">{exp.jobTitle}</span>
+                    <span className="entry-date">{exp.WorkDuration}</span>
                   </div>
+                  <div className="entry-subtitle">{exp.companyName} {exp.Location ? `| ${exp.Location}` : ''}</div>
+                  <div className="entry-content" dangerouslySetInnerHTML={{ __html: parseMarkdown(exp.keyAchievements) }} />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Projects */}
+          {projects.length > 0 && (
+            <div className="main-section">
+              <div className="main-title"><i className="fas fa-code"></i> Projects</div>
+              {projects.slice(0, 3).map((proj, idx) => (
+                <div key={idx} className="entry-block">
+                  <div className="entry-header">
+                    <span className="entry-title">{proj.projectTitle}</span>
+                    {proj.duration && <span className="entry-date">{proj.duration}</span>}
+                  </div>
+                  <div className="entry-content">
+                    {proj.toolsTechUsed && (
+                      <div dangerouslySetInnerHTML={{ __html: parseMarkdown(proj.toolsTechUsed) }} />
+                    )}
+                    <div style={{ marginTop: '4px' }}>{proj.projectDescription}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Certificates */}
+          {certificates.length > 0 && (
+            <div className="main-section">
+              <div className="main-title"><i className="fas fa-certificate"></i> Certificates</div>
+              {certificates.slice(0, 2).map((cert, idx) => (
+                <div key={idx} className="entry-block" style={{ marginBottom: '10px' }}>
+                  <div style={{ fontWeight: '700', fontSize: '13px', color: '#2c3e50' }}>{cert.certificateName}</div>
+                  <div style={{ fontSize: '11px', color: '#666' }}>
+                    {cert.providerName} {cert.courseDuration ? `(${cert.courseDuration})` : ''}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Technical Skills */}
+          {hardSkills.length > 0 && (
+            <div className="main-section">
+              <div className="main-title"><i className="fas fa-laptop-code"></i> Technical Skills</div>
+              <div className="skills-grid">
+                {hardSkills.map((skill, idx) => (
+                  <span key={idx} className="skill-pill">{removeSpace(skill)}</span>
                 ))}
-              </ul>
-            </div>
-            <br />
-
-            {jsonData.workExperience && jsonData.workExperience.length > 0 && jsonData.workExperience[0].companyName && (
-              <div className="section">
-                <div className="section-title"><b>Work Experience</b></div>
-                <div className="Ritem">
-                  <ul>
-                    {jsonData.workExperience.slice(0, 2).map((we, index) => (
-                      <React.Fragment key={index}>
-                        <li>
-                          <div className="item-title textGray mtt-3">
-                            {we.companyName}
-                            <div>{we.WorkDuration}</div>
-                          </div>
-                          {we.jobTitle}<br />
-                          <div dangerouslySetInnerHTML={{ __html: parseMarkdown(we.keyAchievements) }} />
-                        </li>
-                      </React.Fragment>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            )}
-
-            {jsonData.certificates && jsonData.certificates.length > 0 && jsonData.certificates[0].certificateName && (
-              <div className="section">
-                <div className="section-title"><b>Certificates</b></div>
-                <div className="Ritem">
-                  {jsonData.certificates.slice(0, 2).map((cert, index) => (
-                    <div key={index} style={{ marginBottom: '12px' }}>
-                      <div style={{ fontWeight: 'bold', color: '#1a1a1a' }}>
-                        {cert.certificateName}
-                      </div>
-                      <div style={{ color: '#4a4a4a', fontSize: '0.9em' }}>
-                        {cert.providerName} - ({cert.courseDuration})
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <div className="skills">
-              <div className="SkillsSection-title"><b>Technical Skills</b></div><br />
-              <div className="Ritem subcont">
-                <ul>
-                  {skillColumn1.map((skill, index) => (
-                    <React.Fragment key={index}>
-                      <li>{skill}</li>
-                      {/* {index < skillColumn1.length - 1 && <br />} */}
-                    </React.Fragment>
-                  ))}
-                </ul>
-                <ul>
-                  {skillColumn2.map((skill, index) => (
-                    <React.Fragment key={index}>
-                      <li>{skill}</li>
-                      {/* {index < skillColumn2.length - 1 && <br />} */}
-                    </React.Fragment>
-                  ))}
-                </ul>
-                <ul>
-                  {skillColumn3.map((skill, index) => (
-                    <React.Fragment key={index}>
-                      <li>{skill}</li>
-                      {/* {index < skillColumn3.length - 1 && <br />} */}
-                    </React.Fragment>
-                  ))}
-                </ul>
-                <ul>
-                  {skillColumn4.map((skill, index) => (
-                    <React.Fragment key={index}>
-                      <li>{skill}</li>
-                      {/* {index < skillColumn4.length - 1 && <br />} */}
-                    </React.Fragment>
-                  ))}
-                </ul>
               </div>
             </div>
-          </div>
+          )}
+
         </div>
       </div>
     </StyledWrapper>
   );
 };
 
+// --- CSS Export (For Printing/PDF generators that need raw CSS string) ---
 export const T4Css = `
+/* Reset wrapper and body styles for PDF */
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: white !important;
+  width: 210mm !important;
+  min-height: 297mm !important;
+}
+
+/* Remove any wrapper div styling */
+body > div {
+  background: none !important;
+  background-color: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Font Awesome Icons */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
+/* Screen Styles */
+.resume-container {
+  width: 210mm;
+  min-height: 297mm;
+  background: white;
+  display: flex;
+  overflow: hidden;
+  margin: 0 !important;
+  font-family: 'Roboto', 'Segoe UI', Helvetica, Arial, sans-serif;
+}
+
+/* LEFT COLUMN */
+.left-col {
+  width: 32%;
+  background-color: #2c3e50;
+  color: #ecf0f1;
+  display: flex;
+  flex-direction: column;
+  padding: 30px 20px;
+  text-align: left;
+}
+
+.profile-img-container {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 20px auto;
+  border: 4px solid rgba(255,255,255,0.2);
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.profile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sidebar-section {
+  width: 100%;
+  margin-bottom: 18px;
+}
+
+.sidebar-title {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  border-bottom: 1px solid rgba(255,255,255,0.3);
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 11px;
+  margin-bottom: 8px;
+  word-break: break-all;
+  line-height: 1.3;
+  color: #bdc3c7;
+}
+
+.contact-item i {
+  color: #3498db;
+  width: 16px;
+  margin-top: 2px;
+}
+
+.contact-item a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.edu-block {
+  margin-bottom: 12px;
+  font-size: 11px;
+}
+
+.edu-year {
+  color: #3498db;
+  font-weight: 700;
+  font-size: 11px;
+  margin-bottom: 2px;
+}
+
+.edu-school {
+  font-weight: 600;
+  color: #fff;
+}
+
+.edu-degree {
+  font-style: italic;
+  color: #bdc3c7;
+  margin-bottom: 2px;
+}
+
+.edu-cgpa {
+  color: #95a5a6;
+  font-size: 11px;
+}
+
+.sidebar-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 12px;
+}
+
+.sidebar-list li {
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #bdc3c7;
+}
+
+.bullet-point {
+  width: 4px;
+  height: 4px;
+  background: #3498db;
+  border-radius: 50%;
+}
+
+/* RIGHT COLUMN */
+.right-col {
+  width: 68%;
+  padding: 30px 25px;
+  background-color: #ffffff;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+}
+
+.header-name {
+  font-size: 34px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #2c3e50;
+  margin: 0;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.header-role {
+  font-size: 16px;
+  color: #3498db;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-top: 6px;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.main-section {
+  margin-bottom: 18px;
+}
+
+.main-title {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #2c3e50;
+  border-bottom: 2px solid #ecf0f1;
+  padding-bottom: 5px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.main-title i {
+  color: #3498db;
+  font-size: 14px;
+}
+
+.summary-text {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #555;
+  text-align: justify;
+}
+
+.entry-block {
+  margin-bottom: 14px;
+}
+
+.entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+
+.entry-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.entry-date {
+  font-size: 11px;
+  font-weight: 600;
+  color: #3498db;
+  white-space: nowrap;
+}
+
+.entry-subtitle {
+  font-size: 11px;
+  font-style: italic;
+  color: #7f8c8d;
+  margin-bottom: 4px;
+}
+
+.entry-content {
+  font-size: 10px;
+  line-height: 1.4;
+  color: #444;
+}
+
+.entry-content ul {
+  margin: 4px 0 0 0;
+  padding-left: 18px;
+}
+
+.entry-content li {
+  margin-bottom: 3px;
+}
+
+.skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skill-pill {
+  background: #f1f5f9;
+  color: #2c3e50;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid #e2e8f0;
+}
+
+/* Print Styles */
 @media print {
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
-    color-adjust: exact !important;
   }
-  
-  body {
-     font-family: Arial, sans-serif;
-     margin: 0 !important;
-     padding: 0 !important;
-     background-color: #ffffff !important;
-     display: block !important;
-  }
-  
+
   @page {
-   size: A4 portrait;
-   margin: 0;
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: white;
+  }
+
+  .resume-container {
+    width: 210mm !important;
+    min-height: 297mm !important;
+    max-height: 297mm !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    display: flex !important;
+    overflow: hidden !important;
+    page-break-after: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  .left-col {
+    width: 32% !important;
+    background-color: #2c3e50 !important;
+    color: #ecf0f1 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 30px 20px !important;
+  }
+
+  .right-col {
+    width: 68% !important;
+    background-color: #ffffff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 40px 35px !important;
   }
   
-  .resume {
-     width: 210mm !important;
-     max-width: 210mm !important;
-     min-height: auto !important;
-     margin: 0 !important;
-     margin-top: 0 !important;
-     background: #fff !important;
-     border-radius: 0 !important;
-     box-shadow: none !important;
-     padding: 0 !important;
-     border: none !important;
-     display: flex;
-     flex-direction: column;
-  }
-
-  .header, .content {
-    display: flex !important;
-    width: 100% !important;
-    page-break-inside: auto !important;
-  }
-
-  .header .left, .content .left {
-    background-color: #0363b1 !important;
+  .skill-pill {
+    background-color: #f1f5f9 !important;
+    border: 1px solid #e2e8f0 !important;
     -webkit-print-color-adjust: exact !important;
-    min-height: 100%;
+    print-color-adjust: exact !important;
+  }
+  
+  .sidebar-title, .main-title {
+     -webkit-print-color-adjust: exact !important;
+     print-color-adjust: exact !important;
   }
 
-  .section, .item, .Lsection, .Contact {
-     page-break-inside: avoid !important;
+  .profile-img-container {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 }
-
-body {
-   font-family: Arial, sans-serif;
-   margin: 0;
-   padding: 0;
-   background-color: #d6cece;
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   align-items: center;
-   min-height: 1380px; /* (W/H) Ratio should be 0.7069 */
-}
-
-.resume {
-    width: 210mm;
-    min-height: 297mm;
-    width: 210mm;
-    min-height: 297mm;
-    background: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 15px;
-    margin-top: 100px;
-    padding: 0 30px 0 0;
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
- }
-
-.Underline{
-   width: 75px;
-   border:2px solid black;
-   margin-top: 10px;
-   border-radius: 20px;
-}
-
-.NoneDecoration a{
-   text-decoration: none;
-   color:#0363b1;
-}
-
-.header {
-   display: flex; 
-   align-items: center;
-}
-
-.header .left {
-   width: 35%;
-   display: flex;
-   justify-content: center;
-   padding: 10px 13px 10px 13px;
-   background-color: #0363b1;
-   border-top-left-radius: 15px;
-   border-right: 4px solid #0363b1;
-}
-
-.left img{
-   width: 200px;
-   height: 200px;
-   background-color: #4c4fda;
-   border-radius: 50%;
-   object-fit: cover;
-}
-
-.header .right {
-   width: 65%;
-   justify-content: center;
-   align-items: center;
-   height: 100%;
-   margin-right: 40px;
-}
-
-.header .right .head {
-   padding-left: 40px;
-}
-
-.textGray{
-   color: #4e4e53;
-}
-
-.right h1 {
-   font-size: 40px;
-   margin-bottom: 5px;
-}
-
-.right h2 {
-   font-size: 16px;
-   color: #4d4b4b;
-}
-
-.section-title {
-   font-size: 18px;
-   color: #3e3e3f;
-   margin-bottom: 10px;
-   border-bottom: 1px solid #96a75a;
-   padding-bottom: 5px;
-}
-
-.SkillsSection-title {
-   font-size: 18px;
-   color: #3e3e3f;
-   border-bottom: 1px solid #96a75a;
-}
-
-.Lsection-title {
-   font-size: 18px;
-   color: #f5f5f5;
-   margin-bottom: 10px;
-   border-bottom: 1px solid #d4d4d2;
-   padding-bottom: 5px;
-}
-
-.content {
-   display: flex;
-   justify-content: center;
-   min-height: 100%;
-}
-
-.mtt-3 {
-   margin-top: 0.75rem /* 12px */;
-}
-
-.content .left {
-   width: 35%;
-   padding-right: 10px;
-   background-color: #0363b1;
-   border-bottom-left-radius: 15px;
-   border-right: 4px solid #0363b1;
-   min-height: 100%;
-   /* border-top: 4px solid #0363b1; */
-}
-
-.content .right {
-   width: 65%;
-   margin-left: 10px;
-}
-
-.Lsection,.Contact {
-   margin-bottom: 20px;
-   padding-left: 20px;
-   color: #e1ebf3;
-}
-
-.Contact div {
-   margin-bottom: 5px;
-}
-
-.content .Contact div a {
-   text-decoration: none;
-   color: #e1ebf3;
-}
-
-.subcont,.SkillSubCon {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    gap: 20px;
-}  
-
-.subcont ul {
-    min-width: 120px;
-    flex: 1;
-    margin: 0;
-    padding-left: 20px;
-}
-
-.section,.SUsection {
-   margin-bottom: 20px;
-   color: #141414;
-}
-
-.item {
-   margin-bottom: 10px;
-}
-
-.item-title {
-   font-weight: bold;
-}
-
-.content .right .item-title,
-.content .left .section-title,
-.Lsection-title {
-   display: flex;
-   justify-content: space-between;
-   align-items: center;
-}
-
-ul {
-   list-style-type: circle;
-   padding-left: 20px;
-   margin: 5px 0;
-}
-
-ul li {
-   margin-bottom: 5px;
-}
-
-.textLight{
-   font-weight: 500;
-   color: #626263;
-}
-
-.rotate-90 {
-   transform: rotate(90deg);
-}
-
-.content .right .section .Cont {
-   border-left: 2px solid #53677a;
-   margin-left: 5px;
-}
-
-.content .right .section .Cont .item {
-   margin-left: 10px;
-}`
+`;

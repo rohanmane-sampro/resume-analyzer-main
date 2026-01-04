@@ -62,8 +62,7 @@ def generate_keywords():
         return jsonify({'error': str(e)}), 500
 
 @ai_bp.route('/complete-resume', methods=['POST'])
-@token_required
-def complete_resume(current_user):
+def complete_resume():
     """Complete and enhance entire resume with AI"""
     try:
         data = request.get_json()

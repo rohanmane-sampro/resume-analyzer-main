@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { ENDPOINTS, getAuthHeaders } from '../apiConfig';
 import { useAuth } from '../AuthContext';
-import { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30 } from './Templates';
+import { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34 } from './Templates';
 
 const PreviewPage = () => {
   const location = useLocation();
@@ -269,7 +269,7 @@ const PreviewPage = () => {
 
   const getTemplateComponent = () => {
     const templateIndex = resumeData.selectedTemplate;
-    const templateComponents = { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30 };
+    const templateComponents = { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34 };
     return templateComponents[`T${templateIndex}`] || T1;
   };
 
@@ -536,6 +536,70 @@ const PreviewPage = () => {
           .resume-preview-content [class*="text-"],
           .resume-preview-content [class*="color"] {
             opacity: 1 !important;
+          }
+          
+          /* Exception for T15 sidebar - keep white text on navy background */
+          .resume-preview-content .sidebar,
+          .resume-preview-content .sidebar *,
+          .resume-preview-content .sidebar h1,
+          .resume-preview-content .sidebar h2,
+          .resume-preview-content .sidebar h3,
+          .resume-preview-content .sidebar p,
+          .resume-preview-content .sidebar div,
+          .resume-preview-content .sidebar span,
+          .resume-preview-content .sidebar li,
+          .resume-preview-content .sidebar a {
+            color: #ffffff !important;
+          }
+          
+          .resume-preview-content .sidebar .job-title {
+            color: #bdc3c7 !important;
+          }
+          
+          /* Exception for T4 left-col sidebar - keep white text on dark blue background */
+          .resume-preview-content .left-col,
+          .resume-preview-content .left-col *,
+          .resume-preview-content .left-col h1,
+          .resume-preview-content .left-col h2,
+          .resume-preview-content .left-col h3,
+          .resume-preview-content .left-col p,
+          .resume-preview-content .left-col div,
+          .resume-preview-content .left-col span,
+          .resume-preview-content .left-col li,
+          .resume-preview-content .left-col a {
+            color: #ecf0f1 !important;
+          }
+          
+          .resume-preview-content .left-col .sidebar-title {
+            color: #ffffff !important;
+          }
+          
+          .resume-preview-content .left-col .contact-item,
+          .resume-preview-content .left-col .edu-degree,
+          .resume-preview-content .left-col .sidebar-list li {
+            color: #bdc3c7 !important;
+          }
+          
+          .resume-preview-content .left-col .edu-year,
+          .resume-preview-content .left-col .contact-item i {
+            color: #3498db !important;
+          }
+          
+          .resume-preview-content .left-col .edu-school {
+            color: #ffffff !important;
+          }
+          
+          .resume-preview-content .sidebar .edu-school,
+          .resume-preview-content .sidebar .edu-gpa {
+            color: #bdc3c7 !important;
+          }
+          
+          .resume-preview-content .sidebar .edu-year {
+            color: #ef6e6e !important;
+          }
+          
+          .resume-preview-content .sidebar svg {
+            color: #ef6e6e !important;
           }
         `
       }} />

@@ -1,13 +1,13 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Check, Plus, ChevronRight, Menu, X, Eye, FileText, Trash2, Minus } from 'lucide-react';
+import { Check, Plus, ChevronRight, Menu, X, Eye, FileText, Trash2, Minus, Home, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Typed from "typed.js";
 import toast from "react-hot-toast";
 import Suggestions from "./Suggestions";
 import { useLocation } from 'react-router-dom';
 import JsonFiles from "./JsonFiles.jsx"
-import { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30 } from './Templates';
+import { T1, T2, T3, T4, T5, T6, T7, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34 } from './Templates';
 import { ENDPOINTS, getAuthHeaders } from '../apiConfig';
 
 import AIAnalysis from './AIAnalysis.jsx';
@@ -28,7 +28,7 @@ const GetInfo = () => {
   const hasLoadedDataRef = useRef(false);
 
   // Available templates state
-  const [availableTemplateNumbers, setAvailableTemplateNumbers] = useState([1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]);
+  const [availableTemplateNumbers, setAvailableTemplateNumbers] = useState([3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34]);
   const [loadingTemplates, setLoadingTemplates] = useState(true);
 
   // AI-related state
@@ -39,7 +39,7 @@ const GetInfo = () => {
   const [enhancedResumeData, setEnhancedResumeData] = useState(null);
   // console.log('ReceiveData',ExampleJsonData.skills.hardSkills)
   const [formData, setFormData] = useState({
-    selectedTemplate: "",
+    selectedTemplate: "3",
     contactInfo: {
       fullName: '',
       phoneNumber: '',
@@ -83,6 +83,10 @@ const GetInfo = () => {
   });
 
   const topHardSkills = isExampleProcessing ? ExampleJsonData.skills.hardSkills?.split(",").slice(0, 5).map(skill => skill.trim()).join(", ") : formData.skills.hardSkills?.split(",").slice(0, 5).map(skill => skill.trim()).join(", ");
+
+  // ... (Use existing code lines to match context, but the replacement is large so I will target smaller blocks or use multi_replace. Let's stick to smaller blocks for safety)
+  // Actually I will do multiple replacements in one go if they are non-contiguous, or use multi_replace.
+  // I will use multi_replace_file_content since the changes are in `formData`, `steps` and `handleNext`.
 
   const ResumeDescriptions = [
     `A passionate ${isExampleProcessing ? ExampleJsonData.contactInfo.jobTitle : formData.contactInfo.jobTitle} graduated from ${isExampleProcessing ? ExampleJsonData.education[0]?.institutionName : formData.education[0]?.institutionName}, with expertise in ${topHardSkills} and more. honed through 8+ projects. Skilled at leveraging cutting-edge tools to deliver innovative solutions. Proficient in ${isExampleProcessing ? ExampleJsonData.contactInfo.Languages : formData.contactInfo.Languages}and recognized for exceptional ${isExampleProcessing ? ExampleJsonData.skills.softSkills : formData.skills.softSkills}.`,
@@ -148,7 +152,11 @@ const GetInfo = () => {
     "ModernCV - Fresher",
     "RPI Graduate CV - Fresher",
     "Deedy Resume - Fresher",
-    "HowToTeX Minimal - Fresher"
+    "HowToTeX Minimal - Fresher",
+    "Modern Simple Photo",
+    "Classic Professional",
+    "Modern Sidebar",
+    "Clean Blue Professional"
   ]
   const Suggests = [
     "Hi, I'm here to assist you. 🤝",
@@ -223,23 +231,23 @@ const GetInfo = () => {
 
           // Set all templates for rendering (locked/unlocked)
           if (data.all_templates) {
-            setAllTemplateNumbers(data.all_templates.filter(num => num !== 8));
+            setAllTemplateNumbers(data.all_templates.filter(num => num !== 8 && num !== 1 && num !== 2 && num !== 14));
           } else {
             // Fallback if backend doesn't send all_templates yet
-            setAllTemplateNumbers([1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]);
+            setAllTemplateNumbers([3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34]);
           }
           console.log(`User can access ${data.total} of ${data.total_system_templates} templates`);
         } else {
           console.error('Failed to fetch templates:', data);
           // Fallback
-          const fallback = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30];
+          const fallback = [3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34];
           setAvailableTemplateNumbers(fallback);
           setAllTemplateNumbers(fallback);
         }
       } catch (error) {
         console.error('Error fetching available templates:', error);
         // Fallback
-        const fallback = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30];
+        const fallback = [3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34];
         setAvailableTemplateNumbers(fallback);
         setAllTemplateNumbers(fallback);
       } finally {
@@ -256,6 +264,10 @@ const GetInfo = () => {
 
     const stateSelectedTemplate = location.state?.selectedTemplate;
 
+    console.log('🔍 GetInfo - Checking for imported data...');
+    console.log('📦 UserjsonData:', UserjsonData);
+    console.log('📞 Phone from import:', UserjsonData?.contactInfo?.phoneNumber);
+
     if (UserjsonData || stateSelectedTemplate) {
       hasLoadedDataRef.current = true;
 
@@ -263,6 +275,10 @@ const GetInfo = () => {
 
       if (UserjsonData) {
         newFormData = { ...UserjsonData };
+        console.log('✅ Loading imported resume data');
+        console.log('📋 New form data:', newFormData);
+        console.log('📞 Phone in form data:', newFormData.contactInfo.phoneNumber);
+
         setIsExampleProcessing(false);
         // Mark data steps as completed
         setCompletedSteps(new Set([1, 2, 3, 4, 5, 6, 7]));
@@ -308,7 +324,7 @@ const GetInfo = () => {
     { title: 'Highlight your top projects', key: 'Projects' },
     { title: 'Demonstrate your knowledge', key: 'Education' },
     { title: 'Add your achieved certifications', key: 'Certificates' },
-    { title: 'Decribe about you', key: 'Description' }
+    { title: 'Summary', key: 'Description' }
   ];
 
   const HandleExampleProcessing = () => {
@@ -466,8 +482,6 @@ const GetInfo = () => {
         formData.contactInfo.fullName,
         formData.contactInfo.phoneNumber,
         formData.contactInfo.emailAddress,
-        formData.contactInfo.linkedin,
-        formData.contactInfo.portfolio,
         formData.contactInfo.jobTitle,
       ],
       2: [
@@ -480,7 +494,8 @@ const GetInfo = () => {
       4: formData.projects.length > 0 ? formData.projects.map(proj => [proj.projectTitle, proj.toolsTechUsed]) : [[]],
       5: formData.education.length > 0 ? formData.education.map(edu => [edu.institutionName, edu.location, edu.degreeName, edu.graduationYear, edu.currentCGPA]) : [[]],
       6: formData.certificates.length > 0 ? formData.certificates.map(cert => [cert.certificateName, cert.courseDuration, cert.providerName]) : [[]],
-      7: [formData.Description.UserDescription],
+      7: [], // Hobbies (Optional)
+      8: [formData.Description.UserDescription],
     };
 
     if (!(currentStep in Fields)) {
@@ -513,7 +528,7 @@ const GetInfo = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep((prev) => prev + 1);
     } else {          // its only validate if input current step is previously doned {if future step found to be next without filling details it though error}
-      for (let step = 0; step <= 7; step++) {
+      for (let step = 0; step <= 8; step++) {
         const requiredFields = Fields[step].flat();
         if (requiredFields.length > 0 && !areFieldsValid(requiredFields) && !isExampleProcessing) {
           toast.error("Please complete all required fields before submitting.", {
@@ -557,7 +572,7 @@ const GetInfo = () => {
         { i == 2 && setI(3) }
         return (
           <div className="space-y-4">
-            <h2 className="text-xl sm:text-2xl mb-4 pb-1 font-bold border-b-4 border-blue-900 text-blue-800 dark:border-blue-500 dark:text-blue-400">Contact Information</h2>
+            <h2 className="text-2xl sm:text-3xl mb-6 pb-3 font-bold border-b-4 border-gradient-to-r from-blue-600 to-indigo-600 bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent dark:border-blue-500">Contact Information</h2>
             <div className="space-y-2">
               <div className="peer w-full">
                 <Suggestions
@@ -574,10 +589,9 @@ const GetInfo = () => {
             <div className="space-y-2">
               <label className="block text-sm font-medium dark:text-slate-300">Phone Number <span className="text-red-500">*</span></label>
               <input
-                type="number"
+                type="tel"
                 placeholder="96XXXXXXXX"
-                className={`w-full sm:p-2 sm:px-6 border rounded peer px-3 py-2 focus:outline-none focus:ring-2 ${isInvalidMob ? "focus:ring-red-500" : "focus:ring-blue-500"}  dark:bg-gray-800 dark:text-white dark:border-gray-600 
-                  [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
+                className={`w-full sm:p-2 sm:px-6 border rounded peer px-3 py-2 focus:outline-none focus:ring-2 ${isInvalidMob ? "focus:ring-red-500" : "focus:ring-blue-500"}  dark:bg-gray-800 dark:text-white dark:border-gray-600`}
                 value={isExampleProcessing ? ExampleJsonData.contactInfo.phoneNumber : formData.contactInfo.phoneNumber}
                 onChange={(e) => { handleInputChange("contactInfo", "phoneNumber", e.target.value) }}
                 onBlur={(e) => {
@@ -618,7 +632,7 @@ const GetInfo = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium dark:text-slate-300">LinkedIn UserName <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-medium dark:text-slate-300">LinkedIn UserName <span className="text-gray-400 text-xs">(Optional)</span></label>
               <input
                 type="text"
                 placeholder="www.linkedin.com/in/john-doe-85948b1aa"
@@ -632,7 +646,7 @@ const GetInfo = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium dark:text-slate-300">Portfolio URL / Github UserName <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-medium dark:text-slate-300">Portfolio URL / Github UserName <span className="text-gray-400 text-xs">(Optional)</span></label>
               <input
                 type="text"
                 placeholder='Portfolio link/Github username'
@@ -663,7 +677,7 @@ const GetInfo = () => {
             </div>
 
             {/* Profile Image Upload - For Templates with Photo Support */}
-            {(isExampleProcessing ? ['4', '7', '11', '12', '13', '19', '21', '27'].includes(ExampleJsonData.selectedTemplate) : ['4', '7', '11', '12', '13', '19', '21', '27'].includes(formData.selectedTemplate)) && (
+            {(isExampleProcessing ? ['4', '7', '11', '12', '13', '19', '21', '27', '31', '33'].includes(ExampleJsonData.selectedTemplate) : ['4', '7', '11', '12', '13', '19', '21', '27', '31', '33'].includes(formData.selectedTemplate)) && (
               <div className="space-y-2 mt-4 p-4 border-2 border-blue-200 rounded-lg bg-blue-50 dark:bg-slate-700 dark:border-blue-600">
                 <label className="block text-sm font-medium dark:text-slate-300 flex items-center gap-2">
                   <span>📸 Profile Picture (For Selected Template)</span>
@@ -1007,22 +1021,27 @@ const GetInfo = () => {
                   </div>
 
                   <div className="space-y-2">
+                    <label className="block text-sm font-medium dark:text-slate-300">Description (Max 500 characters)</label>
                     <div className="peer">
-                      <Suggestions
-                        label="Description"
-                        placeholder='Built a full-stack web application with user authentication and real-time features'
+                      <textarea
+                        placeholder='Built a full-stack web application with user authentication and real-time features using React and Node.js'
+                        className="w-full sm:px-6 sm:p-2 border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600 min-h-[100px]"
                         value={project.toolsTechUsed}
-                        onChange={(val) => {
-                          handleInputChange('projects', 'toolsTechUsed', val, index)
+                        onChange={(e) => {
+                          handleInputChange('projects', 'toolsTechUsed', e.target.value, index);
                           if (i === 12 && index === 2) {
                             setI(13);
                             return;
-                          };
+                          }
                         }}
-                        suggestions={['.NET Core', 'A3C', "API's Integration", 'ASP.NET MVC', 'AWS', 'AWS CDK', 'AWS Lambda', 'Actix', 'Adobe XD', 'AdonisJS', 'Agile', 'Airflow', 'Alpine.js', 'Angular', 'Ansible', 'Ant Design', 'Apache', 'Apache Airflow', 'Apollo Server', 'Appgyver', 'Arduino', 'Astro', 'Aurora', 'AutoML', 'Autoencoders', 'Azure', 'BLAST', 'Babylon.js', 'Beego', 'BioPerl', 'Bioconductor', 'Biopython', 'Bitbucket', 'Blockchain', 'Bootstrap', 'Brownie', 'Bubble', 'Bulma', 'Burp Suite', 'C', 'C++', "CNN's", 'CSS', 'Capsule Networks', 'Cassandra', 'CatBoost', 'CentOS', 'Chakra UI', 'ChromaDB', 'CircleCI', 'Cirq', 'Cocos2d', 'CodeIgniter', 'Computer Vision', 'Contentful', 'Cosmos DB', 'Cybersecurity', 'Cypress', 'DDPG', 'DQN', 'Dagster', 'Dask', 'Data Engineering', 'Design Patterns', 'DevSecOps', 'Django', 'Docker', 'Docker Compose', 'Dropwizard', 'ELK Stack', 'ETL Pipelines', 'Echo', 'Edge Computing', 'EfficientNet', 'Electron.js', 'Embedded Systems', 'Ethers.js', 'Express', 'Express.js', 'FAISS', 'FastAPI', 'Faster R-CNN', 'Fedora', 'Fiber', 'Figma', 'Firebase', 'Firebase Functions', 'Flask', 'Flutter', 'Flutter (Web)', 'Foundation', 'Foundry', 'Framer Motion', 'GANs', 'GCP', 'GNNs', 'GRUs', 'GSAP', 'Galaxy', 'Gatsby', 'Gin', 'Git', 'GitHub', 'GitHub Actions', 'GitLab', 'Go', 'Godot', 'Grafana', 'GraphQL', 'HTML', 'Hadoop', 'Hapi', 'Hardhat', 'Helm', 'Hive', 'HubSpot', 'Hugging Face', 'IAM', 'IPFS', 'IoT Systems', 'Ionic', 'JAX', 'JUnit', 'JWT', 'Java', 'JavaScript', 'Jenkins', 'Jest', 'Jetpack Compose', 'Kafka', 'Kanban', 'Kedro', 'Keras', 'Kivy', 'Koa', 'Kotlin', 'Kotlin (Android)', 'Kubernetes', "LLM's", 'LSTMs', 'LangChain', 'LangSmith', 'Laravel', 'LightGBM', 'Linux', 'LoopBack', 'LottieFiles', 'Luigi', 'MATLAB', 'MLPs', 'MQTT', 'Mailchimp', 'Mantine', 'Mask R-CNN', 'Material UI', 'Matplotlib', 'Mbed OS', 'Metasploit', 'Micronaut', 'Microservices', 'Mocha', 'Modin', 'MongoDB', 'MySQL', 'NLP', 'NativeScript', 'NestJS', 'New Relic', 'Next.js', 'Nginx', 'Nmap', 'NoSQL', 'Node.js', 'NumPy', 'Nuxt', 'Nuxt.js', 'OAuth 2.0', 'OCR', 'OOP', 'OWASP', 'OpenCV', 'OpenVAS', 'OutSystems', 'PHP', 'PPO', 'Pandas', 'PayPal APIs', 'Penetration Testing', 'Phoenix (Elixir)', 'Pinecone', 'PixiJS', 'PlatformIO', 'Playwright', 'Plotly', 'Polars', 'PostgreSQL', 'Postman', 'Power BI', 'Preact', 'Prefect', 'PrimeReact', 'Prometheus', 'Prompt Engineering', 'Pulumi', 'PyQt', 'PyTest', 'PyTorch', 'Pygame', 'Pyramid', 'Pytest', 'Python', 'Qiskit', 'Qt', 'Quarkus', 'Qwik', 'RAG', 'REST API', 'RLlib', "RNN's", 'ROS (Robot Operating System)', 'Radix UI', 'React', 'React Native', 'React.js', 'Redis', 'Remix', 'ResNet', 'Retool', 'Rocket', 'Ruby', 'Ruby on Rails', 'Rust', 'SAC', 'SOLID Principles', 'SQL', 'SQLite', 'SageMaker', 'Sails.js', 'Scikit-learn', 'Scrum', 'Seaborn', 'Selenium', 'Semantic Search', 'Seqtk', 'Serverless', 'Serverless Framework', 'ShadCN/UI', 'Shell Scripting', 'Shopify APIs', 'Sinatra', 'Smart Contracts', 'Snort', 'Socket.IO', 'SolidJS', 'Solidity', 'Spark', 'Speech Recognition', 'Spring Boot', 'Stable Diffusion', 'Stripe APIs', 'Supabase', 'Svelte', 'SvelteKit', 'Swagger', 'Swift', 'Swift (iOS)', 'SwiftUI', 'Swin Transformer', 'Symfony', 'System Design', 'Tableau', 'Tailwind CSS', 'TailwindCSS', 'Tauri', 'TensorFlow', 'Terraform', 'Three.js', 'Tkinter', 'Tornado', 'Truffle', 'TypeScript', 'UNet', 'Ubuntu', 'Unity', 'Unity 3D', 'Unreal 5', 'Unreal Engine', 'VAEs', 'Vaex', 'Vector Databases', 'Vertex AI', 'Vision Transformer (ViT)', 'Vue', 'Vue.js', 'WPF', 'Warp', 'Web3.js', 'WebGL', 'WebSocket', 'WebXR', 'Webflow', 'Wireshark', 'WooCommerce APIs', 'WordPress', 'XGBoost', 'Xamarin', 'YOLO', 'Zapier', 'Zend Framework', 'dbt', 'gRPC', 'i18n']}
+                        maxLength={500}
+                        rows={4}
                       />
                     </div>
                     <div className="ml-4 w-0 h-1 rounded-full bg-blue-500 transition-all duration-300 peer-hover:w-[60%] peer-focus:w-[88%] sm:peer-focus:w-[94%]"></div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {project.toolsTechUsed ? project.toolsTechUsed.length : 0}/500 characters
+                    </p>
                   </div>
                 </div>
               ))}
@@ -1062,22 +1081,27 @@ const GetInfo = () => {
                   </div>
 
                   <div className="space-y-2">
+                    <label className="block text-sm font-medium dark:text-slate-300">Description (Max 500 characters)</label>
                     <div className="peer w-full">
-                      <Suggestions
-                        label="Description"
-                        placeholder='Developed a machine learning model for image classification with 95% accuracy'
+                      <textarea
+                        placeholder='Developed a machine learning model for image classification achieving 95% accuracy using TensorFlow and Python'
+                        className="w-full sm:px-6 sm:p-2 border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600 min-h-[100px]"
                         value={project.toolsTechUsed}
-                        onChange={(val) => {
-                          handleInputChange('projects', 'toolsTechUsed', val, index)
+                        onChange={(e) => {
+                          handleInputChange('projects', 'toolsTechUsed', e.target.value, index);
                           if (i === 12 && index === 2) {
                             setI(13);
                             return;
-                          };
+                          }
                         }}
-                        suggestions={["TensorFlow", "WeasyPrint", "WebSocket (Live Rendering Protocol)", "LLM's", "HTML/CSS", "Keras", "PyTorch", "Scikit-learn", "XGBoost", "LightGBM", "CatBoost", "FastAI", "NumPy", "Pandas", "Matplotlib", "Seaborn", "Plotly", "Altair", "Statsmodels", "SciPy", "NLTK", "SpaCy", "Transformers", "Gensim", "BERT", "GPT", "Word2Vec", "TF-IDF", "Llama", "OpenCV", "Pillow", "Albumentations", "MMDetection", "Detectron2", "YOLO", "MediaPipe", "MNIST Dataset", "CIFAR-10", "CIFAR-100", "ImageNet", "COCO Dataset", "Multi30k Dataset", "Human Parsing Dataset", "HuggingFace Datasets", "UCI Repository", "Transfer Learning", "Model Subclassing", "Data Augmentation", "Feature Engineering", "Ensemble Learning", "Hyperparameter Tuning", "Cross Validation", "Grid Search", "Early Stopping", "Apache Spark", "Hadoop", "Airflow", "Kafka", "Snowflake", "BigQuery", "ETL Pipelines", "AWS", "Azure", "Google Cloud Platform", "IBM Cloud", "Oracle Cloud", "Firebase", "Docker", "Kubernetes", "Terraform", "Jenkins", "GitHub Actions", "Prometheus", "Grafana", "MySQL", "PostgreSQL", "MongoDB", "Redis", "SQLite", "Elasticsearch", "Cassandra", "Django", "Flask", "FastAPI", "Express.js", "Spring Boot", "Node.js", "React", "Vue.js", "Angular", "Next.js", "Tailwind CSS", "Bootstrap", "SASS", "Material UI", "Python", "Java", "Advanced C++", "C++", "C", "JavaScript", "TypeScript", "Go", "Rust", "R", "Julia", "SQL", "Git", "GitHub", "GitLab", "Bitbucket", "Tableau", "Power BI", "Looker", "Google Data Studio", "Jupyter Notebook", "Google Colab", "VS Code", "Anaconda", "PyCharm", "Postman", "REST API", "GraphQL", "gRPC", "NGINX", "Apache", "PyTest", "Selenium", "Cypress", "JUnit", "Postman", "BeautifulSoup", "Scrapy", "LangChain", "Streamlit", "Gradio", "Dash", "MLflow", "Weights & Biases", "HuggingFace Hub", "OpenAI API", "Google API", "Cloud Functions"]}
+                        maxLength={500}
+                        rows={4}
                       />
                     </div>
                     <div className="ml-4 w-0 h-1 rounded-full bg-blue-500 transition-all duration-300 peer-hover:w-[60%] peer-focus:w-[88%] sm:peer-focus:w-[94%]"></div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {project.toolsTechUsed ? project.toolsTechUsed.length : 0}/500 characters
+                    </p>
                   </div>
                 </div>
               ))}
@@ -1272,14 +1296,16 @@ const GetInfo = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium dark:text-slate-300">Location</label>
-                    <input
-                      type="text"
-                      placeholder="Pune, India"
-                      className="w-full sm:px-6 sm:p-2 border rounded peer px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
-                      value={edu.location || ''}
-                      onChange={(e) => handleInputChange('education', 'location', e.target.value, index)}
-                    />
+                    <div className="peer w-full">
+                      <Suggestions
+                        label="Location"
+                        placeholder="Pune (Maharashtra)"
+                        value={edu.location || ''}
+                        onChange={(val) => handleInputChange('education', 'location', val, index)}
+                        suggestions={['Agartala (Tripura)', 'Ahmedabad (Gujarat)', 'Aizawl (Mizoram)', 'Ambala (Haryana)', 'Amritsar (Punjab)', 'Aurangabad (Maharashtra)', 'Bengaluru (Karnataka)', 'Bhopal (Madhya Pradesh)', 'Bhubaneswar (Odisha)', 'Chandigarh', 'Chennai (Tamil Nadu)', 'Coimbatore (Tamil Nadu)', 'Cuttack (Odisha)', 'Dehradun (Uttarakhand)', 'Delhi', 'Dimapur (Nagaland)', 'Dispur (Assam)', 'Faridabad (Haryana)', 'Gandhinagar (Gujarat)', 'Gangtok (Sikkim)', 'Ghaziabad (Uttar Pradesh)', 'Gurugram (Haryana)', 'Guwahati (Assam)', 'Gwalior (Madhya Pradesh)', 'Haridwar (Uttarakhand)', 'Howrah (West Bengal)', 'Hubli (Karnataka)', 'Hyderabad (Telangana)', 'Imphal (Manipur)', 'Indore (Madhya Pradesh)', 'Itanagar (Arunachal Pradesh)', 'Jaipur (Rajasthan)', 'Jalandhar (Punjab)', 'Jamshedpur (Jharkhand)', 'Jodhpur (Rajasthan)', 'Kanpur (Uttar Pradesh)', 'Kochi (Kerala)', 'Kolkata (West Bengal)', 'Kota (Rajasthan)', 'Kozhikode (Kerala)', 'Lucknow (Uttar Pradesh)', 'Ludhiana (Punjab)', 'Madurai (Tamil Nadu)', 'Mangalore (Karnataka)', 'Mohali (Punjab)', 'Mumbai (Maharashtra)', 'Mysuru (Karnataka)', 'Nagpur (Maharashtra)', 'Nainital (Uttarakhand)', 'Nashik (Maharashtra)', 'New Delhi', 'Noida (Uttar Pradesh)', 'Panaji (Goa)', 'Panchkula (Haryana)', 'Patiala (Punjab)', 'Patna (Bihar)', 'Pune (Maharashtra)', 'Raipur (Chhattisgarh)', 'Rajkot (Gujarat)', 'Ranchi (Jharkhand)', 'Rishikesh (Uttarakhand)', 'Salem (Tamil Nadu)', 'Secunderabad (Telangana)', 'Shillong (Meghalaya)', 'Siliguri (West Bengal)', 'Surat (Gujarat)', 'Thane (Maharashtra)', 'Thiruvananthapuram (Kerala)', 'Tiruchirappalli (Tamil Nadu)', 'Udaipur (Rajasthan)', 'Vadodara (Gujarat)', 'Varanasi (Uttar Pradesh)', 'Warangal (Telangana)']}
+                        isMultiSuggestion={false}
+                      />
+                    </div>
                     <div className="ml-4 w-0 h-1 rounded-full bg-blue-500 transition-all duration-300 peer-hover:w-[60%] peer-focus:w-[88%] sm:peer-focus:w-[94%]"></div>
                   </div>
 
@@ -1378,14 +1404,16 @@ const GetInfo = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium dark:text-slate-300">Location</label>
-                    <input
-                      type="text"
-                      placeholder="Pune, India"
-                      className="w-full sm:px-6 sm:p-2 border rounded peer px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
-                      value={edu.location || ''}
-                      onChange={(e) => handleInputChange('education', 'location', e.target.value, index)}
-                    />
+                    <div className="peer w-full">
+                      <Suggestions
+                        label="Location"
+                        placeholder="Pune (Maharashtra)"
+                        value={edu.location || ''}
+                        onChange={(val) => handleInputChange('education', 'location', val, index)}
+                        suggestions={['Agartala (Tripura)', 'Ahmedabad (Gujarat)', 'Aizawl (Mizoram)', 'Ambala (Haryana)', 'Amritsar (Punjab)', 'Aurangabad (Maharashtra)', 'Bengaluru (Karnataka)', 'Bhopal (Madhya Pradesh)', 'Bhubaneswar (Odisha)', 'Chandigarh', 'Chennai (Tamil Nadu)', 'Coimbatore (Tamil Nadu)', 'Cuttack (Odisha)', 'Dehradun (Uttarakhand)', 'Delhi', 'Dimapur (Nagaland)', 'Dispur (Assam)', 'Faridabad (Haryana)', 'Gandhinagar (Gujarat)', 'Gangtok (Sikkim)', 'Ghaziabad (Uttar Pradesh)', 'Gurugram (Haryana)', 'Guwahati (Assam)', 'Gwalior (Madhya Pradesh)', 'Haridwar (Uttarakhand)', 'Howrah (West Bengal)', 'Hubli (Karnataka)', 'Hyderabad (Telangana)', 'Imphal (Manipur)', 'Indore (Madhya Pradesh)', 'Itanagar (Arunachal Pradesh)', 'Jaipur (Rajasthan)', 'Jalandhar (Punjab)', 'Jamshedpur (Jharkhand)', 'Jodhpur (Rajasthan)', 'Kanpur (Uttar Pradesh)', 'Kochi (Kerala)', 'Kolkata (West Bengal)', 'Kota (Rajasthan)', 'Kozhikode (Kerala)', 'Lucknow (Uttar Pradesh)', 'Ludhiana (Punjab)', 'Madurai (Tamil Nadu)', 'Mangalore (Karnataka)', 'Mohali (Punjab)', 'Mumbai (Maharashtra)', 'Mysuru (Karnataka)', 'Nagpur (Maharashtra)', 'Nainital (Uttarakhand)', 'Nashik (Maharashtra)', 'New Delhi', 'Noida (Uttar Pradesh)', 'Panaji (Goa)', 'Panchkula (Haryana)', 'Patiala (Punjab)', 'Patna (Bihar)', 'Pune (Maharashtra)', 'Raipur (Chhattisgarh)', 'Rajkot (Gujarat)', 'Ranchi (Jharkhand)', 'Rishikesh (Uttarakhand)', 'Salem (Tamil Nadu)', 'Secunderabad (Telangana)', 'Shillong (Meghalaya)', 'Siliguri (West Bengal)', 'Surat (Gujarat)', 'Thane (Maharashtra)', 'Thiruvananthapuram (Kerala)', 'Tiruchirappalli (Tamil Nadu)', 'Udaipur (Rajasthan)', 'Vadodara (Gujarat)', 'Varanasi (Uttar Pradesh)', 'Warangal (Telangana)']}
+                        isMultiSuggestion={false}
+                      />
+                    </div>
                     <div className="ml-4 w-0 h-1 rounded-full bg-blue-500 transition-all duration-300 peer-hover:w-[60%] peer-focus:w-[88%] sm:peer-focus:w-[94%]"></div>
                   </div>
 
@@ -1626,6 +1654,7 @@ const GetInfo = () => {
             </div>
           );
         }
+
       case 7:
         if (!isExampleProcessing) {
           if (i === 18 || i === 19) {
@@ -1854,11 +1883,11 @@ const GetInfo = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100 dark:bg-slate-900">
+    <div className="flex min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
       {/* Left Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full bg-white border-r shadow-md hover:shadow-xl p-0 lg:p-4 transition-all duration-300 ease-in-out
-        ${isOpen ? "w-64" : "w-0"} lg:w-64 dark:border-r-slate-800 dark:bg-slate-800 z-50`}
+        className={`fixed top-0 left-0 h-full bg-white/80 backdrop-blur-xl border-r border-white/20 shadow-2xl shadow-blue-100/50 hover:shadow-blue-200/60 p-0 lg:p-4 transition-all duration-300 ease-in-out
+        ${isOpen ? "w-64" : "w-0"} lg:w-64 dark:border-r-slate-700/50 dark:bg-slate-800/90 dark:shadow-slate-900/50 z-50`}
       >
         <button
           onClick={() => {
@@ -1867,22 +1896,22 @@ const GetInfo = () => {
               setIsPreviewOpen(!isPreviewOpen);
             }
           }}
-          className="absolute top-6 pl-7 lg:hidden p-3 rounded-r-full bg-gray-200 dark:bg-gray-600 dark:text-cyan-300"
+          className="absolute top-6 pl-7 lg:hidden p-3 rounded-r-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 dark:from-indigo-600 dark:to-purple-600"
         >
           {isOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
 
         <div className={`${isOpen || "hidden lg:block"}`}>
-          <h1 className="text-2xl font-bold pt-20 lg:pt-4 text-center text-blue-800 dark:text-amber-300 cursor-pointer" title="Details user have to fill">Sections</h1>
-          <div className="w-[30%] h-1 bg-blue-900 mb-6 mx-auto mt-1 rounded dark:bg-amber-400"></div>
+          <h1 className="text-2xl font-bold pt-20 lg:pt-4 text-center bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-amber-400 dark:to-orange-400 bg-clip-text text-transparent cursor-pointer" title="Details user have to fill">Sections</h1>
+          <div className="w-[30%] h-1 bg-gradient-to-r from-blue-600 to-indigo-600 mb-6 mx-auto mt-1 rounded-full shadow-lg dark:from-amber-400 dark:to-orange-400"></div>
           <div className="space-y-4 px-2">
             {steps.map((step, index) => (
               <div
                 key={index}
                 onClick={() => setCurrentStep(index)}
                 title={step.title}
-                className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-transform duration-400 hover:scale-105
-                  ${currentStep === index ? "bg-blue-50 text-blue-600 dark:bg-slate-700" : ""}
+                className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-md
+                  ${currentStep === index ? "bg-gradient-to-r from-blue-500/10 to-indigo-500/10 text-blue-600 shadow-sm border border-blue-200/50 dark:from-indigo-500/20 dark:to-purple-500/20 dark:bg-slate-700/50 dark:border-indigo-500/30" : ""}
                   ${completedSteps.has(index) ? "text-green-600 dark:text-amber-200" : "text-gray-600 dark:text-zinc-200"}
                 `}
               >
@@ -1906,7 +1935,7 @@ const GetInfo = () => {
           </div>
           <div>
             <h2
-              className="space-y-3 mx-4 md:mx-0 mt-4 p-2 flex items-center justify-center gap-3 rounded-lg cursor-pointer transition-transform duration-400 bg-blue-50 hover:bg-blue-100 text-blue-600 dark:text-zinc-300 dark:bg-slate-700/50 dark:hover:bg-slate-700/95"
+              className="space-y-3 mx-4 md:mx-0 mt-4 p-3 flex items-center justify-center gap-3 rounded-xl cursor-pointer transition-all duration-300 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 hover:from-blue-500/20 hover:to-indigo-500/20 text-blue-600 shadow-sm hover:shadow-md border border-blue-200/50 dark:text-zinc-300 dark:from-indigo-500/20 dark:to-purple-500/20 dark:hover:from-indigo-500/30 dark:hover:to-purple-500/30 dark:border-indigo-500/30"
               title="It is only for Test & Present purpose. with authorized access"
               onClick={() => {
                 if (showInput) {
@@ -1941,6 +1970,18 @@ const GetInfo = () => {
 
       {/* Main Content */}
       <div className={`flex-1 pt-20 pr-3 px-4 lg:py-8 transition-all duration-300 lg:ml-0`}>
+        {/* Back to Home Button */}
+        <div className="md:max-w-[600px] md:mr-96 lg:ml-64 lg:max-w-[650px] xl:max-w-[750px] xl:px-12 2xl:max-w-4xl mx-auto mb-4">
+          <button
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40 rounded-lg transition-all duration-300 hover:scale-105 shadow-sm hover:shadow-md border border-blue-200/50 dark:border-blue-700/50"
+            title="Go back to home page"
+          >
+            <Home size={16} />
+            <span>Back to Home</span>
+          </button>
+        </div>
+
         <div className="md:max-w-[600px] md:mr-96 lg:ml-64 lg:max-w-[650px] xl:max-w-[750px] xl:px-12 2xl:max-w-4xl mx-auto">
           {renderFormSection()}
 
@@ -1951,9 +1992,9 @@ const GetInfo = () => {
                 : "Fill all details and continue to next page"
               }
               onClick={handleNext}
-              className={`flex items-center gap-2 px-6 py-2 mt-5 text-white rounded-full transition-all duration-300 ${NextError
-                ? "bg-red-500 hover:bg-red-600 scale-105 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700"
+              className={`flex items-center gap-2 px-8 py-3 mt-5 text-white rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl ${NextError
+                ? "bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 scale-105 cursor-not-allowed animate-pulse"
+                : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
                 }`}
             >
               {currentStep === steps.length - 1 ? "Submit" : "Next"}
@@ -1971,8 +2012,8 @@ const GetInfo = () => {
 
       {/* Right Preview Templates Sidebar */}
       <div
-        className={`fixed top-0 right-0 h-full bg-white border-l shadow-md hover:shadow-xl p-0 md:p-4 transition-all duration-300 ease-in-out
-        ${isPreviewOpen ? "w-80" : "w-0"} md:w-96 dark:border-l-slate-800 dark:bg-slate-800`}
+        className={`fixed top-0 right-0 h-full bg-white/80 backdrop-blur-xl border-l border-white/20 shadow-2xl shadow-purple-100/50 hover:shadow-purple-200/60 p-0 md:p-4 transition-all duration-300 ease-in-out
+        ${isPreviewOpen ? "w-80" : "w-0"} md:w-96 dark:border-l-slate-700/50 dark:bg-slate-800/90 dark:shadow-slate-900/50`}
       >
         <button
           onClick={() => {
@@ -1981,16 +2022,16 @@ const GetInfo = () => {
               setIsOpen(!isOpen);
             }
           }}
-          className="absolute top-6 mr-0 right-0 pr-8 md:hidden p-3 rounded-l-full bg-gray-200 dark:bg-gray-600 dark:text-cyan-300"
+          className="absolute top-6 mr-0 right-0 pr-8 md:hidden p-3 rounded-l-full bg-gradient-to-l from-purple-500 to-indigo-600 text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 dark:from-purple-600 dark:to-indigo-700"
         >
           {isPreviewOpen ? <X size={20} /> : <Eye size={20} />}
         </button>
 
         <div className={`${isPreviewOpen || "hidden md:block"}`}>
-          <h1 className="text-2xl font-bold pt-20 md:pt-4 text-center text-blue-800 dark:text-amber-300 cursor-pointer" title="Live preview. how your resume looks">Preview</h1>
-          <div className="w-[25%] h-1 bg-blue-900 mb-4 mx-auto mt-1 rounded dark:bg-amber-400"></div>
-          <div className="px-2 w-[340px] ml-3 h-[calc(100vh-180px)] overflow-y-auto overflow-x-hidden bg-white dark:bg-slate-800">
-            <div className="scale-[0.35] origin-top-left flex">
+          <h1 className="text-2xl font-bold pt-20 md:pt-4 text-center bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-amber-400 dark:to-orange-400 bg-clip-text text-transparent cursor-pointer" title="Live preview. how your resume looks">Preview</h1>
+          <div className="w-[25%] h-1 bg-gradient-to-r from-purple-600 to-indigo-600 mb-4 mx-auto mt-1 rounded-full shadow-lg dark:from-amber-400 dark:to-orange-400"></div>
+          <div className="px-2 w-[340px] ml-3 h-[calc(100vh-120px)] overflow-hidden bg-white dark:bg-slate-800">
+            <div className="scale-[0.35] origin-top-left flex ml-8">
               {(() => {
                 const templateNum = isExampleProcessing ? ExampleJsonData.selectedTemplate : formData.selectedTemplate;
                 const data = isExampleProcessing ? ExampleJsonData : formData;
@@ -2028,6 +2069,10 @@ const GetInfo = () => {
                   case '28': return <T28 jsonData={data} />;
                   case '29': return <T29 jsonData={data} />;
                   case '30': return <T30 jsonData={data} />;
+                  case '31': return <T31 jsonData={data} />;
+                  case '32': return <T32 jsonData={data} />;
+                  case '33': return <T33 jsonData={data} />;
+                  case '34': return <T34 jsonData={data} />;
                   default: return <T1 jsonData={data} />;
                 }
               })()}

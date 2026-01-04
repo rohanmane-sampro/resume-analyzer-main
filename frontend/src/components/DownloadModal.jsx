@@ -4,7 +4,7 @@ import { Download, FileText, X, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { html as html_beautify } from 'js-beautify';
-import { T1Css, T2Css, T3Css, T4Css, T5Css, T6Css, T7Css, T9Css, T10Css, T11Css, T12Css, T13Css, T14Css, T15Css, T16Css, T17Css, T18Css, T19Css, T20Css, T21Css, T22Css, T23Css, T24Css, T25Css, T26Css, T27Css, T28Css, T29Css, T30Css } from './Templates';
+import { T1Css, T2Css, T3Css, T4Css, T5Css, T6Css, T7Css, T9Css, T10Css, T11Css, T12Css, T13Css, T14Css, T15Css, T16Css, T17Css, T18Css, T19Css, T20Css, T21Css, T22Css, T23Css, T24Css, T25Css, T26Css, T27Css, T28Css, T29Css, T30Css, T31Css, T32Css, T33Css, T34Css } from './Templates';
 
 const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate, resumeId }) => {
   const [downloading, setDownloading] = useState({});
@@ -19,14 +19,6 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate, resumeId
       icon: FileText,
       color: 'bg-red-500',
       recommended: true
-    },
-    {
-      id: 'word',
-      name: 'Word Document',
-      description: 'Editable format for Microsoft Word',
-      icon: FileText,
-      color: 'bg-blue-500',
-      recommended: false
     }
   ];
 
@@ -188,7 +180,7 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate, resumeId
         '7': T7Css, '9': T9Css, '10': T10Css, '11': T11Css, '12': T12Css,
         '13': T13Css, '14': T14Css, '15': T15Css, '16': T16Css, '17': T17Css, '18': T18Css,
         '19': T19Css, '20': T20Css, '21': T21Css, '22': T22Css, '23': T23Css, '24': T24Css,
-        '25': T25Css, '26': T26Css, '27': T27Css, '28': T28Css, '29': T29Css, '30': T30Css
+        '25': T25Css, '26': T26Css, '27': T27Css, '28': T28Css, '29': T29Css, '30': T30Css, '31': T31Css, '32': T32Css, '33': T33Css, '34': T34Css
       };
       return templateCssMap[selectedTemplate] || T1Css;
     };
@@ -203,8 +195,14 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate, resumeId
     }
 
     if (captureElement) {
-      // Get the inner content of the template
-      const templateHTML = captureElement.innerHTML;
+      // For templates with styled-components wrapper, find the actual resume container
+      const resumeContainer = captureElement.querySelector('.resume-container') ||
+        captureElement.querySelector('.resume-page') ||
+        captureElement.querySelector('.resume') ||
+        captureElement;
+
+      // Get the outer HTML of the resume container (not the styled wrapper)
+      const templateHTML = resumeContainer.outerHTML;
       const templateCss = getTemplateCss();
 
       // Get the user's name for the title
@@ -232,7 +230,83 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate, resumeId
     <title>${userName}</title>
     <!-- RESUME_DATA: ${JSON.stringify(embeddedData).replace(/-->/g, '--&gt;')} -->
     <style>
+      /* Template-specific CSS (Loaded first) */
       ${templateCss}
+
+      /* Global A4 Page Setup & Overrides (Loaded last to enforce layout) */
+      * {
+        box-sizing: border-box;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      
+      html {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 210mm !important;
+        min-height: 297mm !important;
+        background-color: white !important;
+      }
+      
+      body {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 210mm !important;
+        min-height: 297mm !important;
+        background-color: white !important;
+        background: white !important;
+        position: relative;
+      }
+
+      /* Remove any wrapper div styling (StyledWrapper, etc.) */
+      body > div {
+        background: none !important;
+        background-color: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      
+      /* Resume containers - enforce A4 but preserve internal layout */
+      .resume-page,
+      .resume-container,
+      .resume,
+      .container {
+        width: 210mm !important;
+        max-width: 210mm !important;
+        min-height: 297mm !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        /* Preserve display: grid, display: flex, etc. from template CSS */
+      }
+
+      /* Strict Print Rules */
+      @media print {
+        @page {
+          size: A4 portrait;
+          margin: 0 !important;
+        }
+        
+        html, body {
+          width: 210mm !important;
+          min-height: 297mm !important;
+          height: auto !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          overflow: visible !important;
+        }
+        
+        .resume-page,
+        .resume-container,
+        .resume,
+        .container {
+          box-shadow: none !important;
+          page-break-after: avoid !important;
+          page-break-inside: avoid !important;
+          width: 210mm !important;
+          min-height: 297mm !important;
+          height: auto !important;
+        }
+      }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="icon" href="https://prashantparshuramkar.host20.uk/cv-templates/resume-icon.png">
@@ -508,24 +582,6 @@ const DownloadModal = ({ isOpen, onClose, resumeData, selectedTemplate, resumeId
                   </motion.div>
                 );
               })}
-            </div>
-
-            {/* Download All Button */}
-            <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-              <motion.button
-                onClick={downloadAll}
-                disabled={Object.keys(downloadedFormats).length === downloadFormats.length}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white font-medium py-3 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Download className="w-5 h-5" />
-                <span>
-                  {Object.keys(downloadedFormats).length === downloadFormats.length
-                    ? 'All Formats Downloaded'
-                    : 'Download All Formats'}
-                </span>
-              </motion.button>
             </div>
 
             {/* File Info */}

@@ -37,14 +37,14 @@ const FileUploadPage = () => {
 
   const handleDocUpload = async (event) => {
     const file = event.target.files[0];
-    if (file && (file.type.includes("pdf") || file.type.includes("word") || file.name.endsWith('.docx'))) {
+    if (file && (file.type.includes("pdf") || file.type.includes("word") || file.name.endsWith('.docx') || file.type.includes("image"))) {
       setDocUploaded(false);
       setShowModal(false);
       setShowParsingAnimation(true);
 
-      // Store the file and create preview URL for PDF
+      // Store the file and create preview URL
       setUploadedFile(file);
-      if (file.type === 'application/pdf') {
+      if (file.type === 'application/pdf' || file.type.includes('image')) {
         const url = URL.createObjectURL(file);
         setFilePreviewUrl(url);
       }
@@ -83,6 +83,10 @@ const FileUploadPage = () => {
           setCurrentStep(4);
 
           if (result.success) {
+            console.log('✅ Resume parsed successfully!');
+            console.log('📋 Parsed resume data:', result.data);
+            console.log('📞 Phone number extracted:', result.data.contactInfo.phoneNumber);
+
             setJsonData(result.data);
             setDocUploaded(true);
 
@@ -121,7 +125,7 @@ const FileUploadPage = () => {
         }, 5000);
       }
     } else {
-      toast.error("Please upload a PDF or DOCX file.", { duration: 3000, position: "top-right" });
+      toast.error("Please upload a PDF, DOCX, or Image file.", { duration: 3000, position: "top-right" });
     }
   };
 
@@ -229,6 +233,12 @@ const FileUploadPage = () => {
                       className="w-full h-full border-0"
                       title="Resume Preview"
                     />
+                  ) : filePreviewUrl && uploadedFile?.type?.includes('image') ? (
+                    <img
+                      src={filePreviewUrl}
+                      alt="Resume Preview"
+                      className="w-full h-full object-contain"
+                    />
                   ) : uploadedFile ? (
                     <div className="flex flex-col items-center justify-center h-full p-6 text-center">
                       <FileText size={64} className="text-purple-600 dark:text-purple-400 mb-4" />
@@ -282,24 +292,21 @@ const FileUploadPage = () => {
             </button>
 
             {/* Modal Header */}
-            <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">
-                Import your existing resume
+            <div className="text-center mb-6">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                Build Your Resume
               </h1>
-              <p className="text-gray-600 dark:text-gray-300 text-lg">
-                Start faster by prefilling your resume content.
-              </p>
             </div>
 
             {/* Import Resume Button */}
-            <label className="block mb-4 cursor-pointer group">
-              <div className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-2xl p-5 flex items-center justify-center gap-3 transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl">
-                <Rocket size={24} className="group-hover:rotate-12 transition-transform" />
-                <span className="text-xl font-semibold">Import resume</span>
+            <label className="block mb-3 cursor-pointer group">
+              <div className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl p-4 flex items-center justify-center gap-3 transition-all duration-300 transform hover:scale-[1.02] shadow-md hover:shadow-lg">
+                <Rocket size={20} className="group-hover:rotate-12 transition-transform" />
+                <span className="text-lg font-medium">Auto-Fill with Resume</span>
               </div>
               <input
                 type="file"
-                accept=".pdf,.doc,.docx"
+                accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
                 onChange={handleDocUpload}
                 className="hidden"
               />
@@ -308,15 +315,15 @@ const FileUploadPage = () => {
             {/* Start from Blank Button */}
             <button
               onClick={handleStartFromBlank}
-              className="w-full bg-white dark:bg-slate-700 border-2 border-gray-300 dark:border-slate-600 hover:border-purple-500 dark:hover:border-purple-500 text-gray-800 dark:text-white rounded-2xl p-5 flex items-center justify-center gap-3 transition-all duration-300 transform hover:scale-[1.02] shadow-md hover:shadow-lg group"
+              className="w-full bg-white dark:bg-slate-700 border-2 border-gray-300 dark:border-slate-600 hover:border-purple-500 dark:hover:border-purple-500 text-gray-800 dark:text-white rounded-xl p-4 flex items-center justify-center gap-3 transition-all duration-300 transform hover:scale-[1.02] shadow-sm hover:shadow-md group"
             >
-              <PenTool size={24} className="text-purple-600 dark:text-purple-400 group-hover:rotate-12 transition-transform" />
-              <span className="text-xl font-semibold">Start from blank</span>
+              <PenTool size={20} className="text-purple-600 dark:text-purple-400 group-hover:rotate-12 transition-transform" />
+              <span className="text-lg font-medium">Start from Scratch</span>
             </button>
 
             {/* Helper Text */}
-            <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
-              Upload PDF or DOCX resume. Our AI will extract and structure the data automatically (Free!)
+            <p className="text-center text-xs text-gray-500 dark:text-gray-400 mt-4">
+              Upload PDF, DOCX, or Image (PNG/JPG) for AI extraction.
             </p>
           </div>
         </div>

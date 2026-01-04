@@ -9,6 +9,23 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
 ).toString();
 
 /**
+ * Dynamically load a script
+ */
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector(`script[src="${src}"]`)) {
+      resolve();
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = src;
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+}
+
+/**
  * Parse PDF file and extract text
  */
 async function parsePDF(file) {
@@ -60,7 +77,13 @@ function extractEmail(text) {
 function extractPhone(text) {
   const phoneRegex = /(\+?\d{1,3}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}/g;
   const matches = text.match(phoneRegex);
-  return matches ? matches[0] : '';
+  if (matches) {
+    // Extract only digits from the matched phone number
+    const cleaned = matches[0].replace(/\D/g, '');
+    // Return last 10 digits (for international numbers with country codes)
+    return cleaned.length >= 10 ? cleaned.slice(-10) : cleaned;
+  }
+  return '';
 }
 
 /**
@@ -127,14 +150,28 @@ function extractName(text) {
  * Extract location/address
  */
 function extractLocation(text) {
-  // Look for city, state patterns
-  const locationRegex = /\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*),?\s*([A-Z]{2}|[A-Z][a-z]+)\b/;
-  const lines = text.split('\n').slice(0, 10); // Check first 10 lines
+  // Look for city, state patterns - Expanded to include specific Indian cities and general formats
+  // Matches: "City, State", "City, Country", "City, ST", "City - State"
+  const locationRegex = /\b([A-Z][a-zA-Z\s.]+)(?:,\s*|\s*[-–]\s*)([A-Z]{2,}|[A-Z][a-zA-Z\s]+)\b/;
 
-  for (let line of lines) {
+  const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0 && l.length < 100);
+
+  // Check first 40 lines (usually header/contact info is at top)
+  for (let i = 0; i < Math.min(40, lines.length); i++) {
+    const line = lines[i];
+
+    // Skip common header words or irrelevant lines
+    if (line.match(/^(education|experience|skills|projects|profile|summary|introduction|objective)/i)) continue;
+    if (line.includes('@') || line.match(/https?:\/\//) || line.match(/www\./) || line.match(/\.com|\.in|\.org/)) continue;
+
     const match = line.match(locationRegex);
-    if (match && !line.includes('@') && !line.match(/https?/)) {
-      return match[0];
+    if (match) {
+      const potentialLoc = match[0];
+      // Validation: ensures it's not proper nouns disguised as location (e.g. "Software Engineer")
+      if (!potentialLoc.match(/university|college|school|engineer|developer|manager|associate|assistant|consultant|technologies|solutions/i) &&
+        potentialLoc.length > 5) {
+        return potentialLoc.trim();
+      }
     }
   }
 
@@ -180,7 +217,7 @@ function extractEducation(text) {
     const lines = eduText.split('\n').map(l => l.trim()).filter(l => l);
 
     const education = [];
-    let currentEdu = { institutionName: '', degreeName: '', graduationYear: '', currentCGPA: '' };
+    let currentEdu = { institutionName: '', degreeName: '', graduationYear: '', currentCGPA: '', location: '' };
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
@@ -191,11 +228,17 @@ function extractEducation(text) {
         if (currentEdu.degreeName || currentEdu.institutionName) {
           education.push({ ...currentEdu });
         }
-        currentEdu = { institutionName: '', degreeName: line, graduationYear: '', currentCGPA: '' };
+        currentEdu = { institutionName: '', degreeName: line, graduationYear: '', currentCGPA: '', location: '' };
       }
       // Check for university/institution (usually contains these keywords)
       else if (line.match(/university|college|institute|school|iit|nit|academy/i) && line.length > 5) {
         currentEdu.institutionName = line;
+
+        // Try to find location on the same line (e.g., "IIT Bombay, Mumbai")
+        const locMatch = line.match(/,\s*([A-Za-z\s]+)$/);
+        if (locMatch && !locMatch[1].match(/technology|engineering|management|science/i)) {
+          currentEdu.location = locMatch[1].trim();
+        }
       }
       // Check for year (4 digit year)
       else if (line.match(/\b(19|20)\d{2}\b/)) {
@@ -207,6 +250,13 @@ function extractEducation(text) {
         if (gradeMatch) {
           currentEdu.currentCGPA = gradeMatch[1];
         }
+      }
+      // Check for separated Location line (e.g. "Mumbai, India")
+      else if (currentEdu.institutionName && !currentEdu.location &&
+        line.match(/^[A-Z][a-zA-Z\s]+(?:,\s*[A-Z][a-zA-Z\s]+)*$/) &&
+        !line.match(/grade|score|sem|cgpa|gpa/i) &&
+        line.length < 50) {
+        currentEdu.location = line.trim();
       }
       // Check for GPA/CGPA (standalone or with percentage)
       else if (line.match(/gpa|cgpa|grade|percentage|marks|score/i)) {
@@ -226,10 +276,10 @@ function extractEducation(text) {
       education.push(currentEdu);
     }
 
-    return education.length > 0 ? education : [{ institutionName: '', degreeName: '', graduationYear: '', currentCGPA: '' }];
+    return education.length > 0 ? education : [{ institutionName: '', degreeName: '', graduationYear: '', currentCGPA: '', location: '' }];
   }
 
-  return [{ institutionName: '', degreeName: '', graduationYear: '', currentCGPA: '' }];
+  return [{ institutionName: '', degreeName: '', graduationYear: '', currentCGPA: '', location: '' }];
 }
 
 /**
@@ -309,6 +359,113 @@ function extractExperience(text) {
 /**
  * Main function to parse resume and extract structured data
  */
+/**
+ * Parse Image file and extract text using Tesseract.js
+ */
+/**
+ * Preprocess image for better OCR results
+ * Increases resolution, converts to grayscale, and increases contrast
+ */
+function preprocessImage(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Increase resolution (2x) for better character recognition
+        const scaleFactor = 2; // Optimal for Tesseract
+        canvas.width = img.width * scaleFactor;
+        canvas.height = img.height * scaleFactor;
+
+        ctx.scale(scaleFactor, scaleFactor);
+        ctx.drawImage(img, 0, 0);
+
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+
+        // Convert to grayscale
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i];
+          const g = data[i + 1];
+          const b = data[i + 2];
+
+          // Grayscale (Luminosity method)
+          let gray = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+
+          // Contrast stretching (Simple)
+          // Make darks darker and lights lighter without hard thresholding
+          // This preserves details in shadows better than binary threshold
+          // Factor 1.2 increases contrast by 20%
+          const contrast = 1.2;
+          const intercept = 128 * (1 - contrast);
+          gray = gray * contrast + intercept;
+
+          // Clamp values
+          gray = Math.min(255, Math.max(0, gray));
+
+          data[i] = gray;     // R
+          data[i + 1] = gray; // G
+          data[i + 2] = gray; // B
+        }
+
+        ctx.putImageData(imageData, 0, 0);
+        resolve(canvas.toDataURL('image/png'));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+/**
+ * Parse Image file and extract text using Tesseract.js
+ */
+async function parseImage(file) {
+  try {
+    // Load Tesseract.js from CDN
+    await loadScript('https://unpkg.com/tesseract.js@v4.1.1/dist/tesseract.min.js');
+
+    if (!window.Tesseract) {
+      throw new Error('Failed to load Tesseract.js');
+    }
+
+    console.log('Preprocessing image for OCR...');
+    const preprocessedImage = await preprocessImage(file);
+
+    console.log('Starting OCR extraction...');
+    const worker = await window.Tesseract.createWorker({
+      logger: m => console.log(m)
+    });
+
+    await worker.loadLanguage('eng');
+    await worker.initialize('eng');
+
+    // Set parameters for better document layout analysis
+    // PSM 1: Automatic page segmentation with OSD (Orientation and Script Detection)
+    // This helps with multi-column layouts typical in resumes
+    await worker.setParameters({
+      tessedit_pageseg_mode: '1',
+    });
+
+    const { data: { text } } = await worker.recognize(preprocessedImage);
+    await worker.terminate();
+
+    console.log('OCR Complete. Extracted Text Length:', text.length);
+    return text;
+  } catch (error) {
+    console.error('Image parsing error:', error);
+    throw new Error('Failed to parse image file. Text recognition failed.');
+  }
+}
+
+/**
+ * Main function to parse resume and extract structured data
+ */
 export async function parseResume(file) {
   try {
     let text = '';
@@ -319,10 +476,12 @@ export async function parseResume(file) {
     } else if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
       file.name.endsWith('.docx')) {
       text = await parseDOCX(file);
+    } else if (file.type.startsWith('image/')) {
+      text = await parseImage(file);
     } else if (file.type === 'application/msword' || file.name.endsWith('.doc')) {
       throw new Error('Old .doc format not supported. Please use .docx format.');
     } else {
-      throw new Error('Unsupported file format. Please upload PDF or DOCX.');
+      throw new Error('Unsupported file format. Please upload PDF, DOCX, or Image.');
     }
 
     console.log('Extracted text (first 500 chars):', text.substring(0, 500));
@@ -337,7 +496,7 @@ export async function parseResume(file) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ text }),
-        signal: AbortSignal.timeout(30000) // 30 seconds timeout for parsing
+        signal: AbortSignal.timeout(60000) // Increased to 60s for images/OCR which might produce more text
       });
 
       if (response.ok) {
@@ -471,6 +630,7 @@ export async function parseResume(file) {
     };
 
     console.log('Parsed data (Local):', structuredData);
+    console.log('Phone number extracted:', structuredData.contactInfo.phoneNumber);
 
     return {
       success: true,
