@@ -36,24 +36,27 @@ const Navbar = () => {
                 </h1>
             </div>
 
-            {/* Navigation Links - Desktop */}
-            <div className="hidden md:flex items-center gap-1 bg-white/50 dark:bg-slate-800/50 p-1.5 rounded-full border border-slate-200 dark:border-slate-700/50 backdrop-blur-sm shadow-sm opacity-100">
-                <button className={`nav-pill ${isActive('/')}`} onClick={() => navigate('/')}>
-                    Home
-                </button>
-                <button className={`nav-pill ${isActive('/FileUploadPage')}`} onClick={() => navigate('/FileUploadPage')}>
-                    Create
-                </button>
-                <button className={`nav-pill ${isActive('/ResumeAnalyze')}`} onClick={() => navigate('/ResumeAnalyze')}>
-                    Analyze
-                </button>
-                <button className={`nav-pill ${isActive('/Features')}`} onClick={() => navigate('/Features')}>
-                    Features
-                </button>
-                <button className={`nav-pill ${isActive('/AboutUs')}`} onClick={() => navigate('/AboutUs')}>
-                    About
-                </button>
-            </div>
+            {/* Navigation Links - Desktop (Hidden for Admin) */}
+            {user?.role !== 'admin' && (
+                <div className="hidden md:flex items-center gap-1 bg-white/50 dark:bg-slate-800/50 p-1.5 rounded-full border border-slate-200 dark:border-slate-700/50 backdrop-blur-sm shadow-sm opacity-100">
+                    <button className={`nav-pill ${isActive('/')}`} onClick={() => navigate('/')}>
+                        Home
+                    </button>
+                    <button className={`nav-pill ${isActive('/FileUploadPage')}`} onClick={() => navigate('/FileUploadPage')}>
+                        Create
+                    </button>
+                    <button className={`nav-pill ${isActive('/ResumeAnalyze')}`} onClick={() => navigate('/ResumeAnalyze')}>
+                        Analyze
+                    </button>
+                    <button className={`nav-pill ${isActive('/Features')}`} onClick={() => navigate('/Features')}>
+                        Features
+                    </button>
+                    <button className={`nav-pill ${isActive('/AboutUs')}`} onClick={() => navigate('/AboutUs')}>
+                        About
+                    </button>
+                </div>
+            )}
+
 
             {/* Right Side Actions */}
             <div className="flex items-center gap-3">
@@ -107,22 +110,16 @@ const Navbar = () => {
                                     )}
                                 </div>
 
-                                <button
-                                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
-                                    onClick={() => { navigate('/dashboard'); setShowUserMenu(false); }}
-                                >
-                                    <LayoutDashboard size={18} />
-                                    <span>Dashboard</span>
-                                </button>
-
-                                {user.role === 'admin' && (
-                                    <button
-                                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
-                                        onClick={() => { navigate('/admin'); setShowUserMenu(false); }}
-                                    >
-                                        <User size={18} />
-                                        <span>Admin Panel</span>
-                                    </button>
+                                {user.role !== 'admin' && (
+                                    <>
+                                        <button
+                                            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
+                                            onClick={() => { navigate('/dashboard'); setShowUserMenu(false); }}
+                                        >
+                                            <LayoutDashboard size={18} />
+                                            <span>Dashboard</span>
+                                        </button>
+                                    </>
                                 )}
 
                                 <div className="border-t border-slate-100 dark:border-slate-700 mt-1 pt-1">

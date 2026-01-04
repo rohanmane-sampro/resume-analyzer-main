@@ -80,8 +80,8 @@ const App = () => {
         {/* Redirect /Resume-builder to Home */}
         <Route path="/Resume-builder" element={<Navigate to="/" replace />} />
 
-        {/* Home Page - Allow Admin to see it */}
-        <Route path="/" element={<FrontPage views={views} />} />
+        {/* Home Page - Redirect admin to /admin */}
+        <Route path="/" element={isAdmin ? <Navigate to="/admin" replace /> : <FrontPage views={views} />} />
 
         <Route path="/login" element={!user ? <Login /> : (isAdmin ? <Navigate to="/admin" replace /> : <Navigate to="/" replace />)} />
         <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" replace />} />
@@ -119,8 +119,8 @@ const App = () => {
         <Route path="/ViewTemplates" element={isAdmin ? <Navigate to="/admin" replace /> : <ViewTemplates />} />
         <Route path="/Features" element={isAdmin ? <Navigate to="/admin" replace /> : <Features />} />
 
-        {/* Catch-all: Redirect to Home */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        {/* Catch-all: Redirect to Home normally, or Admin Panel for admins */}
+        <Route path="*" element={isAdmin ? <Navigate to="/admin" replace /> : <Navigate to="/" replace />} />
       </Routes>
     </div>
   );

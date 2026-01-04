@@ -188,7 +188,9 @@ const GetInfo = () => {
 
 
   // Available templates state
+  // Available templates state
   const [allTemplateNumbers, setAllTemplateNumbers] = useState([]);
+  const [userType, setUserType] = useState('standard');
   // const [loadingTemplates, setLoadingTemplates] = useState(true); // Already declared above
 
 
@@ -225,6 +227,7 @@ const GetInfo = () => {
           // Filter out template 8 (doesn't exist) just in case, though API sends valid list
           const templates = data.templates.filter(num => num !== 8);
           setAvailableTemplateNumbers(templates);
+          setUserType(data.user_type || 'standard');
 
           // Set all templates for rendering (locked/unlocked)
           if (data.all_templates) {
@@ -2159,7 +2162,7 @@ const GetInfo = () => {
 
       {/* Pricing Modal */}
       {showPricingModal && (
-        <PricingModal onClose={() => setShowPricingModal(false)} />
+        <PricingModal onClose={() => setShowPricingModal(false)} userType={userType} />
       )}
     </div>
   );
